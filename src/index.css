@@ -97,11 +97,17 @@
     @apply antialiased overflow-x-hidden selection:bg-gray-200 selection:text-gray-900;
     font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--color-gray-50);
+    color-scheme: light;
     min-height: 100dvh;
     font-size: var(--fz-base);
     line-height: var(--lh-normal);
     color: var(--color-gray-900);
     letter-spacing: var(--ls-tight);
+  }
+
+  #root {
+    min-height: 100dvh;
+    color: var(--color-gray-900);
   }
 
   /* ── Heading Typography Hierarchy ── */
@@ -242,8 +248,8 @@
   .text-label {
     font-size: var(--fz-xs);
     line-height: var(--lh-normal);
-    letter-spacing: var(--ls-widest);
-    @apply font-black uppercase text-gray-500 opacity-60;
+    letter-spacing: var(--ls-wider);
+    @apply font-black uppercase text-gray-600 opacity-90;
   }
 
   .text-body-sm {
@@ -255,8 +261,8 @@
   .text-caption {
     font-size: var(--fz-xs);
     line-height: var(--lh-normal);
-    letter-spacing: var(--ls-wider);
-    @apply font-bold text-gray-500 opacity-50 uppercase;
+    letter-spacing: var(--ls-wide);
+    @apply font-bold text-gray-500 opacity-80 uppercase;
   }
 
   /* ── Hover card lift ── */

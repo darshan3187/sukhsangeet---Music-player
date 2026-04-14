@@ -62,7 +62,7 @@ const NowPlayingView = ({ onOpenQueue, onClose }) => {
       <div className="h-20 md:h-24 px-8 md:px-12 flex items-center justify-between shrink-0">
         <button
           onClick={onClose}
-          className="touch-target rounded-xl surface-raised text-gray-400 hover:text-gray-900 hover:bg-black/5 transition-all group"
+          className="touch-target rounded-xl surface-raised text-gray-400 hover:text-gray-900 hover:bg-black/5 transition-all group lg:hidden"
           aria-label="Close now playing"
           id="now-playing-close-btn"
         >

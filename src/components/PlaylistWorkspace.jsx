@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ListMusic, Plus, Music2, Library, Play, Pause, X, LogOut, House } from 'lucide-react';
+import { ListMusic, Plus, Music2, Library, Play, Pause, X, LogOut } from 'lucide-react';
 import PlaylistSidebar from './PlaylistSidebar';
 import PlaylistTracksPanel from './PlaylistTracksPanel';
 import CreatePlaylistModal from './CreatePlaylistModal';
@@ -25,12 +25,15 @@ const PlaylistWorkspace = () => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
         setIsLibraryOpen(true);
+        if (currentTrack) {
+          setIsNowPlayingFull(true);
+        }
       }
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [currentTrack]);
 
   useEffect(() => {
     if (currentTrack) setIsNowPlayingFull(true);
@@ -63,6 +66,10 @@ const PlaylistWorkspace = () => {
       console.error('Delete failed:', err);
     }
   }, [deletePlaylist, navigate, routePlaylistId]);
+
+  const handleOpenLibrary = useCallback(() => {
+    setIsLibraryOpen(true);
+  }, []);
 
   return (
     <div className="relative h-screen w-full overflow-hidden flex bg-gray-50 font-sans selection:bg-gray-200">
@@ -170,7 +177,7 @@ const PlaylistWorkspace = () => {
               </p>
             </div>
             <button
-              onClick={() => setIsLibraryOpen(true)}
+              onClick={handleOpenLibrary}
               className="touch-target rounded-xl text-gray-500 hover:text-gray-900 hover:bg-black/5"
               aria-label="Open library"
             >
@@ -178,7 +185,7 @@ const PlaylistWorkspace = () => {
             </button>
           </div>
         </header>
-        <div className="flex-1 overflow-hidden relative">
+        <div className="flex-1 overflow-hidden relative lg:mx-auto lg:w-full lg:max-w-[1480px]">
           {currentTrack && isNowPlayingFull ? (
             <div className="h-full flex flex-col xl:flex-row divide-x divide-black/[0.03]">
               <div className="flex-1 overflow-hidden">
@@ -187,19 +194,19 @@ const PlaylistWorkspace = () => {
                   onClose={() => setIsNowPlayingFull(false)}
                 />
               </div>
-              <div className="hidden 2xl:block w-[420px] bg-black/[0.01] overflow-hidden">
-                <PlaylistTracksPanel playlistId={routePlaylistId} />
+              <div className="hidden 2xl:block w-[400px] bg-black/[0.01] overflow-hidden">
+                <PlaylistTracksPanel playlistId={routePlaylistId} onRequestOpenLibrary={handleOpenLibrary} />
               </div>
             </div>
           ) : (
-            <PlaylistTracksPanel playlistId={routePlaylistId} />
+            <PlaylistTracksPanel playlistId={routePlaylistId} onRequestOpenLibrary={handleOpenLibrary} />
           )}
         </div>
       </main>
 
       {/* ── Floating Mini-Player / Nav Bar ── */}
       <div
-        className="fixed bottom-3 right-3 left-3 md:bottom-8 md:right-8 md:left-8 md:left-auto md:right-12 md:w-[400px] z-50"
+        className="fixed bottom-3 right-3 left-3 md:bottom-8 md:right-8 md:left-8 md:left-auto md:right-12 md:w-[400px] z-50 lg:hidden"
         style={{ paddingBottom: 'max(0px, env(safe-area-inset-bottom))' }}
         role="region"
         aria-label="Now playing controls"
@@ -208,7 +215,7 @@ const PlaylistWorkspace = () => {
           /* Mobile bottom nav – no track */
           <div className="lg:hidden glass-card rounded-[2.5rem] p-2.5 flex items-center gap-1">
             <button
-              onClick={() => setIsLibraryOpen(true)}
+              onClick={handleOpenLibrary}
               className="flex-1 flex flex-col items-center gap-1.5 text-gray-500 py-2 hover:text-gray-900 transition-colors min-h-[44px]"
               aria-label="Open library"
             >

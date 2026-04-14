@@ -8,7 +8,7 @@ import AddTrackInput from './AddTrackInput';
 import SortableTrackItem from './SortableTrackItem';
 import { Music, Play, Search } from 'lucide-react';
 
-const PlaylistTracksPanel = ({ playlistId }) => {
+const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary }) => {
   const { playlist, tracks, isLoading, error, addTrack, removeTrack, reorderTracks } = usePlaylist(playlistId);
   const { loadQueue, currentTrack } = usePlayer();
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
@@ -84,7 +84,7 @@ const PlaylistTracksPanel = ({ playlistId }) => {
           Select a playlist from your library to start your listening experience.
         </p>
         <button
-          onClick={() => document.getElementById('toggle-library-btn')?.click()}
+          onClick={() => onRequestOpenLibrary?.()}
           className="btn-primary text-sm px-8 py-3.5 rounded-xl"
           aria-label="Open library to choose a playlist"
           id="open-library-cta-btn"
@@ -148,7 +148,7 @@ const PlaylistTracksPanel = ({ playlistId }) => {
 
       {/* ── Tracks List ── */}
       <div
-        className="flex-1 overflow-y-auto px-5 md:px-12 pb-44 lg:pb-32 custom-scrollbar"
+        className="flex-1 overflow-y-auto px-5 md:px-12 pb-44 lg:pb-20 custom-scrollbar"
         role="list"
         aria-label={`Tracks in ${playlist?.name || 'playlist'}`}
       >
