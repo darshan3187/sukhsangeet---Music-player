@@ -208,14 +208,6 @@ const PlaylistWorkspace = () => {
           /* Mobile bottom nav – no track */
           <div className="lg:hidden glass-card rounded-[2.5rem] p-2.5 flex items-center gap-1">
             <button
-              onClick={() => navigate('/')}
-              className="flex-1 flex flex-col items-center gap-1.5 text-gray-500 py-2 hover:text-gray-900 transition-colors min-h-[44px]"
-              aria-label="Go to home"
-            >
-              <House size={20} />
-              <span className="text-[9px] font-black uppercase tracking-[0.2em]">Home</span>
-            </button>
-            <button
               onClick={() => setIsLibraryOpen(true)}
               className="flex-1 flex flex-col items-center gap-1.5 text-gray-500 py-2 hover:text-gray-900 transition-colors min-h-[44px]"
               aria-label="Open library"
