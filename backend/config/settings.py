@@ -17,7 +17,24 @@ if not SECRET_KEY and not DEBUG:
 if not SECRET_KEY:
     SECRET_KEY = "dev-only-insecure-key-change-me"
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="127.0.0.1,localhost", cast=Csv())
+def _normalize_host(value: str) -> str:
+    cleaned = value.strip().lower()
+    if not cleaned:
+        return ""
+
+    if "://" in cleaned:
+        cleaned = cleaned.split("://", 1)[1]
+
+    cleaned = cleaned.split("/", 1)[0]
+    cleaned = cleaned.split(":", 1)[0]
+    return cleaned
+
+
+ALLOWED_HOSTS = [
+    host
+    for host in (_normalize_host(value) for value in config("ALLOWED_HOSTS", default="127.0.0.1,localhost", cast=Csv()))
+    if host
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
