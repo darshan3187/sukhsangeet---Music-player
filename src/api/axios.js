@@ -1,12 +1,17 @@
 import axios from 'axios';
 import { clearTokens, getAccessToken, getRefreshToken, setAccessToken } from './tokens';
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api').replace(/\/+$/, '');
+const API_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS || 15000);
+
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: API_BASE_URL,
+  timeout: API_TIMEOUT_MS,
 });
 
 const refreshClient = axios.create({
-  baseURL: 'http://localhost:8000/api',
+  baseURL: API_BASE_URL,
+  timeout: API_TIMEOUT_MS,
 });
 
 let isRefreshing = false;

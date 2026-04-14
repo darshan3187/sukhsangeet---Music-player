@@ -57,5 +57,7 @@ class PlaylistDetailSerializer(PlaylistSerializer):
         fields = PlaylistSerializer.Meta.fields + ("tracks",)
 
     def get_tracks(self, obj):
-        playlist_tracks = obj.playlist_tracks.select_related("track").order_by("position")
+        playlist_tracks = getattr(obj, "prefetched_playlist_tracks", None)
+        if playlist_tracks is None:
+            playlist_tracks = obj.playlist_tracks.select_related("track").order_by("position")
         return PlaylistTrackSerializer(playlist_tracks, many=True).data

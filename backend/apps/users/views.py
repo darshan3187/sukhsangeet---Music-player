@@ -1,6 +1,7 @@
 import hashlib
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -74,7 +75,7 @@ class LoginView(APIView):
 
 
 class RefreshView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = RefreshSerializer(data=request.data)
@@ -83,8 +84,19 @@ class RefreshView(APIView):
         token_hash = hash_token(refresh_token)
 
         try:
+            parsed_refresh = SimpleJWTRefreshToken(refresh_token)
+            user_id = parsed_refresh.get("user_id")
+        except Exception:
+            return Response({"detail": "Invalid refresh token."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        User = get_user_model()
+        user = User.objects.filter(id=user_id).first()
+        if not user:
+            return Response({"detail": "Invalid refresh token user."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        try:
             token_record = RefreshToken.objects.get(
-                user=request.user,
+                user=user,
                 token_hash=token_hash,
                 revoked=False,
             )
@@ -95,11 +107,6 @@ class RefreshView(APIView):
             token_record.revoked = True
             token_record.save(update_fields=["revoked"])
             return Response({"detail": "Refresh token has expired."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        try:
-            parsed_refresh = SimpleJWTRefreshToken(refresh_token)
-        except Exception:
-            return Response({"detail": "Invalid refresh token."}, status=status.HTTP_401_UNAUTHORIZED)
 
         return Response({"access": str(parsed_refresh.access_token)}, status=status.HTTP_200_OK)
 

@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import Max, Prefetch
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -50,9 +51,20 @@ class PlaylistDetailDeleteView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, playlist_id):
-        playlist, error_response = get_owned_playlist_or_403(request.user, playlist_id)
-        if error_response:
-            return error_response
+        playlist = (
+            Playlist.objects.filter(id=playlist_id, user=request.user)
+            .prefetch_related(
+                Prefetch(
+                    "playlist_tracks",
+                    queryset=PlaylistTrack.objects.select_related("track").order_by("position"),
+                    to_attr="prefetched_playlist_tracks",
+                )
+            )
+            .first()
+        )
+
+        if not playlist:
+            return Response({"error": "Playlist not found"}, status=status.HTTP_404_NOT_FOUND)
 
         return Response(PlaylistDetailSerializer(playlist).data, status=status.HTTP_200_OK)
 
@@ -85,7 +97,7 @@ class PlaylistTrackCreateView(APIView):
         except YouTubeAPIError:
             return Response({"error": "Could not fetch video details"}, status=status.HTTP_502_BAD_GATEWAY)
 
-        max_position = PlaylistTrack.objects.filter(playlist=playlist).order_by("-position").values_list("position", flat=True).first()
+        max_position = PlaylistTrack.objects.filter(playlist=playlist).aggregate(max_pos=Max("position"))["max_pos"]
         next_position = 0 if max_position is None else max_position + 1
 
         PlaylistTrack.objects.create(playlist=playlist, track=track, position=next_position)
@@ -108,10 +120,13 @@ class PlaylistTrackDeleteView(APIView):
         deleted_position = playlist_track.position
         playlist_track.delete()
 
-        remaining_tracks = PlaylistTrack.objects.filter(playlist=playlist, position__gt=deleted_position).order_by("position")
+        remaining_tracks = list(
+            PlaylistTrack.objects.filter(playlist=playlist, position__gt=deleted_position).order_by("position")
+        )
         for item in remaining_tracks:
             item.position -= 1
-            item.save(update_fields=["position"])
+        if remaining_tracks:
+            PlaylistTrack.objects.bulk_update(remaining_tracks, ["position"])
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -140,6 +155,6 @@ class PlaylistReorderView(APIView):
         for index, track_uuid in enumerate(track_ids):
             playlist_track = playlist_track_map[str(track_uuid)]
             playlist_track.position = index
-            playlist_track.save(update_fields=["position"])
+        PlaylistTrack.objects.bulk_update(playlist_tracks, ["position"])
 
         return Response(status=status.HTTP_200_OK)
