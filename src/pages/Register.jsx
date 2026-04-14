@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Music2 } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Music2 } from 'lucide-react';
 
 /* Shared input style – kept in sync with Login.jsx */
 const inputCls = `
@@ -23,6 +23,12 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error,           setError]           = useState('');
   const [isSubmitting,    setIsSubmitting]    = useState(false);
+  const [touched, setTouched] = useState({ username: false, email: false, password: false, confirm: false });
+
+  const usernameError = touched.username && !username.trim() ? 'Username is required.' : '';
+  const emailError = touched.email && !email.trim() ? 'Email is required.' : '';
+  const passwordError = touched.password && password.length < 8 ? 'Use at least 8 characters.' : '';
+  const confirmError = touched.confirm && confirmPassword !== password ? 'Passwords do not match.' : '';
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) navigate('/', { replace: true });
@@ -33,6 +39,22 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setTouched({ username: true, email: true, password: true, confirm: true });
+
+    if (!username.trim() || !email.trim() || password.length < 8 || password !== confirmPassword) {
+      if (!username.trim()) {
+        setError('Username is required.');
+        return;
+      }
+      if (!email.trim()) {
+        setError('Email is required.');
+        return;
+      }
+      if (password.length < 8) {
+        setError('Password must be at least 8 characters.');
+        return;
+      }
+    }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
@@ -97,11 +119,18 @@ const Register = () => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className={inputCls}
+                onBlur={() => setTouched((current) => ({ ...current, username: true }))}
+                className={`${inputCls} ${usernameError ? 'border-red-300 bg-red-50/60' : username && touched.username ? 'border-emerald-300 bg-emerald-50/60' : ''}`}
                 placeholder="yourname"
                 autoComplete="username"
+                aria-invalid={Boolean(usernameError)}
+                aria-describedby="reg-username-state"
                 required
               />
+              <p id="reg-username-state" className={`mt-2 flex items-center gap-2 text-xs font-semibold ${usernameError ? 'text-red-600' : username && touched.username ? 'text-emerald-600' : 'text-gray-500'}`}>
+                {usernameError ? <AlertCircle size={14} /> : username && touched.username ? <CheckCircle2 size={14} /> : null}
+                {usernameError || (username && touched.username ? 'Looks good.' : 'Pick a memorable handle.')}
+              </p>
             </label>
 
             {/* Email */}
@@ -112,11 +141,18 @@ const Register = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={inputCls}
+                onBlur={() => setTouched((current) => ({ ...current, email: true }))}
+                className={`${inputCls} ${emailError ? 'border-red-300 bg-red-50/60' : email && touched.email ? 'border-emerald-300 bg-emerald-50/60' : ''}`}
                 placeholder="you@example.com"
                 autoComplete="email"
+                aria-invalid={Boolean(emailError)}
+                aria-describedby="reg-email-state"
                 required
               />
+              <p id="reg-email-state" className={`mt-2 flex items-center gap-2 text-xs font-semibold ${emailError ? 'text-red-600' : email && touched.email ? 'text-emerald-600' : 'text-gray-500'}`}>
+                {emailError ? <AlertCircle size={14} /> : email && touched.email ? <CheckCircle2 size={14} /> : null}
+                {emailError || (email && touched.email ? 'Looks good.' : 'Use a valid email address.')}
+              </p>
             </label>
 
             {/* Password row – side by side on wider screens */}
@@ -128,12 +164,19 @@ const Register = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={inputCls}
+                  onBlur={() => setTouched((current) => ({ ...current, password: true }))}
+                  className={`${inputCls} ${passwordError ? 'border-red-300 bg-red-50/60' : password && touched.password ? 'border-emerald-300 bg-emerald-50/60' : ''}`}
                   placeholder="Min 8 chars"
                   autoComplete="new-password"
                   required
                   minLength={8}
+                  aria-invalid={Boolean(passwordError)}
+                  aria-describedby="reg-password-state"
                 />
+                <p id="reg-password-state" className={`mt-2 flex items-center gap-2 text-xs font-semibold ${passwordError ? 'text-red-600' : password && touched.password ? 'text-emerald-600' : 'text-gray-500'}`}>
+                  {passwordError ? <AlertCircle size={14} /> : password && touched.password ? <CheckCircle2 size={14} /> : null}
+                  {passwordError || (password && touched.password ? 'Looks good.' : 'Use 8+ characters.')}
+                </p>
               </label>
 
               <label className="block" htmlFor="reg-confirm">
@@ -143,19 +186,27 @@ const Register = () => {
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className={inputCls}
+                  onBlur={() => setTouched((current) => ({ ...current, confirm: true }))}
+                  className={`${inputCls} ${confirmError ? 'border-red-300 bg-red-50/60' : confirmPassword && touched.confirm && confirmPassword === password ? 'border-emerald-300 bg-emerald-50/60' : ''}`}
                   placeholder="Repeat password"
                   autoComplete="new-password"
                   required
+                  aria-invalid={Boolean(confirmError)}
+                  aria-describedby="reg-confirm-state"
                 />
+                <p id="reg-confirm-state" className={`mt-2 flex items-center gap-2 text-xs font-semibold ${confirmError ? 'text-red-600' : confirmPassword && touched.confirm && confirmPassword === password ? 'text-emerald-600' : 'text-gray-500'}`}>
+                  {confirmError ? <AlertCircle size={14} /> : confirmPassword && touched.confirm && confirmPassword === password ? <CheckCircle2 size={14} /> : null}
+                  {confirmError || (confirmPassword && touched.confirm && confirmPassword === password ? 'Passwords match.' : 'Repeat the password exactly.')}
+                </p>
               </label>
             </div>
 
             {error && (
               <p
                 role="alert"
-                className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-xs font-bold text-red-600 text-center"
+                className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-xs font-bold text-red-600 text-center flex items-center justify-center gap-2"
               >
+                <AlertCircle size={14} />
                 {error}
               </p>
             )}

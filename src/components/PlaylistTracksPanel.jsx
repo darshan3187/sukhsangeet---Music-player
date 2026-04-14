@@ -7,11 +7,14 @@ import { toPlayerQueue } from '../utils/playerTrackAdapter';
 import AddTrackInput from './AddTrackInput';
 import SortableTrackItem from './SortableTrackItem';
 import { Music, Play, Search } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 
 const PlaylistTracksPanel = ({ playlistId }) => {
   const { playlist, tracks, isLoading, error, addTrack, removeTrack, reorderTracks } = usePlaylist(playlistId);
   const { loadQueue, currentTrack } = usePlayer();
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+  const listRef = useRef(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   const trackIds = useMemo(() => tracks.map((t) => t.playlistTrackId), [tracks]);
   const queueTracks = useMemo(() => toPlayerQueue(tracks), [tracks]);
@@ -28,6 +31,21 @@ const PlaylistTracksPanel = ({ playlistId }) => {
     if (oldIndex < 0 || newIndex < 0) return;
     void reorderTracks(arrayMove(trackIds, oldIndex, newIndex));
   }, [reorderTracks, trackIds]);
+
+  const handleScroll = useCallback(() => {
+    const scrollEl = listRef.current;
+    if (!scrollEl) return;
+    setShowScrollTop(scrollEl.scrollTop > 300);
+  }, []);
+
+  useEffect(() => {
+    setShowScrollTop(false);
+    listRef.current?.scrollTo({ top: 0, behavior: 'instant' });
+  }, [playlistId]);
+
+  const scrollToTop = () => {
+    listRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   /* ── Loading skeleton ── */
   if (isLoading) {
@@ -148,7 +166,9 @@ const PlaylistTracksPanel = ({ playlistId }) => {
 
       {/* ── Tracks List ── */}
       <div
-        className="flex-1 overflow-y-auto px-5 md:px-12 pb-44 lg:pb-32 custom-scrollbar"
+        ref={listRef}
+        onScroll={handleScroll}
+        className="flex-1 overflow-y-auto px-4 sm:px-5 md:px-12 pb-44 lg:pb-32 custom-scrollbar"
         role="list"
         aria-label={`Tracks in ${playlist?.name || 'playlist'}`}
       >
@@ -193,6 +213,18 @@ const PlaylistTracksPanel = ({ playlistId }) => {
           </DndContext>
         )}
       </div>
+
+      {showScrollTop && (
+        <button
+          type="button"
+          onClick={scrollToTop}
+          className="scroll-top-button fixed right-4 bottom-28 md:right-6 md:bottom-32"
+          aria-label="Scroll to top"
+          title="Scroll to top"
+        >
+          ↑
+        </button>
+      )}
     </div>
   );
 };

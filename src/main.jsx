@@ -18,11 +18,14 @@ class ErrorBoundary extends Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="flex flex-col items-center justify-center h-screen gap-5 bg-gray-50 px-6 text-center">
-          <p className="text-sm font-semibold text-gray-500">Something went wrong. Please reload the page.</p>
+        <div className="app-shell app-background flex flex-col items-center justify-center gap-5 px-6 text-center">
+          <div className="modal-surface w-full max-w-md rounded-[2rem] p-8 sm:p-10">
+            <p className="text-label mb-3">Application Error</p>
+            <p className="text-sm font-semibold text-gray-600">Something went wrong. Please reload the page.</p>
+          </div>
           <button
             onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-gray-900 text-white text-xs font-black uppercase tracking-widest rounded-xl shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all"
+            className="btn-primary px-6 py-3 text-xs uppercase tracking-widest"
             aria-label="Reload application"
           >
             Reload
