@@ -69,6 +69,39 @@ def _pick_thumbnail(thumbnails):
     return None
 
 
+def _fetch_track_via_oembed(video_id):
+    try:
+        response = requests.get(
+            "https://www.youtube.com/oembed",
+            params={
+                "url": f"https://www.youtube.com/watch?v={video_id}",
+                "format": "json",
+            },
+            timeout=15,
+        )
+    except requests.RequestException as exc:
+        raise YouTubeAPIError("Could not fetch video details") from exc
+
+    if response.status_code == 404:
+        raise VideoNotFound("Video not found or unavailable")
+
+    if response.status_code != 200:
+        raise YouTubeAPIError("Could not fetch video details")
+
+    payload = response.json()
+    track, _ = Track.objects.get_or_create(
+        youtube_id=video_id,
+        defaults={
+            "title": payload.get("title", "Unknown Title"),
+            "artist": payload.get("author_name", "YouTube"),
+            "thumbnail_url": payload.get("thumbnail_url"),
+            "duration_seconds": 0,
+            "cached_at": timezone.now(),
+        },
+    )
+    return track
+
+
 def fetch_or_create_track(url_or_id):
     video_id = _extract_video_id(url_or_id)
     if not video_id:
@@ -80,7 +113,7 @@ def fetch_or_create_track(url_or_id):
 
     api_key = config("YOUTUBE_API_KEY", default="")
     if not api_key:
-        raise YouTubeAPIError("Missing YouTube API key")
+        return _fetch_track_via_oembed(video_id)
 
     try:
         response = requests.get(
@@ -96,7 +129,7 @@ def fetch_or_create_track(url_or_id):
         raise YouTubeAPIError("Could not fetch video details") from exc
 
     if response.status_code != 200:
-        raise YouTubeAPIError("Could not fetch video details")
+        return _fetch_track_via_oembed(video_id)
 
     payload = response.json()
     if isinstance(payload, dict) and payload.get("error"):
@@ -105,8 +138,8 @@ def fetch_or_create_track(url_or_id):
         if errors:
             reason = errors[0].get("reason")
         if reason in {"quotaExceeded", "dailyLimitExceeded", "rateLimitExceeded"}:
-            raise YouTubeAPIError("Could not fetch video details")
-        raise YouTubeAPIError("Could not fetch video details")
+            return _fetch_track_via_oembed(video_id)
+        return _fetch_track_via_oembed(video_id)
 
     items = payload.get("items") or []
     if not items:
