@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { AlertCircle, CheckCircle2, Music2 } from 'lucide-react';
+import { Music2 } from 'lucide-react';
 
 /* Shared input style */
 const inputCls = `
@@ -21,11 +21,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error,    setError]    = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [touched, setTouched] = useState({ email: false, password: false });
-
-  const emailError = touched.email && !email.trim() ? 'Email is required.' : '';
-  const passwordError = touched.password && !password.trim() ? 'Password is required.' : '';
-  const hasFieldError = Boolean(emailError || passwordError);
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) navigate('/', { replace: true });
@@ -36,13 +31,6 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setTouched({ email: true, password: true });
-
-    if (!email.trim() || !password.trim()) {
-      setError('Please complete both fields.');
-      return;
-    }
-
     setIsSubmitting(true);
     try {
       await login(email, password);
@@ -95,19 +83,11 @@ const Login = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                onBlur={() => setTouched((current) => ({ ...current, email: true }))}
-                className={`${inputCls} ${emailError ? 'border-red-300 bg-red-50/60' : email && touched.email ? 'border-emerald-300 bg-emerald-50/60' : ''}`}
+                className={inputCls}
                 placeholder="you@example.com"
                 autoComplete="email"
-                aria-invalid={Boolean(emailError)}
-                aria-describedby="login-email-hint login-email-state"
                 required
               />
-              <p id="login-email-hint" className="mt-2 text-xs text-gray-500">Use the email tied to your account.</p>
-              <p id="login-email-state" className={`mt-2 flex items-center gap-2 text-xs font-semibold ${emailError ? 'text-red-600' : email && touched.email ? 'text-emerald-600' : 'text-gray-500'}`}>
-                {emailError ? <AlertCircle size={14} /> : email && touched.email ? <CheckCircle2 size={14} /> : null}
-                {emailError || (email && touched.email ? 'Looks good.' : '')}
-              </p>
             </label>
 
             <label className="block" htmlFor="login-password">
@@ -117,27 +97,18 @@ const Login = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                onBlur={() => setTouched((current) => ({ ...current, password: true }))}
-                className={`${inputCls} ${passwordError ? 'border-red-300 bg-red-50/60' : password && touched.password ? 'border-emerald-300 bg-emerald-50/60' : ''}`}
+                className={inputCls}
                 placeholder="Your password"
                 autoComplete="current-password"
-                aria-invalid={Boolean(passwordError)}
-                aria-describedby="login-password-hint login-password-state"
                 required
               />
-              <p id="login-password-hint" className="mt-2 text-xs text-gray-500">Minimum 8 characters recommended.</p>
-              <p id="login-password-state" className={`mt-2 flex items-center gap-2 text-xs font-semibold ${passwordError ? 'text-red-600' : password && touched.password ? 'text-emerald-600' : 'text-gray-500'}`}>
-                {passwordError ? <AlertCircle size={14} /> : password && touched.password ? <CheckCircle2 size={14} /> : null}
-                {passwordError || (password && touched.password ? 'Looks good.' : '')}
-              </p>
             </label>
 
             {error && (
               <p
                 role="alert"
-                className={`rounded-xl px-4 py-3 text-xs font-bold text-center flex items-center justify-center gap-2 ${hasFieldError ? 'bg-red-50 border border-red-100 text-red-600' : 'bg-red-50 border border-red-100 text-red-600'}`}
+                className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-xs font-bold text-red-600 text-center"
               >
-                <AlertCircle size={14} />
                 {error}
               </p>
             )}

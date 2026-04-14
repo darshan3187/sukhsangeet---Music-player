@@ -8,9 +8,6 @@ const AddTrackInput = ({ onAddTrack, isLoading = false }) => {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [touched, setTouched] = useState(false);
-
-  const isValidUrl = !value.trim() || isYouTubeUrl(value);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -49,13 +46,12 @@ const AddTrackInput = ({ onAddTrack, isLoading = false }) => {
         <input
           id="add-track-input"
           value={value}
-          onChange={(e) => { setValue(e.target.value); setTouched(true); if (error) setError(''); }}
-          onBlur={() => setTouched(true)}
+          onChange={(e) => { setValue(e.target.value); if (error) setError(''); }}
           placeholder="Paste a YouTube link to add a track…"
           className={`
             w-full bg-black/[0.03] hover:bg-black/[0.05]
             focus:bg-white focus:shadow-sm
-            border ${error ? 'border-red-300 bg-red-50/60' : touched && value && isValidUrl ? 'border-emerald-300 bg-emerald-50/60' : 'border-black/[0.06]'} focus:border-gray-300
+            border border-black/[0.06] focus:border-gray-300
             focus:ring-2 focus:ring-gray-900/10
             rounded-xl pl-12 pr-36 py-4
             text-sm font-semibold text-gray-900
@@ -63,14 +59,9 @@ const AddTrackInput = ({ onAddTrack, isLoading = false }) => {
             placeholder:text-gray-400/60 placeholder:font-normal
             min-h-[52px]
           `}
-          aria-describedby={error ? 'add-track-error' : 'add-track-hint'}
-          aria-invalid={Boolean(error)}
+          aria-describedby={error ? 'add-track-error' : undefined}
           autoComplete="off"
         />
-
-        <p id="add-track-hint" className="mt-2 ml-1 text-xs text-gray-500">
-          Paste a YouTube URL. The app validates it before adding.
-        </p>
 
         {/* Submit button */}
         <div className="absolute inset-y-2 right-2">
@@ -103,7 +94,7 @@ const AddTrackInput = ({ onAddTrack, isLoading = false }) => {
         <p
           id="add-track-error"
           role="alert"
-          className="mt-2.5 ml-1 text-xs font-semibold text-red-600 flex items-center gap-2"
+          className="mt-2.5 ml-1 text-xs font-semibold text-red-500 flex items-center gap-2"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" aria-hidden="true" />
           {error}

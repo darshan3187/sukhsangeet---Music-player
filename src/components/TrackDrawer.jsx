@@ -33,10 +33,7 @@ export default function TrackDrawer({ isOpen, onClose, isStatic = false }) {
 
   const drawerRef  = useRef(null);
   const backdropRef = useRef(null);
-  const searchRef = useRef(null);
   const dragItem   = useRef(null);
-  const previouslyFocusedRef = useRef(null);
-  const focusableSelector = 'button, input, textarea, [tabindex]:not([tabindex="-1"])';
 
   const filteredItems = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -56,37 +53,6 @@ export default function TrackDrawer({ isOpen, onClose, isStatic = false }) {
     window.addEventListener('keydown', fn);
     return () => window.removeEventListener('keydown', fn);
   }, [isOpen, onClose, isStatic]);
-
-  /* Focus trap */
-  useEffect(() => {
-    if (!isOpen || isStatic) return;
-
-    previouslyFocusedRef.current = document.activeElement;
-    const timeout = window.setTimeout(() => searchRef.current?.focus(), 30);
-
-    const trapFocus = (e) => {
-      if (e.key !== 'Tab' || !drawerRef.current) return;
-      const focusable = Array.from(drawerRef.current.querySelectorAll(focusableSelector));
-      if (!focusable.length) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    };
-
-    document.addEventListener('keydown', trapFocus);
-    return () => {
-      window.clearTimeout(timeout);
-      document.removeEventListener('keydown', trapFocus);
-      previouslyFocusedRef.current?.focus?.();
-    };
-  }, [focusableSelector, isOpen, isStatic]);
 
   /* Drag handlers */
   const handleDragStart = (e, index) => {
@@ -112,10 +78,8 @@ export default function TrackDrawer({ isOpen, onClose, isStatic = false }) {
   const drawerContent = (
     <aside
       ref={drawerRef}
-      role="dialog"
-      aria-modal={isStatic ? undefined : true}
+      role="complementary"
       aria-label="Playback queue"
-      tabIndex={-1}
       className={`
         flex flex-col overflow-hidden bg-white
         transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]
@@ -167,11 +131,9 @@ export default function TrackDrawer({ isOpen, onClose, isStatic = false }) {
             aria-hidden="true"
           />
           <input
-            ref={searchRef}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search queue…"
-            autoComplete="off"
             className="
               w-full h-11 bg-black/[0.04] rounded-xl pl-11 pr-4
               text-sm font-semibold text-gray-900
@@ -268,8 +230,7 @@ export default function TrackDrawer({ isOpen, onClose, isStatic = false }) {
                       {/* Thumbnail */}
                       <img
                         src={track.poster}
-                        alt={`${track.title} artwork`}
-                        loading="lazy"
+                        alt=""
                         className="w-10 h-10 rounded-xl object-cover shadow-sm group-hover:scale-105 transition-transform duration-300 shrink-0"
                       />
 

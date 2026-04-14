@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AlertCircle, CheckCircle2, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 const inputCls = `
   w-full rounded-xl border border-black/[0.06] bg-black/[0.03]
@@ -16,7 +16,6 @@ const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
   const [description, setDescription] = useState('');
   const [error,       setError]       = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [touched, setTouched] = useState({ name: false, description: false });
   const dialogRef    = useRef(null);
   const firstInputRef = useRef(null);
 
@@ -59,15 +58,11 @@ const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
   useEffect(() => {
     if (!isOpen) {
       setName(''); setDescription(''); setError(''); setIsSubmitting(false);
-      setTouched({ name: false, description: false });
     }
   }, [isOpen]);
 
-  const nameError = touched.name && !name.trim() ? 'Playlist name is required.' : '';
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setTouched({ name: true, description: true });
     const trimmedName = name.trim();
     if (!trimmedName) { setError('Playlist name is required.'); return; }
     setError('');
@@ -134,18 +129,11 @@ const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
               id="playlist-name"
               value={name}
               onChange={(e) => { setName(e.target.value); if (error) setError(''); }}
-              onBlur={() => setTouched((current) => ({ ...current, name: true }))}
-              className={`${inputCls} ${nameError ? 'border-red-300 bg-red-50/60' : name && touched.name ? 'border-emerald-300 bg-emerald-50/60' : ''}`}
+              className={inputCls}
               placeholder="e.g. Late Night Vibes"
               required
               maxLength={80}
-              aria-invalid={Boolean(nameError)}
-              aria-describedby="playlist-name-state"
             />
-            <p id="playlist-name-state" className={`mt-2 flex items-center gap-2 text-xs font-semibold ${nameError ? 'text-red-600' : name && touched.name ? 'text-emerald-600' : 'text-gray-500'}`}>
-              {nameError ? <AlertCircle size={14} /> : name && touched.name ? <CheckCircle2 size={14} /> : null}
-              {nameError || (name && touched.name ? 'Looks good.' : 'Keep it short and memorable.')}
-            </p>
           </label>
 
           <label className="block" htmlFor="playlist-desc">
@@ -154,26 +142,15 @@ const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
               id="playlist-desc"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              onBlur={() => setTouched((current) => ({ ...current, description: true }))}
               className={`${inputCls} min-h-[96px] resize-none`}
               placeholder="What's the vibe?"
               maxLength={200}
             />
-            <p className={`mt-2 flex items-center justify-between text-xs font-semibold ${description.length > 180 ? 'text-amber-600' : 'text-gray-500'}`}>
-              <span className="flex items-center gap-2">
-                {description.length > 180 ? <AlertCircle size={14} /> : null}
-                {description.length > 180 ? 'You are close to the limit.' : 'Optional, but it helps the playlist feel complete.'}
-              </span>
-              <span>{description.length}/200</span>
-            </p>
           </label>
 
           {error && (
             <p role="alert" className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-xs font-bold text-red-600">
-              <span className="inline-flex items-center gap-2">
-                <AlertCircle size={14} />
-                {error}
-              </span>
+              {error}
             </p>
           )}
 
