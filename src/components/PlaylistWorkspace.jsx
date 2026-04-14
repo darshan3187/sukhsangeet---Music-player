@@ -162,39 +162,20 @@ const PlaylistWorkspace = () => {
       {/* ── Main Content ── */}
       <main id="main-content" className="flex-1 flex flex-col relative overflow-hidden bg-gray-50/80" tabIndex={-1}>
         <header className="lg:hidden px-4 pt-4 pb-2 border-b border-black/[0.04] bg-white/70 backdrop-blur-xl">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-label mb-1">Music Hub</p>
+              <p className="truncate text-sm font-black tracking-tight text-gray-900" aria-live="polite">
+                {selectedPlaylistLabel}
+              </p>
+            </div>
             <button
-              onClick={() => navigate('/')}
-              className="touch-target rounded-xl text-gray-500 hover:text-gray-900 hover:bg-black/5"
-              aria-label="Go to home"
-            >
-              <House size={19} />
-            </button>
-            <button
-              id="toggle-library-btn"
               onClick={() => setIsLibraryOpen(true)}
               className="touch-target rounded-xl text-gray-500 hover:text-gray-900 hover:bg-black/5"
               aria-label="Open library"
             >
               <Library size={19} />
             </button>
-            <button
-              onClick={() => setIsCreateOpen(true)}
-              className="touch-target rounded-xl text-gray-500 hover:text-gray-900 hover:bg-black/5"
-              aria-label="Create playlist"
-            >
-              <Plus size={19} />
-            </button>
-            <button
-              onClick={() => setIsQueueOpen(true)}
-              className="touch-target rounded-xl text-gray-500 hover:text-gray-900 hover:bg-black/5"
-              aria-label="Open queue"
-            >
-              <ListMusic size={19} />
-            </button>
-            <p className="ml-1 flex-1 truncate text-sm font-black tracking-tight text-gray-900" aria-live="polite">
-              {selectedPlaylistLabel}
-            </p>
           </div>
         </header>
         <div className="flex-1 overflow-hidden relative">
