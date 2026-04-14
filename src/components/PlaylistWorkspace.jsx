@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ListMusic, Plus, Music2, Library, Play, Pause, X, LogOut } from 'lucide-react';
+import { ListMusic, Plus, Music2, Library, Play, Pause, X, LogOut, House } from 'lucide-react';
 import PlaylistSidebar from './PlaylistSidebar';
 import PlaylistTracksPanel from './PlaylistTracksPanel';
 import CreatePlaylistModal from './CreatePlaylistModal';
@@ -16,35 +16,53 @@ const PlaylistWorkspace = () => {
   const { playlists, isLoading, createPlaylist, deletePlaylist } = usePlaylists();
   const { currentTrack, isPlaying, play, pause, queue, currentTrackIndex } = usePlayer();
   const { logout, user } = useAuth();
-  const [isLibraryOpen, setIsLibraryOpen] = useState(window.innerWidth >= 1024);
+  const [isLibraryOpen, setIsLibraryOpen] = useState(() => window.innerWidth >= 1024);
   const [isQueueOpen, setIsQueueOpen] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isNowPlayingFull, setIsNowPlayingFull] = useState(false);
 
   useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsLibraryOpen(true);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
     if (currentTrack) setIsNowPlayingFull(true);
   }, [currentTrack?.youtubeId]);
 
-  const handleCreatePlaylist = async (name, description) => {
+  const selectedPlaylist = useMemo(
+    () => playlists.find((item) => item.id?.toString() === routePlaylistId?.toString()),
+    [playlists, routePlaylistId],
+  );
+
+  const selectedPlaylistLabel = selectedPlaylist?.name || 'All Playlists';
+
+  const handleCreatePlaylist = useCallback(async (name, description) => {
     const created = await createPlaylist(name, description);
     if (created?.id) navigate(`/playlist/${created.id}`, { replace: true });
     setIsCreateOpen(false);
     return created;
-  };
+  }, [createPlaylist, navigate]);
 
-  const handleSelectPlaylist = (id) => {
+  const handleSelectPlaylist = useCallback((id) => {
     navigate(`/playlist/${id}`);
     if (window.innerWidth < 1024) setIsLibraryOpen(false);
-  };
+  }, [navigate]);
 
-  const handleDeletePlaylist = async (id) => {
+  const handleDeletePlaylist = useCallback(async (id) => {
     try {
       if (routePlaylistId === id.toString()) navigate('/', { replace: true });
       await deletePlaylist(id);
     } catch (err) {
       console.error('Delete failed:', err);
     }
-  };
+  }, [deletePlaylist, navigate, routePlaylistId]);
 
   return (
     <div className="relative h-screen w-full overflow-hidden flex bg-gray-50 font-sans selection:bg-gray-200">
@@ -142,7 +160,43 @@ const PlaylistWorkspace = () => {
       </aside>
 
       {/* ── Main Content ── */}
-      <main className="flex-1 flex flex-col relative overflow-hidden bg-gray-50/80">
+      <main id="main-content" className="flex-1 flex flex-col relative overflow-hidden bg-gray-50/80" tabIndex={-1}>
+        <header className="lg:hidden px-4 pt-4 pb-2 border-b border-black/[0.04] bg-white/70 backdrop-blur-xl">
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={() => navigate('/')}
+              className="touch-target rounded-xl text-gray-500 hover:text-gray-900 hover:bg-black/5"
+              aria-label="Go to home"
+            >
+              <House size={19} />
+            </button>
+            <button
+              id="toggle-library-btn"
+              onClick={() => setIsLibraryOpen(true)}
+              className="touch-target rounded-xl text-gray-500 hover:text-gray-900 hover:bg-black/5"
+              aria-label="Open library"
+            >
+              <Library size={19} />
+            </button>
+            <button
+              onClick={() => setIsCreateOpen(true)}
+              className="touch-target rounded-xl text-gray-500 hover:text-gray-900 hover:bg-black/5"
+              aria-label="Create playlist"
+            >
+              <Plus size={19} />
+            </button>
+            <button
+              onClick={() => setIsQueueOpen(true)}
+              className="touch-target rounded-xl text-gray-500 hover:text-gray-900 hover:bg-black/5"
+              aria-label="Open queue"
+            >
+              <ListMusic size={19} />
+            </button>
+            <p className="ml-1 flex-1 truncate text-sm font-black tracking-tight text-gray-900" aria-live="polite">
+              {selectedPlaylistLabel}
+            </p>
+          </div>
+        </header>
         <div className="flex-1 overflow-hidden relative">
           {currentTrack && isNowPlayingFull ? (
             <div className="h-full flex flex-col xl:flex-row divide-x divide-black/[0.03]">
@@ -164,13 +218,22 @@ const PlaylistWorkspace = () => {
 
       {/* ── Floating Mini-Player / Nav Bar ── */}
       <div
-        className="fixed bottom-8 right-8 left-8 md:left-auto md:right-12 md:w-[400px] z-50"
+        className="fixed bottom-3 right-3 left-3 md:bottom-8 md:right-8 md:left-8 md:left-auto md:right-12 md:w-[400px] z-50"
+        style={{ paddingBottom: 'max(0px, env(safe-area-inset-bottom))' }}
         role="region"
         aria-label="Now playing controls"
       >
         {!currentTrack ? (
           /* Mobile bottom nav – no track */
-          <div className="lg:hidden glass-card rounded-[2.5rem] p-3.5 flex items-center">
+          <div className="lg:hidden glass-card rounded-[2.5rem] p-2.5 flex items-center gap-1">
+            <button
+              onClick={() => navigate('/')}
+              className="flex-1 flex flex-col items-center gap-1.5 text-gray-500 py-2 hover:text-gray-900 transition-colors min-h-[44px]"
+              aria-label="Go to home"
+            >
+              <House size={20} />
+              <span className="text-[9px] font-black uppercase tracking-[0.2em]">Home</span>
+            </button>
             <button
               onClick={() => setIsLibraryOpen(true)}
               className="flex-1 flex flex-col items-center gap-1.5 text-gray-500 py-2 hover:text-gray-900 transition-colors min-h-[44px]"
@@ -204,7 +267,12 @@ const PlaylistWorkspace = () => {
             role="button"
             tabIndex={0}
             aria-label="Expand now playing"
-            onKeyDown={(e) => e.key === 'Enter' && setIsNowPlayingFull(true)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                setIsNowPlayingFull(true);
+              }
+            }}
             id="mini-player"
           >
             {/* Album art */}
@@ -213,6 +281,7 @@ const PlaylistWorkspace = () => {
               <img
                 src={currentTrack.poster}
                 alt={currentTrack.title}
+                loading="lazy"
                 className="relative z-10 w-full h-full rounded-xl object-cover shadow-md transition-transform duration-300 group-hover:scale-105"
               />
             </div>

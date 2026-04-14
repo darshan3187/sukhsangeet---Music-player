@@ -1,6 +1,7 @@
+import { memo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, Trash2, Play } from 'lucide-react';
+import { GripVertical, Trash2 } from 'lucide-react';
 
 const formatDuration = (seconds) => {
   if (!seconds && seconds !== 0) return '--:--';
@@ -52,14 +53,17 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
       </div>
 
       {/* Thumbnail with waveform overlay */}
-      <div className="relative shrink-0" onClick={onPlay} role="button" tabIndex={0}
-        onKeyDown={(e) => e.key === 'Enter' && onPlay()}
+      <button
+        type="button"
+        className="relative shrink-0"
+        onClick={onPlay}
         aria-label={`Play ${track.title}`}
       >
         <div className="w-11 h-11 md:w-14 md:h-14 overflow-hidden rounded-xl shadow-sm bg-black/5 ring-1 ring-black/[0.03] cursor-pointer">
           <img
             src={track.poster || undefined}
-            alt=""
+            alt={`${track.title} artwork`}
+            loading="lazy"
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </div>
@@ -78,12 +82,14 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
             </div>
           </div>
         )}
-      </div>
+      </button>
 
       {/* Track info */}
-      <div className="flex-1 min-w-0 py-0.5" onClick={onPlay} role="button" tabIndex={-1}
-        onKeyDown={(e) => e.key === 'Enter' && onPlay()}
-        style={{ cursor: 'pointer' }}
+      <button
+        type="button"
+        className="flex-1 min-w-0 py-0.5 text-left"
+        onClick={onPlay}
+        aria-label={`Play ${track.title}`}
       >
         <p
           className={`
@@ -98,7 +104,7 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
         <p className="text-caption mt-1 truncate">
           {track.artist || 'Unknown Artist'}
         </p>
-      </div>
+      </button>
 
       {/* Duration + Actions */}
       <div className="flex shrink-0 items-center gap-2 md:gap-3">
@@ -134,6 +140,7 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
           "
           title="Drag to reorder"
           aria-roledescription="Sortable"
+          aria-label={`Reorder ${track.title}`}
         >
           <GripVertical size={17} />
         </div>
@@ -142,4 +149,4 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
   );
 };
 
-export default SortableTrackItem;
+export default memo(SortableTrackItem);

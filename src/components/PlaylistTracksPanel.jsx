@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 import { closestCenter, DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { usePlayer } from '../context/PlayerContext';
@@ -14,19 +14,20 @@ const PlaylistTracksPanel = ({ playlistId }) => {
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
   const trackIds = useMemo(() => tracks.map((t) => t.playlistTrackId), [tracks]);
+  const queueTracks = useMemo(() => toPlayerQueue(tracks), [tracks]);
 
-  const handleTrackPlay = (index) => {
-    loadQueue(toPlayerQueue(tracks), { autoPlayIndex: index, preserveCurrentTrack: false });
-  };
+  const handleTrackPlay = useCallback((index) => {
+    loadQueue(queueTracks, { autoPlayIndex: index, preserveCurrentTrack: false });
+  }, [loadQueue, queueTracks]);
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = useCallback((event) => {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
     const oldIndex = trackIds.indexOf(active.id);
     const newIndex = trackIds.indexOf(over.id);
     if (oldIndex < 0 || newIndex < 0) return;
     void reorderTracks(arrayMove(trackIds, oldIndex, newIndex));
-  };
+  }, [reorderTracks, trackIds]);
 
   /* ── Loading skeleton ── */
   if (isLoading) {
@@ -147,10 +148,15 @@ const PlaylistTracksPanel = ({ playlistId }) => {
 
       {/* ── Tracks List ── */}
       <div
-        className="flex-1 overflow-y-auto px-8 md:px-12 pb-32 custom-scrollbar"
+        className="flex-1 overflow-y-auto px-5 md:px-12 pb-44 lg:pb-32 custom-scrollbar"
         role="list"
         aria-label={`Tracks in ${playlist?.name || 'playlist'}`}
       >
+        {error && (
+          <p role="alert" className="mb-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-xs font-bold text-red-600">
+            {error}
+          </p>
+        )}
         {!tracks.length ? (
           /* Empty state */
           <div
@@ -191,4 +197,4 @@ const PlaylistTracksPanel = ({ playlistId }) => {
   );
 };
 
-export default PlaylistTracksPanel;
+export default memo(PlaylistTracksPanel);

@@ -13,15 +13,18 @@ const PlayerAppShell = () => (
 
 function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route element={<ProtectedRoute />}>
-        <Route path="/" element={<PlayerAppShell />} />
-        <Route path="/playlist/:id" element={<PlayerAppShell />} />
-      </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <>
+      <a href="#main-content" className="skip-link">Skip to main content</a>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<PlayerAppShell />} />
+          <Route path="/playlist/:id" element={<PlayerAppShell />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   );
 }
 

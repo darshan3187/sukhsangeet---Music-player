@@ -94,7 +94,7 @@
   }
 
   body {
-    @apply antialiased overflow-hidden selection:bg-gray-200 selection:text-gray-900;
+    @apply antialiased overflow-x-hidden selection:bg-gray-200 selection:text-gray-900;
     font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--color-gray-50);
     min-height: 100dvh;
@@ -150,7 +150,37 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @layer utilities {
+  .skip-link {
+    position: absolute;
+    left: 0.75rem;
+    top: 0.75rem;
+    z-index: 200;
+    padding: 0.6rem 0.9rem;
+    border-radius: 0.75rem;
+    background: var(--color-gray-900);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transform: translateY(-140%);
+  }
+
+  .skip-link:focus,
+  .skip-link:focus-visible {
+    transform: translateY(0);
+  }
+
   /* ── Glass Material ── */
   .glass-card {
     @apply bg-white/80 backdrop-blur-2xl border border-white/50;
