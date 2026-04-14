@@ -1,5 +1,6 @@
 from datetime import timedelta
 from pathlib import Path
+from urllib.parse import urlparse
 
 from decouple import Csv, config
 import dj_database_url
@@ -138,10 +139,32 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOW_ALL_ORIGINS = False
-CORS_ALLOWED_ORIGINS = config(
+
+
+def _normalize_origin(origin: str) -> str:
+    """Ensure origin values are valid URLs for Django/CORS settings."""
+    cleaned = origin.strip().rstrip("/")
+    if not cleaned:
+        return ""
+
+    parsed = urlparse(cleaned)
+    if parsed.scheme and parsed.netloc:
+        return cleaned
+
+    if cleaned.startswith(("localhost", "127.0.0.1")):
+        return f"http://{cleaned}"
+    return f"https://{cleaned}"
+
+
+def _normalized_origin_list(env_name: str, default: str) -> list[str]:
+    values = config(env_name, default=default, cast=Csv())
+    normalized = [_normalize_origin(value) for value in values]
+    return [value for value in normalized if value]
+
+
+CORS_ALLOWED_ORIGINS = _normalized_origin_list(
     "CORS_ALLOWED_ORIGINS",
-    default="http://localhost:5173",
-    cast=Csv(),
+    "http://localhost:5173",
 )
 CORS_ALLOWED_ORIGIN_REGEXES = config(
     "CORS_ALLOWED_ORIGIN_REGEXES",
@@ -151,10 +174,9 @@ CORS_ALLOWED_ORIGIN_REGEXES = config(
 
 CORS_ALLOW_CREDENTIALS = True
 
-CSRF_TRUSTED_ORIGINS = config(
+CSRF_TRUSTED_ORIGINS = _normalized_origin_list(
     "CSRF_TRUSTED_ORIGINS",
-    default="http://localhost:5173",
-    cast=Csv(),
+    "http://localhost:5173",
 )
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
