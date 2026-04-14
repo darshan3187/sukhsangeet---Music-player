@@ -1,7 +1,11 @@
 import axios from 'axios';
 import { clearTokens, getAccessToken, getRefreshToken, setAccessToken } from './tokens';
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api').replace(/\/+$/, '');
+const FALLBACK_API_BASE_URL = import.meta.env.DEV
+  ? 'http://localhost:8000/api'
+  : 'https://sukhsangeet-api.onrender.com/api';
+
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || FALLBACK_API_BASE_URL).replace(/\/+$/, '');
 const API_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS || 15000);
 
 const api = axios.create({
