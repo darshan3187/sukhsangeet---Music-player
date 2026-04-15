@@ -19,9 +19,19 @@ class TrackResponseSerializer(serializers.ModelSerializer):
 
 
 class PlaylistSerializer(serializers.ModelSerializer):
+    track_count = serializers.SerializerMethodField()
+
     class Meta:
         model = Playlist
-        fields = ("id", "name", "description", "cover_url", "created_at", "updated_at")
+        fields = ("id", "name", "description", "cover_url", "created_at", "updated_at", "track_count")
+
+    def get_track_count(self, obj):
+        annotated_count = getattr(obj, "track_count", None)
+        if annotated_count is not None:
+            return annotated_count
+
+        # Fallback for non-annotated instances.
+        return obj.playlist_tracks.count()
 
 
 class PlaylistTrackSerializer(serializers.ModelSerializer):

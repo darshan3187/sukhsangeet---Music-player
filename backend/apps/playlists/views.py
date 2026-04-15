@@ -1,5 +1,5 @@
 from django.db import transaction
-from django.db.models import Max, Prefetch
+from django.db.models import Count, Max, Prefetch
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -37,7 +37,11 @@ class PlaylistListCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        playlists = Playlist.objects.filter(user=request.user).order_by("created_at")
+        playlists = (
+            Playlist.objects.filter(user=request.user)
+            .annotate(track_count=Count("playlist_tracks"))
+            .order_by("created_at")
+        )
         return Response(PlaylistSerializer(playlists, many=True).data, status=status.HTTP_200_OK)
 
     def post(self, request):

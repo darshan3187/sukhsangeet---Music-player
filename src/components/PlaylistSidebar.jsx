@@ -1,7 +1,29 @@
 import { memo } from 'react';
 import { Trash2 } from 'lucide-react';
 
+const getTrackCount = (playlist) => {
+  if (!playlist) {
+    return 0;
+  }
+
+  if (typeof playlist.track_count === 'number') {
+    return playlist.track_count;
+  }
+
+  if (typeof playlist.trackCount === 'number') {
+    return playlist.trackCount;
+  }
+
+  if (Array.isArray(playlist.tracks)) {
+    return playlist.tracks.length;
+  }
+
+  return 0;
+};
+
 const PlaylistItem = memo(function PlaylistItem({ playlist, isSelected, onSelectPlaylist, onDeletePlaylist }) {
+  const trackCount = getTrackCount(playlist);
+
   return (
     <div role="listitem" className="group relative">
       <button
@@ -16,7 +38,7 @@ const PlaylistItem = memo(function PlaylistItem({ playlist, isSelected, onSelect
             : 'hover:bg-black/[0.04] text-gray-500 hover:text-gray-800'}
         `}
         aria-current={isSelected ? 'page' : undefined}
-        aria-label={`${playlist.name}, ${playlist.track_count || 0} tracks`}
+        aria-label={`${playlist.name}, ${trackCount} tracks`}
         id={`playlist-item-${playlist.id}`}
       >
         <div
@@ -40,7 +62,7 @@ const PlaylistItem = memo(function PlaylistItem({ playlist, isSelected, onSelect
             {playlist.name}
           </p>
           <p className="text-caption mt-0.5">
-            {playlist.track_count || 0} tracks
+            {trackCount} tracks
           </p>
         </div>
       </button>
