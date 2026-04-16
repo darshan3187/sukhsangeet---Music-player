@@ -80,6 +80,8 @@ export default function TrackDrawer({ isOpen, onClose, isStatic = false }) {
       ref={drawerRef}
       role="complementary"
       aria-label="Playback queue"
+      aria-hidden={!isStatic && !isOpen}
+      inert={!isStatic && !isOpen}
       className={`
         flex flex-col overflow-hidden bg-white
         transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]

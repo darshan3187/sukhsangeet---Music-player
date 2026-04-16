@@ -31,7 +31,7 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
     <div
       ref={setNodeRef}
       style={style}
-      role="row"
+      role="listitem"
       aria-label={`Track ${index}: ${track.title}${isActive ? ', now playing' : ''}`}
       className={`
         group relative flex items-center gap-3 md:gap-5

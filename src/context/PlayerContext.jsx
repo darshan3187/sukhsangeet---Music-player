@@ -1,6 +1,50 @@
 import { createContext, useContext, useState, useRef, useEffect, useCallback, useMemo } from 'react';
 
 const PlayerContext = createContext();
+const YOUTUBE_IFRAME_API_SRC = 'https://www.youtube.com/iframe_api';
+
+let youtubeIframeApiPromise = null;
+
+const loadYouTubeIframeApi = () => {
+  if (window.YT?.Player) {
+    return Promise.resolve();
+  }
+
+  if (youtubeIframeApiPromise) {
+    return youtubeIframeApiPromise;
+  }
+
+  youtubeIframeApiPromise = new Promise((resolve, reject) => {
+    const existingScript = document.querySelector(`script[src="${YOUTUBE_IFRAME_API_SRC}"]`);
+    const previousOnReady = window.onYouTubeIframeAPIReady;
+
+    window.onYouTubeIframeAPIReady = () => {
+      if (typeof previousOnReady === 'function') {
+        previousOnReady();
+      }
+      resolve();
+    };
+
+    if (existingScript) {
+      if (window.YT?.Player) {
+        resolve();
+      }
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = YOUTUBE_IFRAME_API_SRC;
+    script.async = true;
+    script.defer = true;
+    script.onerror = () => {
+      youtubeIframeApiPromise = null;
+      reject(new Error('Failed to load YouTube iframe API'));
+    };
+    document.head.appendChild(script);
+  });
+
+  return youtubeIframeApiPromise;
+};
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const usePlayer = () => useContext(PlayerContext);
@@ -681,11 +725,12 @@ export const PlayerProvider = ({ children }) => {
       });
     };
 
-    const initPlayer = () => {
-      if (window.YT && window.YT.Player) {
+    const initPlayer = async () => {
+      try {
+        await loadYouTubeIframeApi();
         createPlayer();
-      } else {
-        window.onYouTubeIframeAPIReady = createPlayer;
+      } catch (error) {
+        console.error('Unable to initialize YouTube player:', error);
       }
     };
 
@@ -713,9 +758,6 @@ export const PlayerProvider = ({ children }) => {
       hasPreloadedCurrentTrackRef.current = false;
       startupWarmupDoneRef.current = false;
 
-      if (window.onYouTubeIframeAPIReady === createPlayer) {
-        window.onYouTubeIframeAPIReady = null;
-      }
     };
   }, [onPlayerReady, onPlayerStateChange]);
 

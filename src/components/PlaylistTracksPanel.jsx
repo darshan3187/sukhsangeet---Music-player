@@ -149,8 +149,6 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary }) => {
       {/* ── Tracks List ── */}
       <div
         className="flex-1 min-h-0 overflow-y-auto px-5 md:px-12 pb-44 lg:pb-20 custom-scrollbar"
-        role="list"
-        aria-label={`Tracks in ${playlist?.name || 'playlist'}`}
       >
         {error && (
           <p role="alert" className="mb-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-xs font-bold text-red-600">
@@ -177,7 +175,7 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary }) => {
         ) : (
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={trackIds} strategy={verticalListSortingStrategy}>
-              <div className="space-y-1.5 md:space-y-2 pt-1">
+              <div className="space-y-1.5 md:space-y-2 pt-1" role="list" aria-label={`Tracks in ${playlist?.name || 'playlist'}`}>
                 {tracks.map((track, index) => (
                   <SortableTrackItem
                     key={track.playlistTrackId}

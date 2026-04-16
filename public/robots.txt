@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Keep API and admin endpoints out of search indexing
+Disallow: /api/
+Disallow: /admin/
+
+Sitemap: https://sukhsangeet.tech/sitemap.xml
