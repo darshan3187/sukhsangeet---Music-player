@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Trash2 } from 'lucide-react';
 
 const formatDuration = (seconds) => {
-  if (!seconds && seconds !== 0) return '--:--';
+  if (!seconds && seconds !== 0) return null;
   const total = Number(seconds) || 0;
   const minutes = Math.floor(total / 60);
   const secs = Math.floor(total % 60);
@@ -25,6 +25,7 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
     transform: CSS.Transform.toString(transform),
     transition,
   };
+  const durationLabel = formatDuration(track.duration);
 
   return (
     <div
@@ -39,7 +40,7 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
         ${isDragging
           ? 'opacity-60 scale-[0.98] z-50 surface-raised shadow-xl'
           : isActive
-            ? 'surface-raised ring-1 ring-black/[0.04]'
+            ? 'surface-raised border border-gray-300/80 shadow-md ring-1 ring-black/[0.06]'
             : 'hover:bg-black/[0.035] text-gray-500'}
       `}
     >
@@ -108,9 +109,15 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
 
       {/* Duration + Actions */}
       <div className="flex shrink-0 items-center gap-2 md:gap-3">
-        <span className="hidden lg:block text-[12px] font-bold tabular-nums text-gray-400/60 min-w-[40px] text-right">
-          {formatDuration(track.duration)}
-        </span>
+        {durationLabel ? (
+          <span className="hidden lg:block text-[12px] font-bold tabular-nums text-gray-400/60 min-w-[40px] text-right">
+            {durationLabel}
+          </span>
+        ) : (
+          <span className="hidden lg:flex items-center justify-end min-w-[40px] text-gray-300" aria-hidden="true">
+            <span className="h-1.5 w-1.5 rounded-full bg-current" />
+          </span>
+        )}
 
         {/* Remove button – shown on hover / always on mobile for touch */}
         <button
