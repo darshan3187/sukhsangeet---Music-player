@@ -196,7 +196,13 @@ const PlaylistWorkspace = () => {
             </button>
           </div>
         </header>
-        <div className="flex-1 overflow-hidden min-h-0 relative lg:mx-auto lg:w-full lg:max-w-[1480px]">
+        <div
+          className={`
+            flex-1 min-h-0 overflow-hidden relative flex flex-col
+            lg:mx-auto lg:w-full lg:max-w-[1480px]
+            ${!isLibraryOpen ? 'lg:pt-16' : ''}
+          `}
+        >
           {currentTrack && isNowPlayingFull ? (
             <div className="h-full min-h-0 flex flex-col xl:flex-row divide-x divide-black/[0.03]">
               <div className="flex-1 overflow-hidden min-h-0">
