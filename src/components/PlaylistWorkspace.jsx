@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ListMusic, Plus, Music2, Library, Play, Pause, X, LogOut } from 'lucide-react';
+import { ListMusic, Plus, Music2, Library, Play, Pause, X, LogOut, PanelLeftOpen } from 'lucide-react';
 import PlaylistSidebar from './PlaylistSidebar';
 import PlaylistTracksPanel from './PlaylistTracksPanel';
 import CreatePlaylistModal from './CreatePlaylistModal';
@@ -104,7 +104,7 @@ const PlaylistWorkspace = () => {
           </div>
           <button
             onClick={() => setIsLibraryOpen(false)}
-            className="lg:hidden touch-target text-gray-400 hover:text-gray-900 hover:bg-black/5 rounded-xl transition-all"
+            className="touch-target text-gray-400 hover:text-gray-900 hover:bg-black/5 rounded-xl transition-all"
             aria-label="Close library"
           >
             <X size={20} />
@@ -168,6 +168,17 @@ const PlaylistWorkspace = () => {
 
       {/* ── Main Content ── */}
       <main id="main-content" className="flex-1 flex flex-col relative overflow-hidden min-h-0 bg-gray-50/80" tabIndex={-1}>
+        {!isLibraryOpen && (
+          <button
+            onClick={handleOpenLibrary}
+            className="hidden lg:flex absolute left-6 top-6 z-40 items-center gap-2.5 px-4 py-2.5 rounded-xl surface-raised text-gray-700 hover:text-gray-900 hover:shadow-md transition-all"
+            aria-label="Open library sidebar"
+            id="open-library-desktop-btn"
+          >
+            <PanelLeftOpen size={18} />
+            <span className="text-xs font-black uppercase tracking-[0.14em]">Library</span>
+          </button>
+        )}
         <header className="lg:hidden px-4 pt-4 pb-2 border-b border-black/[0.04] bg-white/70 backdrop-blur-xl">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
