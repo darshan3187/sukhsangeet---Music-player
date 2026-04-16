@@ -97,7 +97,7 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary }) => {
 
   /* ── Playlist view ── */
   return (
-    <div className="flex-1 flex flex-col min-h-0 relative" role="main">
+    <div className="w-full h-full flex flex-col min-h-0 relative" role="main">
 
       {/* ── Panel Header ── */}
       {playlist && (

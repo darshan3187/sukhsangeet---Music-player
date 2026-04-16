@@ -54,7 +54,7 @@ const NowPlayingView = ({ onOpenQueue, onClose }) => {
 
   return (
     <div
-      className="flex flex-col h-full animate-fade-in-up"
+      className="flex flex-col h-full min-w-0 animate-fade-in-up"
       role="region"
       aria-label="Now Playing"
     >
@@ -82,7 +82,7 @@ const NowPlayingView = ({ onOpenQueue, onClose }) => {
       </div>
 
       {/* ── Main content ── */}
-      <div className="flex-1 flex flex-col md:flex-row items-center justify-center overflow-hidden px-8 md:px-12 lg:px-20 py-6 gap-10 md:gap-14 lg:gap-20">
+      <div className="flex-1 flex flex-col md:flex-row items-center justify-center overflow-hidden min-w-0 px-8 md:px-12 lg:px-20 py-6 gap-10 md:gap-14 lg:gap-20">
 
         {/* Album Art */}
         <div className="relative group w-full max-w-[280px] sm:max-w-[320px] md:max-w-md lg:max-w-lg aspect-square shrink-0">
@@ -113,7 +113,7 @@ const NowPlayingView = ({ onOpenQueue, onClose }) => {
         </div>
 
         {/* Info + Controls */}
-        <div className="flex-1 flex flex-col justify-center items-center md:items-start text-center md:text-left w-full max-w-md space-y-8 md:space-y-10">
+        <div className="flex-1 flex flex-col justify-center items-center md:items-start text-center md:text-left w-full max-w-md min-w-0 space-y-8 md:space-y-10">
 
           {/* Track info */}
           <div className="space-y-2 w-full">
