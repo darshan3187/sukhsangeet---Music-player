@@ -54,6 +54,7 @@ const cloneTrack = (track) => ({ ...track });
 export const PlayerProvider = ({ children }) => {
   const [queue, setQueue] = useState([]);
   const [appReady, setAppReady] = useState(false);
+  const [shouldInitializePlayers, setShouldInitializePlayers] = useState(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
@@ -82,6 +83,10 @@ export const PlayerProvider = ({ children }) => {
   const hasPreloadedCurrentTrackRef = useRef(false);
 
   const currentTrack = queue[currentTrackIndex] ?? null;
+
+  const requestPlayerInitialization = useCallback(() => {
+    setShouldInitializePlayers(true);
+  }, []);
 
   // Ref to hold the latest state to avoid stale closures in vanilla JS events.
   const stateRef = useRef({
@@ -327,6 +332,7 @@ export const PlayerProvider = ({ children }) => {
     setIsBuffering(shouldAutoplay);
 
     if (!isReadyRef.current || !playerRef.current) {
+      requestPlayerInitialization();
       return;
     }
 
@@ -358,7 +364,7 @@ export const PlayerProvider = ({ children }) => {
 
     const nextIndex = getNextIndex(normalizedIndex, activeQueue);
     cuePreloadTrack(nextIndex, activeQueue);
-  }, [cuePreloadTrack, getNextIndex, normalizeIndex, swapToPreloadedPlayer]);
+  }, [cuePreloadTrack, getNextIndex, normalizeIndex, requestPlayerInitialization, swapToPreloadedPlayer]);
 
   const switchTrack = useCallback((targetIndex) => {
     if (switchTimeoutRef.current) {
@@ -406,6 +412,20 @@ export const PlayerProvider = ({ children }) => {
       }
       
       event.target.setPlaybackQuality('small');
+
+      const activeTrack = stateRef.current.queue[stateRef.current.currentTrackIndex];
+      if (activeTrack?.youtubeId) {
+        event.target.cueVideoById({
+          videoId: activeTrack.youtubeId,
+          suggestedQuality: 'small'
+        });
+
+        if (stateRef.current.isPlaying) {
+          event.target.playVideo();
+          setIsBuffering(true);
+        }
+      }
+
       runStartupWarmup();
       return;
     }
@@ -422,6 +442,8 @@ export const PlayerProvider = ({ children }) => {
   const play = useCallback(() => {
     if (!stateRef.current.queue.length) return;
 
+    requestPlayerInitialization();
+
     if (isReadyRef.current && playerRef.current) {
       playerRef.current.playVideo();
     } else {
@@ -429,7 +451,7 @@ export const PlayerProvider = ({ children }) => {
     }
     setIsBuffering(true);
     setIsPlaying(true);
-  }, [playTrackByIndex]);
+  }, [playTrackByIndex, requestPlayerInitialization]);
 
   const pause = useCallback(() => {
     if (isReadyRef.current && playerRef.current) playerRef.current.pauseVideo();
@@ -673,6 +695,10 @@ export const PlayerProvider = ({ children }) => {
 
   // Optimization: initialize both players once and handle API race condition safely.
   useEffect(() => {
+    if (!shouldInitializePlayers) {
+      return;
+    }
+
     if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
       console.warn('YouTube API requires HTTPS in production');
     }
@@ -694,7 +720,7 @@ export const PlayerProvider = ({ children }) => {
         cc_load_policy: 0
       };
 
-      const initialVideoId = stateRef.current.queue[0]?.youtubeId;
+      const initialVideoId = stateRef.current.queue[stateRef.current.currentTrackIndex]?.youtubeId;
 
       const mainPlayerConfig = {
         height: '200',
@@ -759,7 +785,7 @@ export const PlayerProvider = ({ children }) => {
       startupWarmupDoneRef.current = false;
 
     };
-  }, [onPlayerReady, onPlayerStateChange]);
+  }, [onPlayerError, onPlayerReady, onPlayerStateChange, shouldInitializePlayers]);
 
   // Optimization: while the current song plays, cue the next around 70% progress.
   useEffect(() => {
