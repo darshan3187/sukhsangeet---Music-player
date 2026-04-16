@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Music2 } from 'lucide-react';
 
 /* Shared input style – kept in sync with Login.jsx */
 const inputCls = `
@@ -72,13 +71,11 @@ const Register = () => {
 
           {/* Brand */}
           <div className="text-center mb-8">
-            <div
-              className="w-14 h-14 bg-gray-900 rounded-2xl flex items-center justify-center
-                         mx-auto mb-5 shadow-lg transition-transform hover:scale-105"
-              aria-hidden="true"
-            >
-              <Music2 size={24} className="text-white" />
-            </div>
+            <img
+              src="/logo-sukhsangeet.webp"
+              alt="Sukh Sangeet"
+              className="w-14 h-14 rounded-2xl object-cover mx-auto mb-5 shadow-lg transition-transform hover:scale-105"
+            />
             <p className="text-label mb-2">Music Experience</p>
             <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
               Create Profile
