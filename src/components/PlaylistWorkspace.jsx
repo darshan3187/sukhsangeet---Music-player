@@ -209,6 +209,7 @@ const PlaylistWorkspace = () => {
                 <NowPlayingView
                   onOpenQueue={() => setIsQueueOpen(true)}
                   onClose={() => setIsNowPlayingFull(false)}
+                  layout="stacked"
                 />
               </div>
               <div className="hidden 2xl:flex 2xl:flex-col w-[400px] h-full bg-black/[0.01] overflow-hidden min-h-0">

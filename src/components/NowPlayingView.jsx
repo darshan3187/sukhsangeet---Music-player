@@ -2,7 +2,7 @@ import { Play, Pause, SkipForward, SkipBack, Shuffle, Repeat, Repeat1, ListMusic
 import { usePlayer } from '../context/PlayerContext';
 import { useState, useEffect } from 'react';
 
-const NowPlayingView = ({ onOpenQueue, onClose }) => {
+const NowPlayingView = ({ onOpenQueue, onClose, layout = 'split' }) => {
   const {
     currentTrack,
     isPlaying,
@@ -82,10 +82,16 @@ const NowPlayingView = ({ onOpenQueue, onClose }) => {
       </div>
 
       {/* ── Main content ── */}
-      <div className="flex-1 flex flex-col md:flex-row items-center justify-center overflow-hidden min-w-0 px-8 md:px-12 lg:px-20 py-6 gap-10 md:gap-14 lg:gap-20">
+      <div
+        className={
+          layout === 'stacked'
+            ? 'flex-1 flex flex-col items-center justify-center overflow-hidden min-w-0 px-8 md:px-12 lg:px-16 py-6 gap-8 md:gap-10'
+            : 'flex-1 flex flex-col md:flex-row items-center justify-center overflow-hidden min-w-0 px-8 md:px-12 lg:px-20 py-6 gap-10 md:gap-14 lg:gap-20'
+        }
+      >
 
         {/* Album Art */}
-        <div className="relative group w-full max-w-[280px] sm:max-w-[320px] md:max-w-md lg:max-w-lg aspect-square shrink-0">
+        <div className={layout === 'stacked' ? 'relative group w-full max-w-[320px] md:max-w-[420px] aspect-square shrink-0' : 'relative group w-full max-w-[280px] sm:max-w-[320px] md:max-w-md lg:max-w-lg aspect-square shrink-0'}>
           {/* Blurred glow */}
           <div
             className="absolute inset-[-16px] rounded-[3.5rem] blur-[72px] opacity-30 scale-95 transition-all duration-1000 group-hover:opacity-50 group-hover:scale-100"
@@ -113,7 +119,7 @@ const NowPlayingView = ({ onOpenQueue, onClose }) => {
         </div>
 
         {/* Info + Controls */}
-        <div className="flex-1 flex flex-col justify-center items-center md:items-start text-center md:text-left w-full max-w-md min-w-0 space-y-8 md:space-y-10">
+        <div className={layout === 'stacked' ? 'flex-1 flex flex-col justify-center items-center text-center w-full max-w-[420px] min-w-0 space-y-7 md:space-y-8' : 'flex-1 flex flex-col justify-center items-center md:items-start text-center md:text-left w-full max-w-md min-w-0 space-y-8 md:space-y-10'}>
 
           {/* Track info */}
           <div className="space-y-2 w-full">
