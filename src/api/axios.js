@@ -6,7 +6,8 @@ const FALLBACK_API_BASE_URL = import.meta.env.DEV
   : 'https://sukhsangeet-api.onrender.com/api';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || FALLBACK_API_BASE_URL).replace(/\/+$/, '');
-const API_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS || 15000);
+const API_TIMEOUT_MS = Number(import.meta.env.VITE_API_TIMEOUT_MS || 30000);
+const AUTH_TIMEOUT_MS = Number(import.meta.env.VITE_AUTH_TIMEOUT_MS || Math.max(API_TIMEOUT_MS, 45000));
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -15,7 +16,7 @@ const api = axios.create({
 
 const refreshClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: API_TIMEOUT_MS,
+  timeout: AUTH_TIMEOUT_MS,
 });
 
 let isRefreshing = false;
@@ -43,6 +44,19 @@ const redirectToLogin = () => {
   }
 };
 
+const isInvalidRefreshStatus = (status) => status === 401 || status === 403;
+
+const isRetryableRefreshError = (error) => {
+  const status = error?.response?.status;
+  const code = error?.code;
+
+  if (!status) {
+    return code === 'ECONNABORTED' || code === 'ERR_NETWORK' || code === 'ERR_BAD_RESPONSE';
+  }
+
+  return status >= 500;
+};
+
 const refreshAccessToken = async () => {
   const refreshToken = getRefreshToken();
   const accessToken = getAccessToken();
@@ -51,15 +65,27 @@ const refreshAccessToken = async () => {
     throw new Error('Missing tokens');
   }
 
-  const response = await refreshClient.post(
-    '/auth/refresh/',
-    { refresh: refreshToken },
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+  let response;
+
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      response = await refreshClient.post(
+        '/auth/refresh/',
+        { refresh: refreshToken },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      break;
+    } catch (error) {
+      const shouldRetry = attempt === 0 && isRetryableRefreshError(error);
+      if (!shouldRetry) {
+        throw error;
+      }
     }
-  );
+  }
 
   const newAccessToken = response.data?.access;
   if (!newAccessToken) {
@@ -120,9 +146,14 @@ api.interceptors.response.use(
         return token;
       })
       .catch((refreshError) => {
-        clearTokens();
+        const statusCode = refreshError?.response?.status;
+
+        if (isInvalidRefreshStatus(statusCode)) {
+          clearTokens();
+          redirectToLogin();
+        }
+
         notifySubscribers(null);
-        redirectToLogin();
         throw refreshError;
       })
       .finally(() => {

@@ -21,6 +21,8 @@ const normalizeUser = (user) => ({
   avatar_url: user?.avatar_url ?? null,
 });
 
+const isAuthErrorStatus = (status) => status === 401 || status === 403;
+
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
@@ -94,11 +96,14 @@ export const AuthProvider = ({ children }) => {
           return;
         }
         setUser(normalizeUser(response.data));
-      } catch {
+      } catch (error) {
         if (!isActive) {
           return;
         }
-        clearSession();
+
+        if (isAuthErrorStatus(error?.response?.status)) {
+          clearSession();
+        }
       } finally {
         if (isActive) {
           setIsLoading(false);
@@ -118,7 +123,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    isAuthenticated: Boolean(user),
+    isAuthenticated: Boolean(user || getAccessToken() || getRefreshToken()),
     isLoading,
   }), [isLoading, login, logout, register, user]);
 
