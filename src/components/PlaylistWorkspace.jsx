@@ -204,17 +204,11 @@ const PlaylistWorkspace = () => {
           `}
         >
           {currentTrack && isNowPlayingFull ? (
-            <div className="h-full min-h-0 flex flex-col xl:flex-row divide-x divide-black/[0.03]">
-              <div className="flex-1 overflow-hidden min-h-0 min-w-0">
-                <NowPlayingView
-                  onOpenQueue={() => setIsQueueOpen(true)}
-                  onClose={() => setIsNowPlayingFull(false)}
-                  layout="stacked"
-                />
-              </div>
-              <div className="hidden 2xl:flex 2xl:flex-col w-[400px] h-full bg-black/[0.01] overflow-hidden min-h-0">
-                <PlaylistTracksPanel playlistId={routePlaylistId} onRequestOpenLibrary={handleOpenLibrary} />
-              </div>
+            <div className="h-full min-h-0">
+              <NowPlayingView
+                onOpenQueue={() => setIsQueueOpen(true)}
+                onClose={() => setIsNowPlayingFull(false)}
+              />
             </div>
           ) : (
             <PlaylistTracksPanel playlistId={routePlaylistId} onRequestOpenLibrary={handleOpenLibrary} />
