@@ -86,7 +86,7 @@ const PlaylistWorkspace = () => {
           flex flex-col
           lg:relative lg:translate-x-0
           ${isLibraryOpen ? 'translate-x-0' : '-translate-x-full'}
-          ${!isLibraryOpen ? 'lg:w-0 lg:opacity-0 lg:pointer-events-none' : ''}
+          ${!isLibraryOpen ? 'lg:w-0 lg:min-w-0 lg:max-w-0 lg:overflow-hidden lg:opacity-0 lg:pointer-events-none lg:border-r-0' : ''}
         `}
         aria-label="Library sidebar"
       >
