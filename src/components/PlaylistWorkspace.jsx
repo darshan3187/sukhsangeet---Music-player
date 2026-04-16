@@ -72,7 +72,7 @@ const PlaylistWorkspace = () => {
   }, []);
 
   return (
-    <div className="relative h-screen w-full overflow-hidden flex bg-gray-50 font-sans selection:bg-gray-200">
+    <div className="relative h-dvh w-full overflow-hidden flex min-h-0 bg-gray-50 font-sans selection:bg-gray-200">
 
       {/* ── Sidebar – Library ── */}
       <aside
@@ -167,7 +167,7 @@ const PlaylistWorkspace = () => {
       </aside>
 
       {/* ── Main Content ── */}
-      <main id="main-content" className="flex-1 flex flex-col relative overflow-hidden bg-gray-50/80" tabIndex={-1}>
+      <main id="main-content" className="flex-1 flex flex-col relative overflow-hidden min-h-0 bg-gray-50/80" tabIndex={-1}>
         <header className="lg:hidden px-4 pt-4 pb-2 border-b border-black/[0.04] bg-white/70 backdrop-blur-xl">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
@@ -185,16 +185,16 @@ const PlaylistWorkspace = () => {
             </button>
           </div>
         </header>
-        <div className="flex-1 overflow-hidden relative lg:mx-auto lg:w-full lg:max-w-[1480px]">
+        <div className="flex-1 overflow-hidden min-h-0 relative lg:mx-auto lg:w-full lg:max-w-[1480px]">
           {currentTrack && isNowPlayingFull ? (
-            <div className="h-full flex flex-col xl:flex-row divide-x divide-black/[0.03]">
-              <div className="flex-1 overflow-hidden">
+            <div className="h-full min-h-0 flex flex-col xl:flex-row divide-x divide-black/[0.03]">
+              <div className="flex-1 overflow-hidden min-h-0">
                 <NowPlayingView
                   onOpenQueue={() => setIsQueueOpen(true)}
                   onClose={() => setIsNowPlayingFull(false)}
                 />
               </div>
-              <div className="hidden 2xl:block w-[400px] bg-black/[0.01] overflow-hidden">
+              <div className="hidden 2xl:block w-[400px] bg-black/[0.01] overflow-hidden min-h-0">
                 <PlaylistTracksPanel playlistId={routePlaylistId} onRequestOpenLibrary={handleOpenLibrary} />
               </div>
             </div>

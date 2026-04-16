@@ -148,7 +148,7 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary }) => {
 
       {/* ── Tracks List ── */}
       <div
-        className="flex-1 overflow-y-auto px-5 md:px-12 pb-44 lg:pb-20 custom-scrollbar"
+        className="flex-1 min-h-0 overflow-y-auto px-5 md:px-12 pb-44 lg:pb-20 custom-scrollbar"
         role="list"
         aria-label={`Tracks in ${playlist?.name || 'playlist'}`}
       >
