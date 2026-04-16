@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ListMusic, Plus, Music2, Library, Play, Pause, X, LogOut, PanelLeftOpen } from 'lucide-react';
+import { ListMusic, Plus, Music2, Library, Play, Pause, X, LogOut, PanelLeftOpen, SkipBack, SkipForward } from 'lucide-react';
 import PlaylistSidebar from './PlaylistSidebar';
 import PlaylistTracksPanel from './PlaylistTracksPanel';
 import CreatePlaylistModal from './CreatePlaylistModal';
@@ -14,7 +14,7 @@ const PlaylistWorkspace = () => {
   const navigate = useNavigate();
   const { id: routePlaylistId = '' } = useParams();
   const { playlists, isLoading, createPlaylist, deletePlaylist } = usePlaylists();
-  const { currentTrack, isPlaying, play, pause, queue, currentTrackIndex } = usePlayer();
+  const { currentTrack, isPlaying, play, pause, next, prev, queue, currentTrackIndex } = usePlayer();
   const { logout, user } = useAuth();
   const [isLibraryOpen, setIsLibraryOpen] = useState(() => window.innerWidth >= 1024);
   const [isQueueOpen, setIsQueueOpen] = useState(false);
@@ -303,6 +303,78 @@ const PlaylistWorkspace = () => {
           </div>
         ) : null}
       </div>
+
+      {/* Desktop mini player dock */}
+      {currentTrack && !isNowPlayingFull && (
+        <div
+          className="hidden lg:flex fixed right-8 bottom-8 z-50 w-[min(620px,calc(100vw-4rem))]
+                     items-center gap-4 rounded-2xl bg-white/90 backdrop-blur-2xl border border-black/[0.06]
+                     shadow-[0_24px_80px_-24px_rgba(0,0,0,0.3)] p-3.5"
+          role="region"
+          aria-label="Desktop now playing dock"
+        >
+          <img
+            src={currentTrack.poster}
+            alt={currentTrack.title}
+            loading="lazy"
+            className="w-14 h-14 rounded-xl object-cover shrink-0 shadow-sm"
+          />
+
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-black truncate text-gray-900 tracking-tight">{currentTrack.title}</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-500 truncate mt-1">
+              {currentTrack.artist || 'Unknown Artist'}
+            </p>
+          </div>
+
+          <div className="flex items-center gap-1.5 shrink-0">
+            <button
+              onClick={prev}
+              className="touch-target rounded-xl text-gray-600 hover:bg-black/5 hover:text-gray-900 transition-all"
+              aria-label="Previous track"
+              id="desktop-mini-prev-btn"
+            >
+              <SkipBack size={18} fill="currentColor" />
+            </button>
+
+            <button
+              onClick={isPlaying ? pause : play}
+              className="w-11 h-11 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all"
+              aria-label={isPlaying ? 'Pause' : 'Play'}
+              id="desktop-mini-play-btn"
+            >
+              {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" className="translate-x-0.5" />}
+            </button>
+
+            <button
+              onClick={next}
+              className="touch-target rounded-xl text-gray-600 hover:bg-black/5 hover:text-gray-900 transition-all"
+              aria-label="Next track"
+              id="desktop-mini-next-btn"
+            >
+              <SkipForward size={18} fill="currentColor" />
+            </button>
+
+            <button
+              onClick={() => setIsQueueOpen(true)}
+              className="touch-target rounded-xl text-gray-600 hover:bg-black/5 hover:text-gray-900 transition-all"
+              aria-label="Open queue"
+              id="desktop-mini-queue-btn"
+            >
+              <ListMusic size={18} />
+            </button>
+
+            <button
+              onClick={() => setIsNowPlayingFull(true)}
+              className="px-3.5 h-10 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] text-gray-800 text-[11px] font-black uppercase tracking-[0.12em] transition-all"
+              aria-label="Open full player"
+              id="desktop-mini-open-btn"
+            >
+              Open
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Mobile Sidebar Overlay */}
       {isLibraryOpen && (
