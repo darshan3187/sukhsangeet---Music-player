@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPlaylist as createPlaylistRequest, deletePlaylist as deletePlaylistRequest, fetchPlaylists } from '../api/playlists';
 
+const PLAYLIST_TRACK_COUNT_UPDATED_EVENT = 'playlist-track-count-updated';
+
 export const usePlaylists = () => {
   const [playlists, setPlaylists] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -40,6 +42,35 @@ export const usePlaylists = () => {
       mountedRef.current = false;
     };
   }, [refetch]);
+
+  useEffect(() => {
+    const handleTrackCountUpdated = (event) => {
+      const playlistId = event?.detail?.playlistId;
+      const trackCount = event?.detail?.trackCount;
+
+      if (!playlistId || typeof trackCount !== 'number') {
+        return;
+      }
+
+      setPlaylists((current) => current.map((playlist) => {
+        if (playlist?.id?.toString() !== playlistId.toString()) {
+          return playlist;
+        }
+
+        return {
+          ...playlist,
+          track_count: trackCount,
+          trackCount,
+        };
+      }));
+    };
+
+    window.addEventListener(PLAYLIST_TRACK_COUNT_UPDATED_EVENT, handleTrackCountUpdated);
+
+    return () => {
+      window.removeEventListener(PLAYLIST_TRACK_COUNT_UPDATED_EVENT, handleTrackCountUpdated);
+    };
+  }, []);
 
   const createPlaylist = useCallback(async (name, description = '') => {
     const trimmedName = name.trim();

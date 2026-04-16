@@ -1,6 +1,21 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { addTrack as addTrackRequest, fetchPlaylist, removeTrack as removeTrackRequest, reorderTracks as reorderTracksRequest } from '../api/playlists';
 
+const PLAYLIST_TRACK_COUNT_UPDATED_EVENT = 'playlist-track-count-updated';
+
+const emitTrackCountUpdate = (playlistId, trackCount) => {
+  if (typeof window === 'undefined' || !playlistId) {
+    return;
+  }
+
+  window.dispatchEvent(new CustomEvent(PLAYLIST_TRACK_COUNT_UPDATED_EVENT, {
+    detail: {
+      playlistId: String(playlistId),
+      trackCount,
+    },
+  }));
+};
+
 const extractPlaylistData = (payload) => payload?.playlist ?? payload ?? null;
 const extractTracks = (payload) => payload?.tracks ?? payload?.playlist_tracks ?? payload?.items ?? [];
 
@@ -63,6 +78,7 @@ export const usePlaylist = (playlistId) => {
       const nextTracks = normalizeTracks(extractTracks(payload));
       setPlaylist(nextPlaylist);
       setTracks(nextTracks);
+      emitTrackCountUpdate(targetPlaylistId, nextTracks.length);
       return { playlist: nextPlaylist, tracks: nextTracks };
     } catch (requestError) {
       if (requestIdRef.current === currentRequestId && playlistIdRef.current === targetPlaylistId) {
@@ -111,7 +127,11 @@ export const usePlaylist = (playlistId) => {
       __pending: true,
     };
 
-    setTracks((current) => [...current, skeleton]);
+    setTracks((current) => {
+      const nextTracks = [...current, skeleton];
+      emitTrackCountUpdate(targetPlaylistId, nextTracks.length);
+      return nextTracks;
+    });
     setError('');
 
     try {
@@ -127,7 +147,11 @@ export const usePlaylist = (playlistId) => {
       return normalized;
     } catch (requestError) {
       if (playlistIdRef.current === targetPlaylistId) {
-        setTracks((current) => current.filter((track) => track.id !== tempId));
+        setTracks((current) => {
+          const nextTracks = current.filter((track) => track.id !== tempId);
+          emitTrackCountUpdate(targetPlaylistId, nextTracks.length);
+          return nextTracks;
+        });
         setError(requestError?.response?.data?.error || requestError?.message || 'Failed to add track.');
       }
       throw requestError;
@@ -141,7 +165,11 @@ export const usePlaylist = (playlistId) => {
     }
 
     const previousTracks = tracks;
-    setTracks((current) => current.filter((track) => track.playlistTrackId !== trackId));
+    setTracks((current) => {
+      const nextTracks = current.filter((track) => track.playlistTrackId !== trackId);
+      emitTrackCountUpdate(targetPlaylistId, nextTracks.length);
+      return nextTracks;
+    });
     setError('');
 
     try {
@@ -150,6 +178,7 @@ export const usePlaylist = (playlistId) => {
     } catch (requestError) {
       if (playlistIdRef.current === targetPlaylistId) {
         setTracks(previousTracks);
+        emitTrackCountUpdate(targetPlaylistId, previousTracks.length);
         setError(requestError?.response?.data?.error || 'Failed to remove track.');
       }
       throw requestError;
