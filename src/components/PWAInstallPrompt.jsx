@@ -41,19 +41,19 @@ export default function PWAInstallPrompt() {
   if (!showPrompt || !deferredPrompt) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 shadow-lg">
+    <div className="fixed bottom-4 right-4 z-50 flex items-center gap-1.5 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-2 shadow-lg">
       <button
         onClick={handleInstall}
-        className="text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+        className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold text-blue-400 hover:bg-slate-800 hover:text-blue-300 transition-colors"
       >
         <Download size={16} className="text-blue-400 flex-shrink-0" />
         Install
       </button>
       <button
         onClick={() => setShowPrompt(false)}
-        className="p-0.5 hover:bg-slate-700 rounded transition-colors ml-1"
+        className="inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-400 hover:bg-slate-700 transition-colors"
       >
-        <X size={14} className="text-slate-400" />
+        <X size={14} />
       </button>
     </div>
   );
