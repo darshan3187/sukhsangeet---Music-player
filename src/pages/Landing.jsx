@@ -83,7 +83,7 @@ const Landing = () => {
               </span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-[0.8rem] leading-6 text-gray-600 sm:mt-6 sm:text-lg sm:leading-8">
-              Create playlists from YouTube tracks, organize what you listen to, and stay in flow while studying, coding, or creating.
+              Create playlists from YouTube tracks, organize what you listen to, and keep your listening experience clean and consistent.
             </p>
             <div className="mt-7 flex flex-col justify-center gap-3 sm:mt-10 sm:flex-row">
               <Link
@@ -180,7 +180,7 @@ const features = [
   {
     icon: Waves,
     title: "Smooth Player",
-    description: "Reliable playback with controls built for long focus sessions.",
+    description: "Reliable playback with controls built for long listening sessions.",
     color: "text-green-600",
     bgColor: "bg-green-50"
   }
@@ -189,8 +189,8 @@ const features = [
 const useCases = [
   {
     icon: BookOpen,
-    title: "Study Sessions",
-    description: "Keep your concentration steady with distraction-free playlists."
+    title: "Calm Listening",
+    description: "Keep your listening steady with distraction-free playlists."
   },
   {
     icon: Briefcase,
