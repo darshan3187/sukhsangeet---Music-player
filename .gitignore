@@ -53,3 +53,4 @@ backend/media/
 *.sw?
 *.tsbuildinfo
 PWA_IMPLEMENTATION_GUIDE.md
+Detail.md
