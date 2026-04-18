@@ -23,19 +23,26 @@ const Landing = () => {
   }, [isAuthenticated, isLoading, navigate]);
 
   return (
-    <div className="min-h-screen bg-white text-gray-900 antialiased [font-family:ui-sans-serif,system-ui,-apple-system,'Segoe_UI',Roboto,'Helvetica_Neue',Arial,'Noto_Sans',sans-serif]">
+    <div className="relative min-h-screen overflow-hidden bg-[#fbfaf7] text-gray-900 antialiased [font-family:ui-sans-serif,system-ui,-apple-system,'Segoe_UI',Roboto,'Helvetica_Neue',Arial,'Noto_Sans',sans-serif]">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.12),_transparent_30%),radial-gradient(circle_at_20%_20%,_rgba(245,158,11,0.12),_transparent_22%),radial-gradient(circle_at_80%_12%,_rgba(17,24,39,0.06),_transparent_26%)]"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"
+      />
       <header className="sticky top-0 z-40 border-b border-gray-100 bg-white/95 backdrop-blur">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <Link to="/" className="flex items-center gap-3" aria-label="Sukh Sangeet home">
-            <span className="rounded-lg bg-white p-1.5 shadow-sm ring-1 ring-gray-200">
+          <Link to="/" className="flex items-center gap-3" aria-label="SukhSangeet home">
+            <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white shadow-[0_10px_24px_rgba(17,24,39,0.08)] ring-1 ring-gray-200 sm:h-12 sm:w-12">
               <img
                 src="/logo-sukhsangeet.webp"
-                alt="Sukh Sangeet"
-                className="h-6 w-6 object-contain"
+                alt="SukhSangeet"
+                className="h-8 w-8 object-contain sm:h-9 sm:w-9"
                 loading="eager"
               />
             </span>
-            <span className="text-lg font-bold tracking-tight sm:text-xl">Sukh Sangeet</span>
           </Link>
 
           <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">
@@ -61,29 +68,46 @@ const Landing = () => {
       </header>
 
       <main>
-        <section className="mx-auto w-full max-w-6xl px-4 pb-14 pt-14 sm:px-6 sm:pb-20 sm:pt-20 lg:px-8" aria-labelledby="hero-title">
-          <div className="mx-auto max-w-3xl text-center">
-            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-amber-800">
+        <section className="relative mx-auto w-full max-w-7xl px-4 pb-16 pt-16 sm:px-6 sm:pb-24 sm:pt-24 lg:px-8" aria-labelledby="hero-title">
+          <div className="mx-auto max-w-4xl text-center">
+            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-amber-200/80 bg-amber-50/90 px-4 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-amber-900 shadow-sm backdrop-blur">
               <Sparkles size={14} />
               Focus-friendly music player
             </p>
-            <h1 id="hero-title" className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+            <p className="mb-4 text-[1.25rem] font-semibold tracking-[0.38em] text-gray-500">
+              SukhSangeet-A Personal Music Player
+            </p>
+            <h1
+              id="hero-title"
+              className="mx-auto max-w-4xl text-4xl font-black leading-[0.95] tracking-[-0.05em] text-gray-950 sm:text-5xl lg:text-7xl"
+            >
               Build Better Focus with
               <span className="block text-gray-900">
                 Clean, <span className="text-emerald-700">Curated</span> Playlists
               </span>
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-gray-600 sm:text-lg">
+            <p className="mx-auto mt-6 max-w-2xl text-base leading-8 text-gray-600 sm:text-lg">
               Create playlists from YouTube tracks, organize what you listen to, and stay in flow while studying, coding, or creating.
             </p>
-            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            <div className="mt-10 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
                 to="/register"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-gray-900 px-7 py-3 text-base font-semibold text-white transition-all hover:bg-black"
+                className="inline-flex items-center justify-center gap-2 rounded-full bg-gray-950 px-8 py-3.5 text-base font-semibold text-white shadow-[0_18px_40px_rgba(17,24,39,0.18)] transition-all hover:-translate-y-0.5 hover:bg-black"
               >
                 Start Now
                 <ChevronRight size={18} />
               </Link>
+            </div>
+            <div className="mx-auto mt-10 grid max-w-3xl gap-3 text-left sm:grid-cols-3">
+              {heroStats.map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-2xl border border-white/70 bg-white/80 px-4 py-4 shadow-[0_12px_30px_rgba(17,24,39,0.05)] backdrop-blur-sm"
+                >
+                  <p className="text-sm font-semibold text-gray-500">{stat.label}</p>
+                  <p className="mt-1 text-lg font-black tracking-[-0.03em] text-gray-950">{stat.value}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -196,3 +220,18 @@ const useCases = [
 ];
 
 export default Landing;
+
+const heroStats = [
+  {
+    label: 'Focus mode',
+    value: 'Minimal distractions'
+  },
+  {
+    label: 'Playback',
+    value: 'Fast YouTube search'
+  },
+  {
+    label: 'Listening',
+    value: 'Curated for flow'
+  }
+];
