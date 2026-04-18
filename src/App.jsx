@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Landing from './pages/Landing';
 import PlaylistWorkspace from './components/PlaylistWorkspace';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
 import { PlayerProvider } from './context/PlayerContext';
 
 const PlayerAppShell = () => (
@@ -26,6 +27,7 @@ function App() {
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <PWAInstallPrompt />
     </>
   );
 }
