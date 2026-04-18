@@ -52,5 +52,4 @@ backend/media/
 *.sln
 *.sw?
 *.tsbuildinfo
-PWA_IMPLEMENTATION_GUIDE.md
 Detail.md
