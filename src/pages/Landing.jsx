@@ -70,10 +70,6 @@ const Landing = () => {
       <main>
         <section className="relative mx-auto w-full max-w-7xl px-4 pb-20 pt-10 sm:px-6 sm:pb-28 sm:pt-28 lg:px-8" aria-labelledby="hero-title">
           <div className="mx-auto max-w-4xl text-center">
-            <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-amber-200/80 bg-amber-50/90 px-3 py-1 text-[0.58rem] font-semibold uppercase tracking-[0.18em] text-amber-900 shadow-sm backdrop-blur sm:mb-4 sm:px-4 sm:py-1.5 sm:text-[0.7rem] sm:tracking-[0.24em]">
-              <Sparkles size={14} />
-              Focus-friendly music player
-            </p>
             <p className="mb-2 text-[0.8rem] font-semibold tracking-[0.18em] text-gray-500 sm:mb-4 sm:text-[1.25rem] sm:tracking-[0.38em]">
               SukhSangeet-A Personal Music Player
             </p>

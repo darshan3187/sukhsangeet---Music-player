@@ -71,11 +71,13 @@ const Register = () => {
 
           {/* Brand */}
           <div className="text-center mb-8">
-            <img
-              src="/logo-sukhsangeet.webp"
-              alt="Sukh Sangeet"
-              className="w-14 h-14 rounded-2xl object-cover mx-auto mb-5 shadow-lg transition-transform hover:scale-105"
-            />
+            <Link to="/" className="inline-block mb-5" aria-label="Go to landing page">
+              <img
+                src="/logo-sukhsangeet.webp"
+                alt="Sukh Sangeet"
+                className="w-14 h-14 rounded-2xl object-cover mx-auto shadow-lg transition-transform hover:scale-105"
+              />
+            </Link>
             <p className="text-label mb-2">Music Experience</p>
             <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight">
               Create Profile

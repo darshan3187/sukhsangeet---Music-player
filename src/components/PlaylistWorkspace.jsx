@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ListMusic, Plus, Library, Play, Pause, X, LogOut, PanelLeftOpen, SkipBack, SkipForward } from 'lucide-react';
 import PlaylistSidebar from './PlaylistSidebar';
 import PlaylistTracksPanel from './PlaylistTracksPanel';
@@ -92,14 +92,14 @@ const PlaylistWorkspace = () => {
       >
         {/* Sidebar header */}
         <div className="px-6 pt-8 pb-6 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3.5">
+          <Link to="/" className="flex items-center gap-3.5 group" aria-label="Go to landing page">
             <img
               src="/logo-sukhsangeet.webp"
               alt="Sukh Sangeet"
               className="w-10 h-10 rounded-xl object-cover shadow-md transition-transform duration-200 hover:scale-110"
             />
-            <h1 className="text-xl font-black tracking-tight text-gray-900">Platform</h1>
-          </div>
+            <h1 className="text-xl font-black tracking-tight text-gray-900 group-hover:text-gray-700 transition-colors">Platform</h1>
+          </Link>
           <button
             onClick={() => setIsLibraryOpen(false)}
             className="touch-target text-gray-400 hover:text-gray-900 hover:bg-black/5 rounded-xl transition-all"
