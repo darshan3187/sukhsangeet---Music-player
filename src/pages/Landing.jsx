@@ -70,7 +70,7 @@ const Landing = () => {
       <main>
         <section className="relative mx-auto w-full max-w-7xl px-4 pb-20 pt-10 sm:px-6 sm:pb-28 sm:pt-28 lg:px-8" aria-labelledby="hero-title">
           <div className="mx-auto max-w-4xl text-center">
-            <p className="mb-2 text-[0.8rem] font-semibold tracking-[0.18em] text-gray-500 sm:mb-4 sm:text-[1.25rem] sm:tracking-[0.38em]">
+            <p className="mb-5 text-[0.8rem] font-semibold tracking-[0.18em] text-gray-500 sm:mb-4 sm:text-[1.25rem] sm:tracking-[0.38em]">
               SukhSangeet-A Personal Music Player
             </p>
             <h1
@@ -82,7 +82,7 @@ const Landing = () => {
                 Clean, <span className="text-emerald-700">Curated</span> Playlists
               </span>
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-[0.8rem] leading-6 text-gray-600 sm:mt-6 sm:text-lg sm:leading-8">
+            <p className="mx-auto mt-6 max-w-2xl text-[0.8rem] leading-6 text-gray-600 sm:mt-6 sm:text-lg sm:leading-8">
               Create playlists from YouTube tracks, organize what you listen to, and stay in flow while studying, coding, or creating.
             </p>
             <div className="mt-7 flex flex-col justify-center gap-3 sm:mt-10 sm:flex-row">
