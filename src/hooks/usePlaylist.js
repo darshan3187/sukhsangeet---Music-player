@@ -19,10 +19,23 @@ const emitTrackCountUpdate = (playlistId, trackCount) => {
 const extractPlaylistData = (payload) => payload?.playlist ?? payload ?? null;
 const extractTracks = (payload) => payload?.tracks ?? payload?.playlist_tracks ?? payload?.items ?? [];
 
+// Ensure image URLs are HTTPS and valid
+const ensureHttpsImageUrl = (url) => {
+  if (!url) return '';
+  const urlStr = String(url).trim();
+  if (!urlStr) return '';
+  
+  // Convert HTTP to HTTPS for YouTube images (avoid mixed content)
+  if (urlStr.startsWith('http://')) {
+    return urlStr.replace('http://', 'https://');
+  }
+  return urlStr;
+};
+
 const normalizeTrack = (track, index = 0) => {
   const playlistTrackId = track?.playlist_track_id ?? track?.playlistTrackId ?? track?.playlistTrackUuid ?? track?.track_id ?? track?.id;
   const youtubeId = track?.youtube_id ?? track?.youtubeId ?? '';
-  const thumbnailUrl = track?.thumbnail_url ?? track?.poster ?? '';
+  const thumbnailUrl = ensureHttpsImageUrl(track?.thumbnail_url ?? track?.poster ?? '');
 
   return {
     id: String(playlistTrackId ?? track?.id ?? `${youtubeId}-${index}`),

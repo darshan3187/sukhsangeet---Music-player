@@ -1,6 +1,6 @@
 import { Play, Pause, SkipForward, SkipBack, Shuffle, Repeat, Repeat1, ListMusic, ChevronDown } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const NowPlayingView = ({ onOpenQueue, onClose, layout = 'split' }) => {
   const {
@@ -21,6 +21,7 @@ const NowPlayingView = ({ onOpenQueue, onClose, layout = 'split' }) => {
   } = usePlayer();
 
   const [currentTime, setCurrentTime] = useState(0);
+  const [imageError, setImageError] = useState(false);
 
   /* Sync playhead */
   useEffect(() => {
@@ -36,7 +37,14 @@ const NowPlayingView = ({ onOpenQueue, onClose, layout = 'split' }) => {
   }, [isPlaying, duration, playerRef]);
 
   /* Reset on track change */
-  useEffect(() => { setCurrentTime(0); }, [currentTrack?.youtubeId]);
+  useEffect(() => { 
+    setCurrentTime(0);
+    setImageError(false);
+  }, [currentTrack?.youtubeId]);
+
+  const handleImageError = useCallback(() => {
+    setImageError(true);
+  }, []);
 
   const formatTime = (s) => {
     if (isNaN(s) || s < 0) return '0:00';
@@ -93,19 +101,28 @@ const NowPlayingView = ({ onOpenQueue, onClose, layout = 'split' }) => {
         {/* Album Art */}
         <div className={layout === 'stacked' ? 'relative group w-full max-w-[240px] sm:max-w-[280px] md:max-w-[320px] aspect-square shrink-0' : 'relative group w-full max-w-[280px] sm:max-w-[320px] md:max-w-md lg:max-w-lg aspect-square shrink-0'}>
           {/* Blurred glow */}
-          <div
-            className="absolute inset-[-16px] rounded-[3.5rem] blur-[72px] opacity-30 scale-95 transition-all duration-1000 group-hover:opacity-50 group-hover:scale-100"
-            style={{ backgroundImage: `url(${currentTrack.poster})`, backgroundSize: 'cover' }}
-            aria-hidden="true"
-          />
+          {currentTrack.poster && !imageError && (
+            <div
+              className="absolute inset-[-16px] rounded-[3.5rem] blur-[72px] opacity-30 scale-95 transition-all duration-1000 group-hover:opacity-50 group-hover:scale-100"
+              style={{ backgroundImage: `url(${currentTrack.poster})`, backgroundSize: 'cover' }}
+              aria-hidden="true"
+            />
+          )}
 
           {/* Art frame */}
-          <div className="relative z-10 w-full h-full rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl border-[6px] border-white transition-transform duration-500 group-hover:scale-[1.02]">
-            <img
-              src={currentTrack.poster}
-              alt={currentTrack.title}
-              className="w-full h-full object-cover"
-            />
+          <div className="relative z-10 w-full h-full rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl border-[6px] border-white transition-transform duration-500 group-hover:scale-[1.02] flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
+            {imageError || !currentTrack.poster ? (
+              <div className="flex flex-col items-center justify-center text-gray-500">
+                <span className="text-8xl font-bold">♪</span>
+              </div>
+            ) : (
+              <img
+                src={currentTrack.poster}
+                alt={currentTrack.title}
+                onError={handleImageError}
+                className="w-full h-full object-cover"
+              />
+            )}
             {/* Gradient overlay on hover */}
             <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>

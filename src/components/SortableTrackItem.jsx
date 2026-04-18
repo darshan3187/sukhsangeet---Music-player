@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Trash2 } from 'lucide-react';
@@ -12,6 +12,7 @@ const formatDuration = (seconds) => {
 };
 
 const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
+  const [imageError, setImageError] = useState(false);
   const {
     attributes,
     listeners,
@@ -26,6 +27,10 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
     transition,
   };
   const durationLabel = formatDuration(track.duration);
+
+  const handleImageError = useCallback(() => {
+    setImageError(true);
+  }, []);
 
   return (
     <div
@@ -60,13 +65,20 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
         onClick={onPlay}
         aria-label={`Play ${track.title}`}
       >
-        <div className="w-11 h-11 md:w-14 md:h-14 overflow-hidden rounded-xl shadow-sm bg-black/5 ring-1 ring-black/[0.03] cursor-pointer">
-          <img
-            src={track.poster || undefined}
-            alt={`${track.title} artwork`}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
+        <div className="w-11 h-11 md:w-14 md:h-14 overflow-hidden rounded-xl shadow-sm bg-black/5 ring-1 ring-black/[0.03] cursor-pointer flex items-center justify-center">
+          {imageError || !track.poster ? (
+            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+              <span className="text-xl font-bold text-gray-500">♪</span>
+            </div>
+          ) : (
+            <img
+              src={track.poster}
+              alt={`${track.title} artwork`}
+              loading="lazy"
+              onError={handleImageError}
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          )}
         </div>
 
         {/* Now-playing waveform indicator */}

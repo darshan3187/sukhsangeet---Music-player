@@ -1,4 +1,5 @@
 import { usePlayer } from '../context/PlayerContext';
+import { useCallback, useState } from 'react';
 
 /**
  * TrackInfo – compact now-playing info card.
@@ -6,6 +7,11 @@ import { usePlayer } from '../context/PlayerContext';
  */
 export default function TrackInfo() {
   const { currentTrack, isBuffering } = usePlayer();
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageError = useCallback(() => {
+    setImageError(true);
+  }, []);
 
   if (!currentTrack) {
     return (
@@ -22,16 +28,25 @@ export default function TrackInfo() {
   return (
     <div className="flex items-center gap-3 min-w-0" aria-label={`Now playing: ${currentTrack.title}`}>
       {/* Thumbnail */}
-      <div className="relative shrink-0">
-        <img
-          src={currentTrack.poster}
-          alt={currentTrack.title}
-          className={`
-            w-11 h-11 rounded-xl object-cover shadow-md
-            transition-opacity duration-300
-            ${isBuffering ? 'opacity-60 animate-pulse' : 'opacity-100'}
-          `}
-        />
+      <div className="relative shrink-0 flex items-center justify-center">
+        <div className="w-11 h-11 rounded-xl overflow-hidden bg-black/[0.06] flex items-center justify-center">
+          {imageError || !currentTrack.poster ? (
+            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+              <span className="text-sm font-bold text-gray-500">♪</span>
+            </div>
+          ) : (
+            <img
+              src={currentTrack.poster}
+              alt={currentTrack.title}
+              onError={handleImageError}
+              className={`
+                w-full h-full rounded-xl object-cover shadow-md
+                transition-opacity duration-300
+                ${isBuffering ? 'opacity-60 animate-pulse' : 'opacity-100'}
+              `}
+            />
+          )}
+        </div>
       </div>
 
       {/* Text */}
