@@ -147,7 +147,6 @@ const PlaylistWorkspace = () => {
               <p className="text-sm font-black truncate text-gray-900 tracking-tight leading-tight">
                 {user?.username || 'User'}
               </p>
-              <p className="text-caption mt-0.5">Premium Account</p>
             </div>
           </div>
 
