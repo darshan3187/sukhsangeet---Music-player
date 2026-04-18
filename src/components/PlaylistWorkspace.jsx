@@ -48,19 +48,19 @@ const PlaylistWorkspace = () => {
 
   const handleCreatePlaylist = useCallback(async (name, description) => {
     const created = await createPlaylist(name, description);
-    if (created?.id) navigate(`/playlist/${created.id}`, { replace: true });
+    if (created?.id) navigate(`/app/playlist/${created.id}`, { replace: true });
     setIsCreateOpen(false);
     return created;
   }, [createPlaylist, navigate]);
 
   const handleSelectPlaylist = useCallback((id) => {
-    navigate(`/playlist/${id}`);
+    navigate(`/app/playlist/${id}`);
     if (window.innerWidth < 1024) setIsLibraryOpen(false);
   }, [navigate]);
 
   const handleDeletePlaylist = useCallback(async (id) => {
     try {
-      if (routePlaylistId === id.toString()) navigate('/', { replace: true });
+      if (routePlaylistId === id.toString()) navigate('/app', { replace: true });
       await deletePlaylist(id);
     } catch (err) {
       console.error('Delete failed:', err);

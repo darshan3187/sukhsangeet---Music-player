@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
       }
     } finally {
       clearSession();
-      navigate('/login', { replace: true });
+      navigate('/', { replace: true });
     }
   }, [clearSession, navigate]);
 

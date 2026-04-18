@@ -2,6 +2,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Landing from './pages/Landing';
 import PlaylistWorkspace from './components/PlaylistWorkspace';
 import { PlayerProvider } from './context/PlayerContext';
 
@@ -16,11 +17,12 @@ function App() {
     <>
       <a href="#main-content" className="skip-link">Skip to main content</a>
       <Routes>
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<PlayerAppShell />} />
-          <Route path="/playlist/:id" element={<PlayerAppShell />} />
+          <Route path="/app" element={<PlayerAppShell />} />
+          <Route path="/app/playlist/:id" element={<PlayerAppShell />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
