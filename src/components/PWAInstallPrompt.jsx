@@ -42,11 +42,11 @@ export default function PWAInstallPrompt() {
 
   return (
     <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 shadow-lg">
-      <Download size={16} className="text-blue-400 flex-shrink-0" />
       <button
         onClick={handleInstall}
         className="text-xs font-semibold text-blue-400 hover:text-blue-300 transition-colors"
       >
+        <Download size={16} className="text-blue-400 flex-shrink-0" />
         Install
       </button>
       <button
