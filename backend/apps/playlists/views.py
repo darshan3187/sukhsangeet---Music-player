@@ -101,6 +101,9 @@ class PlaylistTrackCreateView(APIView):
         except YouTubeAPIError:
             return Response({"error": "Could not fetch video details"}, status=status.HTTP_502_BAD_GATEWAY)
 
+        if PlaylistTrack.objects.filter(playlist=playlist, track=track).exists():
+            return Response({"error": "Track already exists in this playlist"}, status=status.HTTP_409_CONFLICT)
+
         max_position = PlaylistTrack.objects.filter(playlist=playlist).aggregate(max_pos=Max("position"))["max_pos"]
         next_position = 0 if max_position is None else max_position + 1
 
