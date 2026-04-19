@@ -69,6 +69,10 @@ def _pick_thumbnail(thumbnails):
     return None
 
 
+def _fallback_thumbnail_url(video_id):
+    return f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
+
+
 def _fetch_track_via_oembed(video_id):
     try:
         response = requests.get(
@@ -89,16 +93,23 @@ def _fetch_track_via_oembed(video_id):
         raise YouTubeAPIError("Could not fetch video details")
 
     payload = response.json()
+    thumbnail_url = payload.get("thumbnail_url") or _fallback_thumbnail_url(video_id)
     track, _ = Track.objects.get_or_create(
         youtube_id=video_id,
         defaults={
             "title": payload.get("title", "Unknown Title"),
             "artist": payload.get("author_name", "YouTube"),
-            "thumbnail_url": payload.get("thumbnail_url"),
+            "thumbnail_url": thumbnail_url,
             "duration_seconds": 0,
             "cached_at": timezone.now(),
         },
     )
+
+    if not track.thumbnail_url:
+        track.thumbnail_url = thumbnail_url
+        track.cached_at = timezone.now()
+        track.save(update_fields=["thumbnail_url", "cached_at"])
+
     return track
 
 
@@ -148,15 +159,22 @@ def fetch_or_create_track(url_or_id):
     item = items[0]
     snippet = item.get("snippet") or {}
     content_details = item.get("contentDetails") or {}
+    thumbnail_url = _pick_thumbnail(snippet.get("thumbnails") or {}) or _fallback_thumbnail_url(video_id)
 
     track, _ = Track.objects.get_or_create(
         youtube_id=video_id,
         defaults={
             "title": snippet.get("title", ""),
             "artist": snippet.get("channelTitle", ""),
-            "thumbnail_url": _pick_thumbnail((snippet.get("thumbnails") or {})),
+            "thumbnail_url": thumbnail_url,
             "duration_seconds": parse_iso8601_duration(content_details.get("duration", "")),
             "cached_at": timezone.now(),
         },
     )
+
+    if not track.thumbnail_url:
+        track.thumbnail_url = thumbnail_url
+        track.cached_at = timezone.now()
+        track.save(update_fields=["thumbnail_url", "cached_at"])
+
     return track

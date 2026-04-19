@@ -54,6 +54,12 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Let the browser handle third-party images directly so CSP can apply the
+  // normal img-src policy without the service worker re-fetching them.
+  if (event.request.destination === 'image' && url.origin !== self.location.origin) {
+    return;
+  }
+
   // API calls - Network first, fallback to cache
   if (url.pathname.includes('/api/')) {
     event.respondWith(
