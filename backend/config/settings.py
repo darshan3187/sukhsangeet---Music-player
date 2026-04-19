@@ -142,10 +142,14 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_CLASSES": (
         "rest_framework.throttling.AnonRateThrottle",
         "rest_framework.throttling.UserRateThrottle",
+        "rest_framework.throttling.ScopedRateThrottle",
     ),
     "DEFAULT_THROTTLE_RATES": {
         "anon": config("DRF_THROTTLE_ANON", default="30/min"),
         "user": config("DRF_THROTTLE_USER", default="120/min"),
+        "auth_login": config("DRF_THROTTLE_AUTH_LOGIN", default="8/min"),
+        "auth_register": config("DRF_THROTTLE_AUTH_REGISTER", default="5/min"),
+        "auth_refresh": config("DRF_THROTTLE_AUTH_REFRESH", default="30/min"),
     },
 }
 
@@ -211,6 +215,8 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = config(
 SECURE_HSTS_PRELOAD = config("SECURE_HSTS_PRELOAD", default=not DEBUG, cast=bool)
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin"
+SECURE_CROSS_ORIGIN_RESOURCE_POLICY = "same-site"
 
 SESSION_COOKIE_SECURE = config("SESSION_COOKIE_SECURE", default=not DEBUG, cast=bool)
 CSRF_COOKIE_SECURE = config("CSRF_COOKIE_SECURE", default=not DEBUG, cast=bool)

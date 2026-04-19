@@ -48,6 +48,7 @@ def persist_refresh_token(user, refresh_token):
 
 class RegisterView(APIView):
     permission_classes = [AllowAny]
+    throttle_scope = "auth_register"
 
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
@@ -62,6 +63,7 @@ class RegisterView(APIView):
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
+    throttle_scope = "auth_login"
 
     def post(self, request):
         serializer = LoginSerializer(data=request.data, context={"request": request})
@@ -76,6 +78,7 @@ class LoginView(APIView):
 
 class RefreshView(APIView):
     permission_classes = [AllowAny]
+    throttle_scope = "auth_refresh"
 
     def post(self, request):
         serializer = RefreshSerializer(data=request.data)
