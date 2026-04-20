@@ -46,6 +46,7 @@ const Landing = () => {
           </Link>
 
           <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">
+            <a href="#how-to-title" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">How to Use</a>
             <a href="#features" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">Features</a>
             <a href="#use-cases" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">Use Cases</a>
           </nav>
@@ -93,6 +94,49 @@ const Landing = () => {
                 Start Now
                 <ChevronRight size={18} />
               </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-y border-gray-100 bg-gray-50/40" aria-labelledby="how-to-title">
+          <div className="mx-auto w-full max-w-6xl px-4 py-18 sm:px-6 sm:py-20 lg:px-8">
+            <div className="mb-12 text-center sm:mb-14">
+              <h2 id="how-to-title" className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">How to Use</h2>
+              <p className="mx-auto mt-3 max-w-2xl text-gray-600">Get started in four simple steps and build your first playlist in minutes.</p>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {howToSteps.map((step, index) => (
+                <article key={step.title} className="rounded-2xl border border-gray-200 bg-white p-6">
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-700 text-white font-semibold text-sm">
+                    {index + 1}
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-600">{step.description}</p>
+                </article>
+              ))}
+            </div>
+
+            <div className="mt-12 rounded-2xl border border-gray-200 bg-white p-8 sm:p-10">
+              <h3 className="text-xl font-semibold text-gray-900">Pro Tips</h3>
+              <ul className="mt-5 space-y-3 text-sm text-gray-600">
+                <li className="flex gap-3">
+                  <span className="text-emerald-700 font-semibold">•</span>
+                  <span>Use the audio visualizer to see your music in action while you listen</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-emerald-700 font-semibold">•</span>
+                  <span>Organize tracks by dragging them to reorder your playlist exactly how you want</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-emerald-700 font-semibold">•</span>
+                  <span>Create multiple playlists for different moods—study, relaxation, workout, and more</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-emerald-700 font-semibold">•</span>
+                  <span>Your playlists are saved automatically, so you can pick up where you left off anytime</span>
+                </li>
+              </ul>
             </div>
           </div>
         </section>
@@ -201,6 +245,25 @@ const useCases = [
     icon: Music,
     title: "Creative Flow",
     description: "Build mood-based playlists to support writing, design, and ideas."
+  }
+];
+
+const howToSteps = [
+  {
+    title: "Create Account",
+    description: "Sign up with your email to get started. Takes less than a minute."
+  },
+  {
+    title: "Create a Playlist",
+    description: "Click 'New Playlist' and give it a name that matches your vibe."
+  },
+  {
+    title: "Search & Add Tracks",
+    description: "Search for songs on YouTube and add them directly to your playlist."
+  },
+  {
+    title: "Start Playing",
+    description: "Hit play and enjoy your curated music with full player controls."
   }
 ];
 
