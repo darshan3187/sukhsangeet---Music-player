@@ -8,7 +8,7 @@ import AddTrackInput from './AddTrackInput';
 import SortableTrackItem from './SortableTrackItem';
 import { Music, Play, Search } from 'lucide-react';
 
-const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary }) => {
+const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylist }) => {
   const { playlist, tracks, isLoading, error, addTrack, removeTrack, reorderTracks } = usePlaylist(playlistId);
   const { loadQueue, currentTrack } = usePlayer();
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
@@ -141,7 +141,11 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary }) => {
 
           {/* Add Track Input */}
           <div className="max-w-2xl">
-            <AddTrackInput onAddTrack={addTrack} isLoading={isLoading} />
+            <AddTrackInput 
+              onAddTrack={addTrack} 
+              onImportPlaylist={onImportPlaylist}
+              isLoading={isLoading} 
+            />
           </div>
         </div>
       )}

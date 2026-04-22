@@ -1,10 +1,15 @@
 import { useState } from 'react';
-import { Plus, Link as LinkIcon, Loader2 } from 'lucide-react';
+import { Plus, Link as LinkIcon, Loader2, Download } from 'lucide-react';
 
 const isYouTubeUrl = (value) =>
   /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//i.test(value.trim());
 
-const AddTrackInput = ({ onAddTrack, isLoading = false }) => {
+const isPlaylistUrl = (value) => {
+  const params = new URL(value, 'https://youtube.com').searchParams;
+  return params.has('list');
+};
+
+const AddTrackInput = ({ onAddTrack, onImportPlaylist, isLoading = false }) => {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -19,7 +24,11 @@ const AddTrackInput = ({ onAddTrack, isLoading = false }) => {
     setError('');
     setIsSubmitting(true);
     try {
-      await onAddTrack(url);
+      if (isPlaylistUrl(url)) {
+        await onImportPlaylist(url);
+      } else {
+        await onAddTrack(url);
+      }
       setValue('');
     } catch (err) {
       setError(err?.response?.data?.error || err?.message || 'Failed to add track.');
@@ -29,9 +38,11 @@ const AddTrackInput = ({ onAddTrack, isLoading = false }) => {
   };
 
   const showLoading = isSubmitting || isLoading;
+  const url = value.trim();
+  const isPlaylist = url && isYouTubeUrl(url) && isPlaylistUrl(url);
 
   return (
-    <div className="w-full" role="search" aria-label="Add track">
+    <div className="w-full" role="search" aria-label="Add track or import playlist">
       <form onSubmit={handleSubmit} className="relative group" noValidate>
         {/* Leading icon */}
         <div
@@ -77,14 +88,16 @@ const AddTrackInput = ({ onAddTrack, isLoading = false }) => {
               transition-all duration-200
               min-w-[100px]
             "
-            aria-label={showLoading ? 'Adding track' : 'Add track'}
+            aria-label={showLoading ? (isPlaylist ? 'Importing playlist' : 'Adding track') : (isPlaylist ? 'Import playlist' : 'Add track')}
             id="add-track-submit-btn"
           >
             {showLoading
               ? <Loader2 size={15} className="animate-spin shrink-0" />
+              : isPlaylist
+              ? <Download size={15} strokeWidth={3} className="shrink-0" />
               : <Plus size={15} strokeWidth={3} className="shrink-0" />
             }
-            <span>{showLoading ? 'Adding…' : 'Add Track'}</span>
+            <span>{showLoading ? (isPlaylist ? 'Importing…' : 'Adding…') : (isPlaylist ? 'Import' : 'Add Track')}</span>
           </button>
         </div>
       </form>

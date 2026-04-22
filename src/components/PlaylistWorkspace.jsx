@@ -9,6 +9,7 @@ import NowPlayingView from './NowPlayingView';
 import { usePlaylists } from '../hooks/usePlaylists';
 import { usePlayer } from '../context/PlayerContext';
 import { useAuth } from '../context/AuthContext';
+import { importPlaylist } from '../api/playlists';
 
 const PlaylistWorkspace = () => {
   const navigate = useNavigate();
@@ -70,6 +71,19 @@ const PlaylistWorkspace = () => {
   const handleOpenLibrary = useCallback(() => {
     setIsLibraryOpen(true);
   }, []);
+
+  const handleImportPlaylist = useCallback(async (youtubePlaylistUrl) => {
+    try {
+      const result = await importPlaylist(youtubePlaylistUrl);
+      const newPlaylistId = result?.playlist?.id;
+      if (newPlaylistId) {
+        navigate(`/app/playlist/${newPlaylistId}`, { replace: false });
+      }
+    } catch (err) {
+      console.error('Playlist import failed:', err);
+      throw err;
+    }
+  }, [navigate]);
 
   return (
     <div className="relative h-dvh w-full overflow-hidden flex min-h-0 bg-gray-50 font-sans selection:bg-gray-200">
@@ -195,7 +209,11 @@ const PlaylistWorkspace = () => {
         </header>
         <div
           className={`
-            flex-1 min-h-0 overflow-hidden relative flex flex-col
+            flex-1 min-h-0 overfl
+              playlistId={routePlaylistId} 
+              onRequestOpenLibrary={handleOpenLibrary}
+              onImportPlaylist={handleImportPlaylist}
+           
             lg:mx-auto lg:w-full lg:max-w-[1480px]
             ${!isLibraryOpen ? 'lg:pt-16' : ''}
           `}

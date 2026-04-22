@@ -25,6 +25,14 @@ export const addTrack = async (playlistId, youtubeUrl) => {
   return response.data;
 };
 
+export const importPlaylist = async (youtubePlaylistUrl, playlistName) => {
+  const response = await api.post('/playlists/import/', { 
+    url: youtubePlaylistUrl,
+    name: playlistName 
+  });
+  return response.data;
+};
+
 export const removeTrack = async (playlistId, trackId) => {
   const response = await api.delete(`/playlists/${playlistId}/tracks/${trackId}/`);
   return response.data;

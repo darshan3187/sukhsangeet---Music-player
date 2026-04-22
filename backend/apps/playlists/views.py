@@ -5,7 +5,15 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.tracks.youtube import VideoNotFound, YouTubeAPIError, fetch_or_create_track
+from apps.tracks.youtube import (
+    VideoNotFound,
+    YouTubeAPIError,
+    PlaylistError,
+    fetch_or_create_track,
+    is_playlist_url,
+    _extract_playlist_id,
+    fetch_playlist_video_ids,
+)
 
 from .models import Playlist, PlaylistTrack
 from .serializers import (
@@ -165,3 +173,65 @@ class PlaylistReorderView(APIView):
         PlaylistTrack.objects.bulk_update(playlist_tracks, ["position"])
 
         return Response(status=status.HTTP_200_OK)
+
+
+class PlaylistImportView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @transaction.atomic
+    def post(self, request):
+        """Import a YouTube playlist and create a new playlist with all tracks."""
+        playlist_url = request.data.get("url", "").strip()
+        playlist_name = request.data.get("name", "").strip()
+
+        if not playlist_url:
+            return Response({"error": "Playlist URL is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not is_playlist_url(playlist_url):
+            return Response({"error": "Invalid YouTube playlist URL"}, status=status.HTTP_400_BAD_REQUEST)
+
+        playlist_id = _extract_playlist_id(playlist_url)
+        if not playlist_id:
+            return Response({"error": "Could not extract playlist ID"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            video_ids = fetch_playlist_video_ids(playlist_id, max_results=200)
+        except PlaylistError as exc:
+            return Response({"error": str(exc)}, status=status.HTTP_502_BAD_GATEWAY)
+        except YouTubeAPIError as exc:
+            return Response({"error": str(exc)}, status=status.HTTP_502_BAD_GATEWAY)
+
+        if not video_ids:
+            return Response({"error": "Playlist is empty or no videos could be fetched"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create a new playlist with auto-generated name if not provided
+        if not playlist_name:
+            playlist_name = f"YouTube Playlist ({len(video_ids)} tracks)"
+
+        playlist = Playlist.objects.create(user=request.user, name=playlist_name)
+
+        # Fetch tracks and add to playlist
+        tracks_added = 0
+        tracks_failed = 0
+        playlist_tracks = []
+
+        for position, video_id in enumerate(video_ids):
+            try:
+                track = fetch_or_create_track(video_id)
+                playlist_tracks.append(PlaylistTrack(playlist=playlist, track=track, position=position))
+                tracks_added += 1
+            except (VideoNotFound, YouTubeAPIError, ValueError):
+                tracks_failed += 1
+                continue
+
+        # Bulk create playlist tracks
+        if playlist_tracks:
+            PlaylistTrack.objects.bulk_create(playlist_tracks)
+
+        response_data = {
+            "playlist": PlaylistSerializer(playlist).data,
+            "tracks_added": tracks_added,
+            "tracks_failed": tracks_failed,
+        }
+
+        return Response(response_data, status=status.HTTP_201_CREATED)

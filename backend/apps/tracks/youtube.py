@@ -17,6 +17,10 @@ class YouTubeAPIError(Exception):
     pass
 
 
+class PlaylistError(Exception):
+    pass
+
+
 def parse_iso8601_duration(duration):
     match = re.fullmatch(
         r"PT(?:(?P<hours>\d+)H)?(?:(?P<minutes>\d+)M)?(?:(?P<seconds>\d+)S)?",
@@ -57,6 +61,20 @@ def _extract_video_id(url_or_id):
                 return path_bits[1]
             if path_bits[0] == "embed" and len(path_bits) > 1:
                 return path_bits[1]
+
+    return None
+
+
+def _extract_playlist_id(url):
+    value = (url or "").strip()
+    if not value:
+        return None
+
+    parsed = urlparse(value)
+
+    playlist_id = parse_qs(parsed.query).get("list", [None])[0]
+    if playlist_id:
+        return playlist_id
 
     return None
 
@@ -178,3 +196,56 @@ def fetch_or_create_track(url_or_id):
         track.save(update_fields=["thumbnail_url", "cached_at"])
 
     return track
+
+
+def fetch_playlist_video_ids(playlist_id, max_results=100):
+    """Fetch all video IDs from a YouTube playlist."""
+    api_key = config("YOUTUBE_API_KEY", default="")
+    if not api_key:
+        raise PlaylistError("YouTube API key not configured")
+
+    video_ids = []
+    next_page_token = None
+
+    while len(video_ids) < max_results:
+        try:
+            response = requests.get(
+                "https://www.googleapis.com/youtube/v3/playlistItems",
+                params={
+                    "part": "snippet",
+                    "playlistId": playlist_id,
+                    "pageToken": next_page_token,
+                    "maxResults": 50,
+                    "key": api_key,
+                },
+                timeout=15,
+            )
+        except requests.RequestException as exc:
+            raise PlaylistError("Could not fetch playlist details") from exc
+
+        if response.status_code != 200:
+            payload = response.json()
+            if isinstance(payload, dict) and payload.get("error"):
+                errors = payload["error"].get("errors") or []
+                if errors and errors[0].get("reason") == "playlistNotFound":
+                    raise PlaylistError("Playlist not found or unavailable")
+            raise PlaylistError("Could not fetch playlist details")
+
+        payload = response.json()
+        items = payload.get("items") or []
+        for item in items:
+            snippet = item.get("snippet") or {}
+            video_id = snippet.get("resourceId", {}).get("videoId")
+            if video_id:
+                video_ids.append(video_id)
+
+        next_page_token = payload.get("nextPageToken")
+        if not next_page_token or len(video_ids) >= max_results:
+            break
+
+    return video_ids[:max_results]
+
+
+def is_playlist_url(url):
+    """Check if the URL is a YouTube playlist URL."""
+    return _extract_playlist_id(url) is not None

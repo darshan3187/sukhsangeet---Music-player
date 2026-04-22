@@ -53,3 +53,6 @@ backend/media/
 *.sw?
 *.tsbuildinfo
 Detail.md
+QUICK_TEST.md
+TEST_RESULTS.md
+TESTING.md
