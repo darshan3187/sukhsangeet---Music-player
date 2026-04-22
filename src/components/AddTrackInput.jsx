@@ -25,6 +25,9 @@ const AddTrackInput = ({ onAddTrack, onImportPlaylist, isLoading = false }) => {
     setIsSubmitting(true);
     try {
       if (isPlaylistUrl(url)) {
+        if (typeof onImportPlaylist !== 'function') {
+          throw new Error('Playlist import is unavailable right now. Please refresh and try again.');
+        }
         await onImportPlaylist(url);
       } else {
         await onAddTrack(url);

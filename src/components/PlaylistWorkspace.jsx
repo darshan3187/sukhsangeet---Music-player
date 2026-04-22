@@ -209,11 +209,7 @@ const PlaylistWorkspace = () => {
         </header>
         <div
           className={`
-            flex-1 min-h-0 overfl
-              playlistId={routePlaylistId} 
-              onRequestOpenLibrary={handleOpenLibrary}
-              onImportPlaylist={handleImportPlaylist}
-           
+            flex-1 min-h-0 overflow-hidden
             lg:mx-auto lg:w-full lg:max-w-[1480px]
             ${!isLibraryOpen ? 'lg:pt-16' : ''}
           `}
@@ -226,7 +222,11 @@ const PlaylistWorkspace = () => {
               />
             </div>
           ) : (
-            <PlaylistTracksPanel playlistId={routePlaylistId} onRequestOpenLibrary={handleOpenLibrary} />
+            <PlaylistTracksPanel
+              playlistId={routePlaylistId}
+              onRequestOpenLibrary={handleOpenLibrary}
+              onImportPlaylist={handleImportPlaylist}
+            />
           )}
         </div>
       </main>
