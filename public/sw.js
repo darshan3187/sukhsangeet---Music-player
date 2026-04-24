@@ -66,13 +66,12 @@ self.addEventListener('fetch', (event) => {
       fetch(event.request)
         .then((response) => {
           if (response.ok) {
-            const cache = url.pathname.includes('playlists') ? PLAYLIST_CACHE : RUNTIME_CACHE;
-            caches.open(cache).then((c) => c.put(event.request, response.clone()));
+            const cacheName = url.pathname.includes('playlists') ? PLAYLIST_CACHE : RUNTIME_CACHE;
+            caches.open(cacheName).then((c) => c.put(event.request, response.clone()));
           }
           return response;
         })
         .catch(() => {
-          const cache = url.pathname.includes('playlists') ? PLAYLIST_CACHE : RUNTIME_CACHE;
           return caches.match(event.request)
             .then((response) => response || new Response('Offline - Data not available', { status: 503 }));
         })

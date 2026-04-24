@@ -246,6 +246,110 @@ def fetch_playlist_video_ids(playlist_id, max_results=100):
     return video_ids[:max_results]
 
 
+def search_youtube_videos(query, max_results=12):
+    """Search YouTube for videos and return track-like metadata."""
+    search_query = (query or "").strip()
+    if not search_query:
+        return []
+
+    api_key = config("YOUTUBE_API_KEY", default="")
+    if not api_key:
+        raise YouTubeAPIError("YouTube search is unavailable because the API key is not configured")
+
+    try:
+        response = requests.get(
+            "https://www.googleapis.com/youtube/v3/search",
+            params={
+                "part": "snippet",
+                "q": search_query,
+                "type": "video",
+                "maxResults": min(max_results, 20),
+                "safeSearch": "moderate",
+                "videoEmbeddable": "true",
+                "key": api_key,
+            },
+            timeout=15,
+        )
+    except requests.RequestException as exc:
+        raise YouTubeAPIError("Could not search YouTube") from exc
+
+    if response.status_code != 200:
+        raise YouTubeAPIError("Could not search YouTube")
+
+    payload = response.json()
+    if isinstance(payload, dict) and payload.get("error"):
+        errors = payload["error"].get("errors") or []
+        reason = errors[0].get("reason") if errors else None
+        if reason in {"quotaExceeded", "dailyLimitExceeded", "rateLimitExceeded"}:
+            raise YouTubeAPIError("YouTube search quota is exhausted")
+        raise YouTubeAPIError("Could not search YouTube")
+
+    search_items = payload.get("items") or []
+    video_ids = []
+    search_meta = {}
+
+    for item in search_items:
+        video_id = item.get("id", {}).get("videoId")
+        if not video_id or video_id in search_meta:
+            continue
+
+        snippet = item.get("snippet") or {}
+        search_meta[video_id] = snippet
+        video_ids.append(video_id)
+
+    if not video_ids:
+        return []
+
+    details_by_id = {}
+    try:
+        details_response = requests.get(
+            "https://www.googleapis.com/youtube/v3/videos",
+            params={
+                "part": "snippet,contentDetails",
+                "id": ",".join(video_ids),
+                "key": api_key,
+            },
+            timeout=15,
+        )
+    except requests.RequestException as exc:
+        raise YouTubeAPIError("Could not fetch video details") from exc
+
+    if details_response.status_code == 200:
+        details_payload = details_response.json()
+        for item in details_payload.get("items") or []:
+            video_id = item.get("id")
+            if not video_id:
+                continue
+
+            snippet = item.get("snippet") or {}
+            content_details = item.get("contentDetails") or {}
+            details_by_id[video_id] = {
+                "title": snippet.get("title", "Unknown Title"),
+                "artist": snippet.get("channelTitle", "YouTube"),
+                "thumbnail_url": _pick_thumbnail(snippet.get("thumbnails") or {}) or _fallback_thumbnail_url(video_id),
+                "duration_seconds": parse_iso8601_duration(content_details.get("duration", "")),
+            }
+
+    results = []
+    for video_id in video_ids[:max_results]:
+        detail = details_by_id.get(video_id)
+        snippet = search_meta.get(video_id) or {}
+        thumbnail_url = _pick_thumbnail(snippet.get("thumbnails") or {}) or _fallback_thumbnail_url(video_id)
+
+        results.append(
+            {
+                "id": video_id,
+                "youtube_id": video_id,
+                "title": (detail or {}).get("title") or snippet.get("title", "Unknown Title"),
+                "artist": (detail or {}).get("artist") or snippet.get("channelTitle", "YouTube"),
+                "thumbnail_url": (detail or {}).get("thumbnail_url") or thumbnail_url,
+                "duration_seconds": (detail or {}).get("duration_seconds", 0),
+            }
+        )
+
+    return results
+
+
 def is_playlist_url(url):
     """Check if the URL is a YouTube playlist URL."""
     return _extract_playlist_id(url) is not None

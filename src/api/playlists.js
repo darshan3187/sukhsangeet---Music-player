@@ -33,6 +33,17 @@ export const importPlaylist = async (youtubePlaylistUrl, playlistName) => {
   return response.data;
 };
 
+export const searchYouTubeTracks = async (query, limit = 12) => {
+  const response = await api.get('/playlists/search/', {
+    params: {
+      q: query,
+      limit,
+    },
+  });
+
+  return response.data;
+};
+
 export const removeTrack = async (playlistId, trackId) => {
   const response = await api.delete(`/playlists/${playlistId}/tracks/${trackId}/`);
   return response.data;

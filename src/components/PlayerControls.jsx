@@ -1,5 +1,5 @@
 import { Play, Pause, SkipForward, SkipBack, Shuffle, Repeat, Repeat1, Loader2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { usePlayer } from '../context/PlayerContext';
 
 /**
@@ -26,8 +26,16 @@ export default function PlayerControls() {
   } = usePlayer();
 
   const [currentTime, setCurrentTime] = useState(0);
+  const resetFrameRef = useRef(0);
 
-  useEffect(() => { setCurrentTime(0); }, [currentTrack]);
+  useEffect(() => {
+    window.cancelAnimationFrame(resetFrameRef.current);
+    resetFrameRef.current = window.requestAnimationFrame(() => {
+      setCurrentTime(0);
+    });
+
+    return () => window.cancelAnimationFrame(resetFrameRef.current);
+  }, [currentTrack?.youtubeId]);
 
   useEffect(() => {
     let interval;

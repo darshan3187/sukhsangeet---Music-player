@@ -13,6 +13,7 @@ from apps.tracks.youtube import (
     is_playlist_url,
     _extract_playlist_id,
     fetch_playlist_video_ids,
+    search_youtube_videos,
 )
 
 from .models import Playlist, PlaylistTrack
@@ -235,3 +236,26 @@ class PlaylistImportView(APIView):
         }
 
         return Response(response_data, status=status.HTTP_201_CREATED)
+
+
+class YouTubeSearchView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        query = request.query_params.get("q", "").strip()
+        limit = request.query_params.get("limit", 12)
+
+        if len(query) < 2:
+            return Response({"error": "Search query must be at least 2 characters long"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            max_results = max(1, min(int(limit), 20))
+        except (TypeError, ValueError):
+            max_results = 12
+
+        try:
+            results = search_youtube_videos(query, max_results=max_results)
+        except YouTubeAPIError as exc:
+            return Response({"error": str(exc)}, status=status.HTTP_502_BAD_GATEWAY)
+
+        return Response({"query": query, "results": results}, status=status.HTTP_200_OK)

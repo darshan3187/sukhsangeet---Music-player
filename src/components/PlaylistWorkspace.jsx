@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ListMusic, Plus, Library, Play, Pause, X, LogOut, PanelLeftOpen, SkipBack, SkipForward } from 'lucide-react';
 import PlaylistSidebar from './PlaylistSidebar';
@@ -21,6 +21,7 @@ const PlaylistWorkspace = () => {
   const [isQueueOpen, setIsQueueOpen] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isNowPlayingFull, setIsNowPlayingFull] = useState(false);
+  const nowPlayingResetRef = useRef(0);
 
   useEffect(() => {
     const handleResize = () => {
@@ -37,8 +38,17 @@ const PlaylistWorkspace = () => {
   }, [currentTrack]);
 
   useEffect(() => {
-    if (currentTrack) setIsNowPlayingFull(true);
-  }, [currentTrack?.youtubeId]);
+    if (!currentTrack) {
+      return undefined;
+    }
+
+    window.cancelAnimationFrame(nowPlayingResetRef.current);
+    nowPlayingResetRef.current = window.requestAnimationFrame(() => {
+      setIsNowPlayingFull(true);
+    });
+
+    return () => window.cancelAnimationFrame(nowPlayingResetRef.current);
+  }, [currentTrack]);
 
   const selectedPlaylist = useMemo(
     () => playlists.find((item) => item.id?.toString() === routePlaylistId?.toString()),

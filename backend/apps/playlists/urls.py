@@ -7,11 +7,13 @@ from .views import (
     PlaylistTrackCreateView,
     PlaylistTrackDeleteView,
     PlaylistImportView,
+    YouTubeSearchView,
 )
 
 urlpatterns = [
     path("", PlaylistListCreateView.as_view(), name="playlist-list-create"),
     path("import/", PlaylistImportView.as_view(), name="playlist-import"),
+    path("search/", YouTubeSearchView.as_view(), name="playlist-youtube-search"),
     path("<uuid:playlist_id>/", PlaylistDetailDeleteView.as_view(), name="playlist-detail-delete"),
     path("<uuid:playlist_id>/tracks/", PlaylistTrackCreateView.as_view(), name="playlist-track-create"),
     path(

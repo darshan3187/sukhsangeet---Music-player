@@ -1,6 +1,6 @@
 import { Play, Pause, SkipForward, SkipBack, Shuffle, Repeat, Repeat1, ListMusic, ChevronDown } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const NowPlayingView = ({ onOpenQueue, onClose, layout = 'split' }) => {
   const {
@@ -21,7 +21,10 @@ const NowPlayingView = ({ onOpenQueue, onClose, layout = 'split' }) => {
   } = usePlayer();
 
   const [currentTime, setCurrentTime] = useState(0);
-  const [imageError, setImageError] = useState(false);
+  const [imageErrors, setImageErrors] = useState({});
+  const currentTrackId = currentTrack?.youtubeId || '';
+  const imageError = Boolean(imageErrors[currentTrackId]);
+  const resetFrameRef = useRef(0);
 
   /* Sync playhead */
   useEffect(() => {
@@ -36,15 +39,18 @@ const NowPlayingView = ({ onOpenQueue, onClose, layout = 'split' }) => {
     return () => clearInterval(interval);
   }, [isPlaying, duration, playerRef]);
 
-  /* Reset on track change */
   useEffect(() => { 
-    setCurrentTime(0);
-    setImageError(false);
-  }, [currentTrack?.youtubeId]);
+    window.cancelAnimationFrame(resetFrameRef.current);
+    resetFrameRef.current = window.requestAnimationFrame(() => {
+      setCurrentTime(0);
+    });
 
-  const handleImageError = useCallback(() => {
-    setImageError(true);
-  }, []);
+    return () => window.cancelAnimationFrame(resetFrameRef.current);
+  }, [currentTrack]);
+
+  const handleImageError = () => {
+    setImageErrors((current) => ({ ...current, [currentTrackId]: true }));
+  };
 
   const formatTime = (s) => {
     if (isNaN(s) || s < 0) return '0:00';

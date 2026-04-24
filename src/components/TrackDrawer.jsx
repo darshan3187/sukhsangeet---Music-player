@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { GripVertical, Search, X } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
 
