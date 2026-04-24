@@ -243,37 +243,37 @@ const PlaylistWorkspace = () => {
 
       {/* ── Floating Mini-Player / Nav Bar ── */}
       <div
-        className="fixed bottom-3 right-3 left-3 md:bottom-8 md:right-8 md:left-8 md:left-auto md:right-12 md:w-[400px] z-50 lg:hidden"
+        className="fixed bottom-2 right-2 left-2 md:bottom-8 md:right-8 md:left-8 md:left-auto md:right-12 md:w-[400px] z-50 lg:hidden"
         style={{ paddingBottom: 'max(0px, env(safe-area-inset-bottom))' }}
         role="region"
         aria-label="Now playing controls"
       >
         {!currentTrack ? (
           /* Mobile bottom nav – no track */
-          <div className="lg:hidden glass-card rounded-[2.5rem] p-2.5 flex items-center gap-1">
+          <div className="lg:hidden glass-card rounded-[2.25rem] p-2 flex items-center gap-1">
             <button
               onClick={handleOpenLibrary}
-              className="flex-1 flex flex-col items-center gap-1.5 text-gray-500 py-2 hover:text-gray-900 transition-colors min-h-[44px]"
+              className="flex-1 flex flex-col items-center gap-1 text-gray-500 py-1.5 hover:text-gray-900 transition-colors min-h-[40px]"
               aria-label="Open library"
             >
-              <Library size={22} />
-              <span className="text-[9px] font-black uppercase tracking-[0.2em]">Library</span>
+              <Library size={20} />
+              <span className="text-[8px] font-black uppercase tracking-[0.18em]">Library</span>
             </button>
             <button
               onClick={() => setIsCreateOpen(true)}
-              className="w-16 h-16 rounded-full bg-gray-900 text-white flex items-center justify-center
-                         shadow-2xl -mt-12 border-[5px] border-gray-50 hover:scale-110 active:scale-90 transition-all"
+              className="w-14 h-14 rounded-full bg-gray-900 text-white flex items-center justify-center
+                         shadow-2xl -mt-10 border-[4px] border-gray-50 hover:scale-110 active:scale-90 transition-all"
               aria-label="Create new playlist"
             >
-              <Plus size={28} strokeWidth={2.5} />
+              <Plus size={24} strokeWidth={2.5} />
             </button>
             <button
               onClick={() => setIsQueueOpen(true)}
-              className="flex-1 flex flex-col items-center gap-1.5 text-gray-500 py-2 hover:text-gray-900 transition-colors min-h-[44px]"
+              className="flex-1 flex flex-col items-center gap-1 text-gray-500 py-1.5 hover:text-gray-900 transition-colors min-h-[40px]"
               aria-label="Open queue"
             >
-              <ListMusic size={22} />
-              <span className="text-[9px] font-black uppercase tracking-[0.2em]">Queue</span>
+              <ListMusic size={20} />
+              <span className="text-[8px] font-black uppercase tracking-[0.18em]">Queue</span>
             </button>
           </div>
         ) : !isNowPlayingFull ? (
