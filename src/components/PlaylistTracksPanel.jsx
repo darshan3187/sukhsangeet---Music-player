@@ -145,7 +145,7 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
   /* ── No playlist selected ── */
   if (!playlistId) {
     return (
-      <div className="flex-1 flex flex-col min-h-0 overflow-hidden animate-fade-in-up" role="main" aria-label="YouTube music search">
+      <div className="flex-1 flex flex-col min-h-0 h-full overflow-y-auto overflow-x-hidden animate-fade-in-up custom-scrollbar" role="main" aria-label="YouTube music search">
         <div className="px-5 md:px-10 pt-8 md:pt-12 pb-5 shrink-0">
           <div className="max-w-4xl">
             <span className="text-label block mb-3">Search Music</span>
@@ -180,7 +180,7 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
           </div>
         </div>
 
-        <div className="flex-1 min-h-0 overflow-y-auto px-5 md:px-10 pb-10 custom-scrollbar">
+        <div className="flex-1 min-h-0 px-5 md:px-10 pb-10">
           {!searchQuery.trim() ? (
             <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_0.7fr]">
               <div className="rounded-[2rem] bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white p-8 md:p-10 shadow-[0_24px_80px_-40px_rgba(0,0,0,0.6)]">
