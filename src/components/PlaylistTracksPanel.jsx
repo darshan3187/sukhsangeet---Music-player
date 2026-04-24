@@ -180,7 +180,7 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
           </div>
         </div>
 
-        <div className="flex-1 min-h-0 px-5 md:px-10 pb-32 md:pb-10">
+        <div className="flex-1 min-h-0 px-5 md:px-10 pb-[calc(13rem+env(safe-area-inset-bottom))] md:pb-10">
           {!searchQuery.trim() ? (
             <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_0.7fr]">
               <div className="rounded-[2rem] bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white p-8 md:p-10 shadow-[0_24px_80px_-40px_rgba(0,0,0,0.6)]">
