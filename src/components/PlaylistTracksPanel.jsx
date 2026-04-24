@@ -180,7 +180,7 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
           </div>
         </div>
 
-        <div className="flex-1 min-h-0 px-5 md:px-10 pb-10">
+        <div className="flex-1 min-h-0 px-5 md:px-10 pb-32 md:pb-10">
           {!searchQuery.trim() ? (
             <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_0.7fr]">
               <div className="rounded-[2rem] bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white p-8 md:p-10 shadow-[0_24px_80px_-40px_rgba(0,0,0,0.6)]">
@@ -220,33 +220,39 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
                   key={`${track.youtube_id || track.id}-${index}`}
                   type="button"
                   onClick={() => handleSearchPlay(index)}
-                  className="group text-left rounded-[1.75rem] border border-black/[0.06] bg-white p-3.5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-gray-900"
+                  className="group text-left rounded-[1.5rem] border border-black/[0.06] bg-white p-3 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-gray-900 sm:p-3.5"
                   aria-label={`Play ${track.title}`}
                 >
-                  <div className="aspect-[16/10] overflow-hidden rounded-[1.25rem] bg-black/[0.03]">
-                    <img
-                      src={track.thumbnail_url}
-                      alt={track.title}
-                      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                  </div>
-
-                  <div className="mt-4 flex items-start gap-3">
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-black tracking-tight text-gray-900">{track.title}</p>
-                      <p className="mt-1 truncate text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
-                        {track.artist || 'YouTube'}
-                      </p>
+                  <div className="flex items-center gap-3 sm:block">
+                    <div className="w-24 h-24 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 overflow-hidden rounded-[1.1rem] bg-black/[0.03]">
+                      <img
+                        src={track.thumbnail_url}
+                        alt={track.title}
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        loading="lazy"
+                      />
                     </div>
-                    <span className="shrink-0 rounded-full bg-black/[0.04] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-gray-600">
-                      {formatDuration(track.duration_seconds)}
-                    </span>
-                  </div>
 
-                  <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-white transition-transform group-hover:translate-x-1">
-                    <Play size={12} fill="currentColor" />
-                    Play
+                    <div className="min-w-0 flex-1 sm:mt-4">
+                      <div className="flex items-start gap-2 sm:gap-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="line-clamp-2 text-sm font-black leading-snug tracking-tight text-gray-900 sm:truncate sm:leading-tight">
+                            {track.title}
+                          </p>
+                          <p className="mt-1 truncate text-[11px] sm:text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
+                            {track.artist || 'YouTube'}
+                          </p>
+                        </div>
+                        <span className="shrink-0 rounded-full bg-black/[0.04] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-gray-600">
+                          {formatDuration(track.duration_seconds)}
+                        </span>
+                      </div>
+
+                      <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-gray-900 px-3.5 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-white transition-transform group-hover:translate-x-1 sm:px-4">
+                        <Play size={12} fill="currentColor" />
+                        Play
+                      </div>
+                    </div>
                   </div>
                 </button>
               ))}
