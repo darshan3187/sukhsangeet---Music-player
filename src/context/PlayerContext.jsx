@@ -186,7 +186,7 @@ export const PlayerProvider = ({ children }) => {
     if (Number.isInteger(autoPlayIndex) && autoPlayIndex >= 0) {
       playTrackByIndex(nextIndex, true, normalizedQueue);
     }
-  }, [playTrackByIndex]);
+  }, []);
 
   const normalizeIndex = useCallback((index, arr = stateRef.current.queue) => {
     const length = arr.length;
