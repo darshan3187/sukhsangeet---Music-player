@@ -1,10 +1,8 @@
-// Ensure image URLs are HTTPS and valid
 const ensureHttpsImageUrl = (url) => {
   if (!url) return '';
   const urlStr = String(url).trim();
   if (!urlStr) return '';
   
-  // Convert HTTP to HTTPS for YouTube images (avoid mixed content)
   if (urlStr.startsWith('http://')) {
     return urlStr.replace('http://', 'https://');
   }

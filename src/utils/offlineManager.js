@@ -1,7 +1,4 @@
-/**
- * Offline Data Management for Sukh Sangeet
- * Stores playlists and tracks in IndexedDB for offline access
- */
+
 
 const DB_NAME = 'SukhSangeetDB';
 const DB_VERSION = 1;
@@ -13,7 +10,6 @@ const STORES = {
 
 let db = null;
 
-// Initialize IndexedDB
 export const initDB = () => {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -27,7 +23,7 @@ export const initDB = () => {
     request.onupgradeneeded = (event) => {
       const database = event.target.result;
 
-      // Create object stores
+
       if (!database.objectStoreNames.contains(STORES.playlists)) {
         database.createObjectStore(STORES.playlists, { keyPath: 'id' });
       }
@@ -41,7 +37,6 @@ export const initDB = () => {
   });
 };
 
-// Save playlist for offline use
 export const savePlaylistOffline = async (playlist) => {
   if (!db) await initDB();
   
@@ -58,7 +53,6 @@ export const savePlaylistOffline = async (playlist) => {
   });
 };
 
-// Save tracks for offline use
 export const saveTracksOffline = async (tracks) => {
   if (!db) await initDB();
   
@@ -78,7 +72,6 @@ export const saveTracksOffline = async (tracks) => {
   });
 };
 
-// Get offline playlists
 export const getOfflinePlaylists = async () => {
   if (!db) await initDB();
   
@@ -92,7 +85,6 @@ export const getOfflinePlaylists = async () => {
   });
 };
 
-// Get offline tracks
 export const getOfflineTracks = async () => {
   if (!db) await initDB();
   
@@ -106,13 +98,10 @@ export const getOfflineTracks = async () => {
   });
 };
 
-// Check if online
 export const isOnline = () => navigator.onLine;
 
-// Check if Service Worker is available
 export const isServiceWorkerAvailable = () => 'serviceWorker' in navigator;
 
-// Sync playlists when back online
 export const setupSyncListener = (callback) => {
   window.addEventListener('online', () => {
     console.log('Back online - syncing data');
@@ -120,7 +109,6 @@ export const setupSyncListener = (callback) => {
   });
 };
 
-// Clear offline data (optional)
 export const clearOfflineData = async () => {
   if (!db) await initDB();
   

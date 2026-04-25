@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Download, X } from 'lucide-react';
 
-/**
- * Minimal PWA Install Prompt Component
- * Compact badge-style install prompt
- */
 export default function PWAInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState(null);

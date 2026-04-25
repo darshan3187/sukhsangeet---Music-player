@@ -24,7 +24,6 @@ const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
     []
   );
 
-  /* Focus management + keyboard traps */
   useEffect(() => {
     if (!isOpen) return;
 
@@ -54,7 +53,6 @@ const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
     };
   }, [focusableSelector, isOpen, onClose]);
 
-  /* Reset state when closed */
   useEffect(() => {
     if (!isOpen) {
       setName(''); setDescription(''); setError(''); setIsSubmitting(false);
@@ -80,14 +78,12 @@ const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
   if (!isOpen) return null;
 
   return (
-    /* Backdrop */
     <div
       className="fixed inset-0 z-[200] flex items-end md:items-center justify-center
                  bg-black/20 backdrop-blur-sm px-4 pb-4 md:py-8 animate-in fade-in duration-200"
       onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}
       aria-label="Create playlist dialog backdrop"
     >
-      {/* Dialog */}
       <div
         ref={dialogRef}
         role="dialog"
@@ -120,7 +116,6 @@ const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <label className="block" htmlFor="playlist-name">
             <span className="text-label mb-2 block">Playlist Name</span>
@@ -154,7 +149,6 @@ const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
             </p>
           )}
 
-          {/* Actions */}
           <div className="flex items-center gap-3 pt-2">
             <button
               type="button"

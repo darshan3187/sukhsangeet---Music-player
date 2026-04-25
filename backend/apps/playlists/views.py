@@ -205,13 +205,11 @@ class PlaylistImportView(APIView):
         if not video_ids:
             return Response({"error": "Playlist is empty or no videos could be fetched"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Create a new playlist with auto-generated name if not provided
         if not playlist_name:
             playlist_name = f"YouTube Playlist ({len(video_ids)} tracks)"
 
         playlist = Playlist.objects.create(user=request.user, name=playlist_name)
 
-        # Fetch tracks and add to playlist
         tracks_added = 0
         tracks_failed = 0
         playlist_tracks = []
@@ -225,7 +223,6 @@ class PlaylistImportView(APIView):
                 tracks_failed += 1
                 continue
 
-        # Bulk create playlist tracks
         if playlist_tracks:
             PlaylistTrack.objects.bulk_create(playlist_tracks)
 

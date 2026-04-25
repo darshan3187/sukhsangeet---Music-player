@@ -1,14 +1,9 @@
-/**
- * AudioVisualizer – ambient background orb effect.
- * Currently a reserved/legacy component; kept in sync with the design system.
- */
 export default function AudioVisualizer({ isPlaying }) {
   return (
     <div
       className="absolute inset-0 z-0 pointer-events-none overflow-hidden"
       aria-hidden="true"
     >
-      {/* Top-left orb */}
       <div
         className="absolute -top-[20vw] -left-[15vw] rounded-full"
         style={{
@@ -23,7 +18,6 @@ export default function AudioVisualizer({ isPlaying }) {
         }}
       />
 
-      {/* Bottom-right orb */}
       <div
         className="absolute -bottom-[15vw] -right-[10vw] rounded-full"
         style={{

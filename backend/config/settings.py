@@ -37,7 +37,6 @@ ALLOWED_HOSTS = [
     if host
 ]
 
-# Render provides this env var for the service public hostname.
 render_hostname = _normalize_host(os.environ.get("RENDER_EXTERNAL_HOSTNAME", ""))
 if render_hostname and render_hostname not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(render_hostname)

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-/* Shared input style */
 const inputCls = `
   w-full rounded-xl border border-black/[0.06] bg-black/[0.03]
   px-5 py-3.5 text-sm font-semibold text-gray-900
@@ -50,14 +49,11 @@ const Login = () => {
       className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12 relative overflow-hidden"
       aria-label="Login page"
     >
-      {/* Decorative background blobs */}
       <div className="absolute top-0 right-0 w-[480px] h-[480px] bg-gray-200/40 rounded-full blur-[100px] -mr-40 -mt-40 pointer-events-none" aria-hidden="true" />
       <div className="absolute bottom-0 left-0 w-[480px] h-[480px] bg-gray-100/60 rounded-full blur-[100px] -ml-40 -mb-40 pointer-events-none" aria-hidden="true" />
 
       <div className="w-full max-w-[420px] relative z-10 animate-fade-in-up">
         <div className="surface-raised rounded-[2.5rem] p-8 md:p-10 shadow-xl">
-
-          {/* Brand */}
           <div className="text-center mb-8">
             <Link to="/" className="inline-block mb-5" aria-label="Go to landing page">
               <img
@@ -73,7 +69,6 @@ const Login = () => {
             <p className="text-body-sm mt-2">Sign in and find your flow.</p>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             <label className="block" htmlFor="login-email">
               <span className="text-label mb-2 block">Email Address</span>
@@ -129,7 +124,6 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Footer */}
           <div className="mt-8 pt-6 border-t border-black/[0.04] text-center">
             <p className="text-body-sm">
               Don't have an account?{' '}

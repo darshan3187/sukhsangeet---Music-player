@@ -49,7 +49,6 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
             : 'hover:bg-black/[0.035] text-gray-500'}
       `}
     >
-      {/* Track number */}
       <div
         className="hidden md:flex w-10 shrink-0 items-center justify-center
                    text-[11px] font-black tabular-nums text-gray-400 opacity-50 select-none"
@@ -58,7 +57,6 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
         {String(index).padStart(2, '0')}
       </div>
 
-      {/* Thumbnail with waveform overlay */}
       <button
         type="button"
         className="relative shrink-0"
@@ -81,7 +79,6 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
           )}
         </div>
 
-        {/* Now-playing waveform indicator */}
         {isActive && (
           <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-xl backdrop-blur-[2px]">
             <div className="flex items-end gap-[3px] h-4 text-white" aria-hidden="true">
@@ -97,7 +94,7 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
         )}
       </button>
 
-      {/* Track info */}
+
       <button
         type="button"
         className="flex-1 min-w-0 py-0.5 text-left"
@@ -119,7 +116,6 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
         </p>
       </button>
 
-      {/* Duration + Actions */}
       <div className="flex shrink-0 items-center gap-2 md:gap-3">
         {durationLabel ? (
           <span className="hidden lg:block text-[12px] font-bold tabular-nums text-gray-400/60 min-w-[40px] text-right">
@@ -131,7 +127,6 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
           </span>
         )}
 
-        {/* Remove button – shown on hover / always on mobile for touch */}
         <button
           onClick={(e) => { e.stopPropagation(); onRemove(); }}
           className="
@@ -147,7 +142,6 @@ const SortableTrackItem = ({ track, isActive, onPlay, onRemove, index }) => {
           <Trash2 size={16} />
         </button>
 
-        {/* Drag handle */}
         <div
           {...attributes}
           {...listeners}

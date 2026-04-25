@@ -108,11 +108,9 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
     void reorderTracks(arrayMove(trackIds, oldIndex, newIndex));
   }, [reorderTracks, trackIds]);
 
-  /* ── Loading skeleton ── */
   if (isLoading) {
     return (
       <div className="flex-1 flex flex-col min-h-0" aria-busy="true" aria-label="Loading playlist">
-        {/* Header skeleton */}
         <div className="px-8 md:px-12 pt-10 md:pt-14 pb-8 shrink-0 space-y-6">
           <div className="space-y-3">
             <div className="w-20 h-3 bg-black/5 rounded-full skeleton-shimmer" />
@@ -142,7 +140,6 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
     );
   }
 
-  /* ── No playlist selected ── */
   if (!playlistId) {
     return (
       <div className="flex-1 flex flex-col min-h-0 h-full overflow-y-auto overflow-x-hidden animate-fade-in-up custom-scrollbar" role="main" aria-label="YouTube music search">
@@ -275,14 +272,11 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
     );
   }
 
-  /* ── Playlist view ── */
   return (
     <div className="w-full h-full flex flex-col min-h-0 relative" role="main">
 
-      {/* ── Panel Header ── */}
       {playlist && (
         <div className="px-8 md:px-12 pt-10 md:pt-14 pb-6 shrink-0">
-          {/* Title row */}
           <div className="flex items-end justify-between gap-6 mb-8">
             <div className="flex-1 min-w-0">
               <span className="text-label block mb-3">
@@ -301,7 +295,6 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
               )}
             </div>
 
-            {/* Play button */}
             <button
               onClick={() => handleTrackPlay(0)}
               disabled={!tracks.length}

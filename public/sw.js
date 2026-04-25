@@ -10,7 +10,6 @@ const STATIC_ASSETS = [
   '/sitemap.xml'
 ];
 
-// Install Event - Cache static assets
 self.addEventListener('install', (event) => {
   console.log('[Service Worker] Installing...');
   event.waitUntil(
@@ -23,7 +22,6 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Activate Event - Clean up old caches
 self.addEventListener('activate', (event) => {
   console.log('[Service Worker] Activating...');
   event.waitUntil(
@@ -44,23 +42,18 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Skip non-GET requests
   if (event.request.method !== 'GET') {
     return;
   }
 
-  // Skip chrome extensions and external schemes
   if (url.protocol !== 'http:' && url.protocol !== 'https:') {
     return;
   }
 
-  // Let the browser handle third-party images directly so CSP can apply the
-  // normal img-src policy without the service worker re-fetching them.
   if (event.request.destination === 'image' && url.origin !== self.location.origin) {
     return;
   }
 
-  // API calls - Network first, fallback to cache
   if (url.pathname.includes('/api/')) {
     event.respondWith(
       fetch(event.request)
@@ -79,7 +72,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static assets - Cache first
   if (url.pathname.match(/\.(js|css|woff2|webp|png|jpg|svg|ico)$/i)) {
     event.respondWith(
       caches.match(event.request)
@@ -94,7 +86,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // HTML pages - Network first
   if (event.request.headers.get('accept')?.includes('text/html')) {
     event.respondWith(
       fetch(event.request)
@@ -107,7 +98,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Default - Network first
   event.respondWith(
     fetch(event.request)
       .then((response) => {

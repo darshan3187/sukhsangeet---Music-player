@@ -47,7 +47,6 @@ const AddTrackInput = ({ onAddTrack, onImportPlaylist, isLoading = false }) => {
   return (
     <div className="w-full" role="search" aria-label="Add track or import playlist">
       <form onSubmit={handleSubmit} className="relative group" noValidate>
-        {/* Leading icon */}
         <div
           className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none
                      text-gray-400 group-focus-within:text-gray-700 transition-colors duration-200"
@@ -105,7 +104,6 @@ const AddTrackInput = ({ onAddTrack, onImportPlaylist, isLoading = false }) => {
         </div>
       </form>
 
-      {/* Error message */}
       {error && (
         <p
           id="add-track-error"

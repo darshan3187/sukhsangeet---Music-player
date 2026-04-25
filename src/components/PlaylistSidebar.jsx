@@ -99,7 +99,6 @@ const PlaylistSidebar = ({
   return (
     <div className="flex flex-col gap-1" role="list" aria-label="Your playlists">
       {isLoading ? (
-        /* Skeleton – matches final layout */
         <div className="space-y-2 px-1">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="flex gap-3 items-center p-3 rounded-xl">
@@ -126,7 +125,6 @@ const PlaylistSidebar = ({
           );
         })
       ) : (
-        /* Empty state */
         <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
           <p className="text-label">No Playlists Yet</p>
         </div>

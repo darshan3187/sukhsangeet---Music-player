@@ -2,10 +2,6 @@ import { Play, Pause, SkipForward, SkipBack, Shuffle, Repeat, Repeat1, Loader2 }
 import { useState, useEffect, useRef } from 'react';
 import { usePlayer } from '../context/PlayerContext';
 
-/**
- * PlayerControls – standalone bottom-bar playback controls.
- * Currently a reserved/legacy component; kept in sync with the design system.
- */
 export default function PlayerControls() {
   const {
     appReady,
@@ -61,7 +57,6 @@ export default function PlayerControls() {
   return (
     <div className="flex flex-col items-center gap-3 w-full" role="region" aria-label="Player controls">
 
-      {/* Playback buttons */}
       <div className="flex items-center gap-6">
         <button
           onClick={toggleShuffle}
@@ -129,7 +124,6 @@ export default function PlayerControls() {
         </button>
       </div>
 
-      {/* Progress bar */}
       <div className="flex items-center gap-3 w-full" role="group" aria-label="Seek bar">
         <span className="text-[11px] font-bold tabular-nums text-gray-400 w-10 text-right select-none">
           {formatTime(currentTime)}

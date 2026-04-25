@@ -46,7 +46,6 @@ const loadYouTubeIframeApi = () => {
   return youtubeIframeApiPromise;
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const usePlayer = () => useContext(PlayerContext);
 
 const cloneTrack = (track) => ({ ...track });
@@ -78,7 +77,6 @@ export const PlayerProvider = ({ children }) => {
   const startupWarmupDoneRef = useRef(false);
   const wakeLockRef = useRef(null);
 
-  // Optimization: cache visited IDs for this tab session to choose the fastest switch strategy.
   const playedIdsRef = useRef(new Set());
   const hasPreloadedCurrentTrackRef = useRef(false);
 
@@ -88,7 +86,6 @@ export const PlayerProvider = ({ children }) => {
     setShouldInitializePlayers(true);
   }, []);
 
-  // Ref to hold the latest state to avoid stale closures in vanilla JS events.
   const stateRef = useRef({
     queue,
     currentTrackIndex,

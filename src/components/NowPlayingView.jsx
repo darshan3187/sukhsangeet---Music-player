@@ -26,7 +26,6 @@ const NowPlayingView = ({ onOpenQueue, onClose, layout = 'split' }) => {
   const imageError = Boolean(imageErrors[currentTrackId]);
   const resetFrameRef = useRef(0);
 
-  /* Sync playhead */
   useEffect(() => {
     let interval;
     if (isPlaying && duration > 0) {
@@ -72,7 +71,6 @@ const NowPlayingView = ({ onOpenQueue, onClose, layout = 'split' }) => {
       role="region"
       aria-label="Now Playing"
     >
-      {/* ── Top bar ── */}
       <div className={layout === 'stacked' ? 'h-16 md:h-20 px-6 md:px-8 flex items-center justify-between shrink-0' : 'h-20 md:h-24 px-8 md:px-12 flex items-center justify-between shrink-0'}>
         <button
           onClick={onClose}

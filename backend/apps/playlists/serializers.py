@@ -30,7 +30,6 @@ class PlaylistSerializer(serializers.ModelSerializer):
         if annotated_count is not None:
             return annotated_count
 
-        # Fallback for non-annotated instances.
         return obj.playlist_tracks.count()
 
 

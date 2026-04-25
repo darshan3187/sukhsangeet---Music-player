@@ -1,10 +1,6 @@
 import { usePlayer } from '../context/PlayerContext';
 import { useCallback, useState } from 'react';
 
-/**
- * TrackInfo – compact now-playing info card.
- * Currently a reserved/legacy component; kept in sync with the design system.
- */
 export default function TrackInfo() {
   const { currentTrack, isBuffering } = usePlayer();
   const [imageError, setImageError] = useState(false);
@@ -27,7 +23,6 @@ export default function TrackInfo() {
 
   return (
     <div className="flex items-center gap-3 min-w-0" aria-label={`Now playing: ${currentTrack.title}`}>
-      {/* Thumbnail */}
       <div className="relative shrink-0 flex items-center justify-center">
         <div className="w-11 h-11 rounded-xl overflow-hidden bg-black/[0.06] flex items-center justify-center">
           {imageError || !currentTrack.poster ? (
@@ -49,9 +44,7 @@ export default function TrackInfo() {
         </div>
       </div>
 
-      {/* Text */}
       <div className="min-w-0 flex-1 overflow-hidden">
-        {/* Marquee title for long names */}
         <div className="relative overflow-hidden h-[1.2em]">
           <h4
             className={`

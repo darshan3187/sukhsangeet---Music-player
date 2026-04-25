@@ -46,8 +46,7 @@ export default function TrackDrawer({ isOpen, onClose, isStatic = false }) {
       );
   }, [queue, search]);
 
-  /* Escape key */
-  useEffect(() => {
+  const filteredItems = useMemo(() => {
     if (!isOpen || isStatic) return;
     const fn = (e) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', fn);
@@ -148,7 +147,6 @@ export default function TrackDrawer({ isOpen, onClose, isStatic = false }) {
         </div>
       </div>
 
-      {/* Track list */}
       <div className="flex-1 overflow-hidden flex flex-col min-h-0">
         <div className="flex-1 overflow-y-auto px-5 md:px-7 pb-6 space-y-6 custom-scrollbar">
 
