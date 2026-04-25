@@ -13,6 +13,38 @@ const inputCls = `
   min-h-[48px]
 `;
 
+const getErrorMessage = (err) => {
+  const data = err?.response?.data;
+
+  if (typeof data === 'string' && data.trim()) {
+    return data;
+  }
+
+  if (data?.detail) {
+    return data.detail;
+  }
+
+  if (data?.error) {
+    return data.error;
+  }
+
+  if (data && typeof data === 'object') {
+    const fieldMessages = Object.values(data)
+      .flatMap((value) => (Array.isArray(value) ? value : [value]))
+      .filter((value) => typeof value === 'string' && value.trim());
+
+    if (fieldMessages.length > 0) {
+      return fieldMessages.join(' ');
+    }
+  }
+
+  if (!err?.response) {
+    return 'Unable to reach the server. Check the API URL and CORS settings.';
+  }
+
+  return 'Unable to create account. Please try again.';
+};
+
 const Register = () => {
   const navigate = useNavigate();
   const { register, isAuthenticated, isLoading } = useAuth();
@@ -47,11 +79,7 @@ const Register = () => {
       await register(username, email, password);
       navigate('/app', { replace: true });
     } catch (err) {
-      setError(
-        err?.response?.data?.error ||
-        err?.response?.data?.detail ||
-        'Unable to create account. Please try again.'
-      );
+      setError(getErrorMessage(err));
     } finally {
       setIsSubmitting(false);
     }
