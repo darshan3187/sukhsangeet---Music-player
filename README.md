@@ -26,10 +26,12 @@ The app combines a React frontend and Django REST backend to provide:
 - User registration, login, logout, and session persistence using JWT tokens.
 - Personal playlist management (create, view, delete).
 - Add tracks to playlists by pasting YouTube URLs.
+- Import full YouTube playlists into a newly created in-app playlist.
+- Search YouTube directly from the app and add results to playlists.
 - Queue-based playback UI with now-playing, queue drawer, and responsive layout.
 - Drag-and-drop track reordering with persistent order in the backend.
 
-Core backend routes are exposed under `api/auth/` and `api/playlists/`.
+Core backend routes are exposed under `api/auth/` and `api/playlists/` (including import and search endpoints).
 
 ## Why This Project Is Useful
 
@@ -128,7 +130,22 @@ python manage.py runserver
 
 Backend will run at `http://127.0.0.1:8000`.
 
-### 5. Start Frontend
+### 5. Configure Frontend Environment (Optional But Recommended)
+
+Create a root `.env.local` file when developing locally:
+
+```env
+VITE_API_BASE_URL=http://127.0.0.1:8000/api
+VITE_API_TIMEOUT_MS=30000
+VITE_AUTH_TIMEOUT_MS=45000
+```
+
+Notes:
+
+- If `VITE_API_BASE_URL` is omitted, frontend defaults to `http://localhost:8000/api` in development.
+- In production builds, frontend falls back to `https://sukhsangeet-api.onrender.com/api` unless overridden.
+
+### 6. Start Frontend
 
 From the project root in a second terminal:
 
@@ -181,6 +198,22 @@ curl -X POST http://127.0.0.1:8000/api/playlists/<PLAYLIST_ID>/tracks/ \
 	-d '{"url":"https://www.youtube.com/watch?v=dQw4w9WgXcQ"}'
 ```
 
+Import a YouTube playlist:
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/playlists/import/ \
+	-H "Authorization: Bearer <ACCESS_TOKEN>" \
+	-H "Content-Type: application/json" \
+	-d '{"url":"https://www.youtube.com/playlist?list=<PLAYLIST_ID>","name":"Imported Mix"}'
+```
+
+Search YouTube tracks:
+
+```bash
+curl -X GET "http://127.0.0.1:8000/api/playlists/search/?q=lofi&limit=10" \
+	-H "Authorization: Bearer <ACCESS_TOKEN>"
+```
+
 ## Project Structure
 
 ```text
@@ -205,6 +238,8 @@ curl -X POST http://127.0.0.1:8000/api/playlists/<PLAYLIST_ID>/tracks/ \
 - Check these key files first when debugging local setup:
 	- [backend/config/settings.py](backend/config/settings.py)
 	- [backend/.env.example](backend/.env.example)
+	- [TESTING.md](TESTING.md)
+	- [QUICK_TEST.md](QUICK_TEST.md)
 	- [src/api/axios.js](src/api/axios.js)
 - Official docs:
 	- [Django Documentation](https://docs.djangoproject.com/)
