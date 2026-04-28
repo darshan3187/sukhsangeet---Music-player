@@ -1,8 +1,31 @@
+# Sukh Sangeet Music Player
+# SEO-optimized crawl directives
+
 User-agent: *
 Allow: /
+Allow: /playlist/
+Allow: /track/
 
-# Keep API and admin endpoints out of search indexing
+# Disallow dynamic/session content
 Disallow: /api/
 Disallow: /admin/
+Disallow: /login/
+Disallow: /register/
+Disallow: /auth/
+Disallow: /*.json$
+Disallow: /*.xml$
 
+# Disallow user-specific content to avoid duplicate content
+Disallow: /*?*user=
+Disallow: /*?*session=
+Disallow: /*?*token=
+
+# Allow public playlist and track pages for indexing
+Allow: /playlist/*
+Allow: /track/*
+
+# Crawl-delay to be respectful of server resources
+Crawl-delay: 1
+
+# Sitemap for efficient discovery
 Sitemap: https://sukhsangeet.tech/sitemap.xml
