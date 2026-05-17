@@ -46,7 +46,7 @@ export default function TrackDrawer({ isOpen, onClose, isStatic = false }) {
       );
   }, [queue, search]);
 
-  const filteredItems = useMemo(() => {
+  useEffect(() => {
     if (!isOpen || isStatic) return;
     const fn = (e) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', fn);
