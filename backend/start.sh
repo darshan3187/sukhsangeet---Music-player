@@ -1,3 +1,4 @@
+echo "DATABASE_URL is: $DATABASE_URL"
 #!/bin/bash
 set -o errexit
 
