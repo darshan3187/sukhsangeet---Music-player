@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/react'
 import './index.css'
 import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
+import { HelmetProvider } from 'react-helmet-async';
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -49,7 +50,8 @@ class ErrorBoundary extends Component {
 }
 
 createRoot(document.getElementById('root')).render(
-  <ErrorBoundary>
+  <HelmetProvider> 
+    <ErrorBoundary>
     <BrowserRouter>
       <AuthProvider>
         <App />
@@ -57,4 +59,5 @@ createRoot(document.getElementById('root')).render(
       </AuthProvider>
     </BrowserRouter>
   </ErrorBoundary>
+  </HelmetProvider>
 )

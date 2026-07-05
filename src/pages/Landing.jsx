@@ -1,6 +1,8 @@
-import { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Helmet } from 'react-helmet-async';
 import {
   Music,
   ListMusic,
@@ -19,16 +21,44 @@ import {
 } from 'lucide-react';
 
 const Landing = () => {
-  const navigate = useNavigate();
   const { isAuthenticated, isLoading } = useAuth();
-
-  useEffect(() => {
-    if (isAuthenticated && !isLoading) {
-      navigate('/app', { replace: true });
-    }
-  }, [isAuthenticated, isLoading, navigate]);
+  const [openFAQ, setOpenFAQ] = useState(null);
 
   return (
+    <>
+      <Helmet>
+
+        <title>
+          Sukh Sangeet | Personal Music Player & YouTube Playlist Manager
+        </title>
+
+        <meta
+          name="description"
+          content="Create playlists from YouTube tracks, organize music and enjoy distraction-free listening with Sukh Sangeet."
+        />
+
+        <link
+          rel="canonical"
+          href="https://www.sukhsangeet.tech"
+        />
+
+        <meta
+          property="og:title"
+          content="Sukh Sangeet | Personal Music Player"
+        />
+
+        <meta
+          property="og:description"
+          content="Create and organize YouTube playlists for study, work and focused listening."
+        />
+
+        <meta
+          property="og:url"
+          content="https://www.sukhsangeet.tech"
+        />
+
+      </Helmet>
+
     <div className="relative min-h-screen overflow-hidden bg-[#fbfaf7] text-gray-900 antialiased [font-family:ui-sans-serif,system-ui,-apple-system,'Segoe_UI',Roboto,'Helvetica_Neue',Arial,'Noto_Sans',sans-serif]">
       <div
         aria-hidden="true"
@@ -54,22 +84,29 @@ const Landing = () => {
           <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">
             <a href="#how-to-title" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">How to Use</a>
             <a href="#features" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">Features</a>
+            <a href="#comparison" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">Comparison</a>
+            <a href="#faq" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">FAQ</a>
             <a href="#use-cases" className="text-sm font-medium text-gray-600 transition-colors hover:text-gray-900">Use Cases</a>
           </nav>
 
           <div className="flex items-center gap-2 sm:gap-3">
-            <Link
-              to="/login"
-              className="rounded-full px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:text-gray-900"
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="rounded-full bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-black sm:px-5"
-            >
-              Get Started
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                to="/app"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gray-950 px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(17,24,39,0.18)] transition-all hover:-translate-y-0.5 hover:bg-black sm:w-auto sm:px-8 sm:py-3.5 sm:text-base"
+              >
+                Continue Listening
+                <ChevronRight size={18} />
+              </Link>
+            ) : (
+              <Link
+                to="/register"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gray-950 px-4 py-2 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(17,24,39,0.18)] transition-all hover:-translate-y-0.5 hover:bg-black sm:w-auto sm:px-8 sm:py-3.5 sm:text-base"
+              >
+                Start Now
+                <ChevronRight size={18} />
+              </Link>
+            )}
           </div>
         </div>
       </header>
@@ -221,6 +258,73 @@ const Landing = () => {
           </div>
         </section>
 
+          <section
+            id="faq"
+            className="mx-auto max-w-5xl px-4 py-16 sm:px-6 lg:px-8"
+            aria-labelledby="faq-title"
+          >
+
+            <div className="mb-12 text-center">
+              <h2
+                id="faq-title"
+                className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+              >
+                Frequently Asked Questions
+              </h2>
+
+              <p className="mt-3 text-gray-600">
+                Common questions about Sukh Sangeet
+              </p>
+            </div>
+
+            <div className="space-y-4">
+
+              {faqItems.map((faq, index) => (
+
+                <div
+                  key={index}
+                  className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm transition-all"
+                >
+
+                  <button
+                    onClick={() => setOpenFAQ(openFAQ === index ? null : index)}
+                    className="flex w-full items-center justify-between p-6 text-left"
+                  >
+
+                    <h3 className="pr-5 text-lg font-semibold text-gray-900">
+                      {faq.question}
+                    </h3>
+
+                    <ChevronDown
+                      className={`h-5 w-5 text-gray-500 transition-transform duration-300 ${openFAQ === index ? "rotate-180" : ""
+                        }`}
+                    />
+
+                  </button>
+
+                  <div
+                    className={`grid transition-all duration-300 ${openFAQ === index
+                        ? "grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0"
+                      }`}
+                  >
+
+                    <div className="overflow-hidden">
+                      <p className="px-6 pb-6 text-gray-600 leading-7">
+                        {faq.answer}
+                      </p>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              ))}
+
+            </div>
+
+          </section>
+          
         <section id="use-cases" className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6 sm:py-20 lg:px-8" aria-labelledby="use-cases-title">
           <div className="mb-10 text-center sm:mb-14">
             <h2 id="use-cases-title" className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Built for Real Work</h2>
@@ -262,8 +366,62 @@ const Landing = () => {
         </div>
       </footer>
     </div>
+    </>
   );
 };
+
+const faqItems = [
+  {
+    question: "What is Sukh Sangeet?",
+    answer:
+      "Sukh Sangeet is a personal music player and YouTube playlist manager that helps users create, organize, and play custom playlists for study, work, focus, and distraction-free listening."
+  },
+  {
+    question: "How do I create a custom YouTube playlist?",
+    answer:
+      "Sign up on Sukh Sangeet, click New Playlist, search YouTube songs directly inside the app, and add them instantly."
+  },
+  {
+    question: "Is Sukh Sangeet a free music player?",
+    answer:
+      "Yes. Sukh Sangeet is free to use and provides a customized listening experience."
+  },
+  {
+    question: "Can I organize music for studying or deep work?",
+    answer:
+      "Yes. Create playlists for studying, deep work, productivity, and focus sessions."
+  },
+  {
+    question: "Does it support YouTube search directly?",
+    answer:
+      "Yes. Built-in YouTube search lets you discover and add public tracks."
+  },
+  {
+    question: "How is Sukh Sangeet different from standard YouTube?",
+    answer:
+      "Sukh Sangeet removes distractions like recommended videos and endless feeds."
+  },
+  {
+    question: "Do I need an account?",
+    answer:
+      "Yes. Accounts keep playlists synchronized and securely saved."
+  },
+  {
+    question: "Will it recommend random videos?",
+    answer:
+      "No. You only listen to tracks you intentionally add."
+  },
+  {
+    question: "Is my playlist data secure?",
+    answer:
+      "Yes. Playlist data is stored securely and not shared."
+  },
+  {
+    question: "Can I reorder tracks?",
+    answer:
+      "Yes. Drag-and-drop playlist management lets you customize order."
+  }
+];
 
 const features = [
   {
