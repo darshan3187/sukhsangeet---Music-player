@@ -23,8 +23,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="/app" element={<PlayerAppShell />} />
-          <Route path="/app/playlist/:id" element={<PlayerAppShell />} />
+          <Route path="/find-music" element={<PlayerAppShell />} />
+          <Route path="/find-music/playlist/:id" element={<PlayerAppShell />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

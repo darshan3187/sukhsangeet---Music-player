@@ -59,19 +59,19 @@ const PlaylistWorkspace = () => {
 
   const handleCreatePlaylist = useCallback(async (name, description) => {
     const created = await createPlaylist(name, description);
-    if (created?.id) navigate(`/app/playlist/${created.id}`, { replace: true });
+    if (created?.id) navigate(`/find-music/playlist/${created.id}`, { replace: true });
     setIsCreateOpen(false);
     return created;
   }, [createPlaylist, navigate]);
 
   const handleSelectPlaylist = useCallback((id) => {
-    navigate(`/app/playlist/${id}`);
+    navigate(`/find-music/playlist/${id}`);
     if (window.innerWidth < 1024) setIsLibraryOpen(false);
   }, [navigate]);
 
   const handleDeletePlaylist = useCallback(async (id) => {
     try {
-      if (routePlaylistId === id.toString()) navigate('/app', { replace: true });
+      if (routePlaylistId === id.toString()) navigate('/find-music', { replace: true });
       await deletePlaylist(id);
     } catch (err) {
       console.error('Delete failed:', err);
@@ -87,7 +87,7 @@ const PlaylistWorkspace = () => {
       const result = await importPlaylist(youtubePlaylistUrl);
       const newPlaylistId = result?.playlist?.id;
       if (newPlaylistId) {
-        navigate(`/app/playlist/${newPlaylistId}`, { replace: false });
+        navigate(`/find-music/playlist/${newPlaylistId}`, { replace: false });
       }
     } catch (err) {
       console.error('Playlist import failed:', err);

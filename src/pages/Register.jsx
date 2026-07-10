@@ -55,10 +55,10 @@ const Register = () => {
   const [isSubmitting,    setIsSubmitting]    = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated && !isLoading) navigate('/app', { replace: true });
+    if (isAuthenticated && !isLoading) navigate('/find-music', { replace: true });
   }, [isAuthenticated, isLoading, navigate]);
 
-  if (isAuthenticated && !isLoading) return <Navigate to="/app" replace />;
+  if (isAuthenticated && !isLoading) return <Navigate to="/find-music" replace />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -76,7 +76,7 @@ const Register = () => {
     setIsSubmitting(true);
     try {
       await register(username, email, password);
-      navigate('/app', { replace: true });
+      navigate('/find-music', { replace: true });
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {

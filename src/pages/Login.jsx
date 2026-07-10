@@ -21,10 +21,10 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated && !isLoading) navigate('/app', { replace: true });
+    if (isAuthenticated && !isLoading) navigate('/find-music', { replace: true });
   }, [isAuthenticated, isLoading, navigate]);
 
-  if (isAuthenticated && !isLoading) return <Navigate to="/app" replace />;
+  if (isAuthenticated && !isLoading) return <Navigate to="/find-music" replace />;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,7 +32,7 @@ const Login = () => {
     setIsSubmitting(true);
     try {
       await login(email, password);
-      navigate('/app', { replace: true });
+      navigate('/find-music', { replace: true });
     } catch (err) {
       setError(
         err?.response?.data?.error ||
