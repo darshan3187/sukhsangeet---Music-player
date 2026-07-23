@@ -75,6 +75,9 @@ const Landing = () => {
               <img
                 src="/logo-sukhsangeet.webp"
                 alt="SukhSangeet"
+                width="36"
+                height="36"
+                fetchPriority="high"
                 className="h-7 w-7 object-contain sm:h-9 sm:w-9"
                 loading="eager"
               />
