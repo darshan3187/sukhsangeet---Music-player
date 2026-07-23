@@ -1,8 +1,8 @@
-import { Play, Pause, SkipForward, SkipBack, Shuffle, Repeat, Repeat1, ListMusic, ChevronDown } from 'lucide-react';
+import { Play, Pause, SkipForward, SkipBack, Shuffle, Repeat, Repeat1, ListMusic, ChevronDown, Plus } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
 import { useState, useEffect, useRef } from 'react';
 
-const NowPlayingView = ({ onOpenQueue, onClose, layout = 'split' }) => {
+const NowPlayingView = ({ onOpenQueue, onClose, onAddToPlaylist, layout = 'split' }) => {
   const {
     currentTrack,
     isPlaying,
@@ -83,14 +83,26 @@ const NowPlayingView = ({ onOpenQueue, onClose, layout = 'split' }) => {
 
         <span className="text-label tracking-[0.35em]">Now Playing</span>
 
-        <button
-          onClick={onOpenQueue}
-          className="touch-target rounded-xl surface-raised text-gray-400 hover:text-gray-900 hover:bg-black/5 transition-all group"
-          aria-label="Open queue"
-          id="now-playing-queue-btn"
-        >
-          <ListMusic size={20} className="group-hover:scale-110 transition-transform" />
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => onAddToPlaylist?.(currentTrack)}
+            className="touch-target rounded-xl surface-raised text-gray-400 hover:text-gray-900 hover:bg-black/5 transition-all group"
+            aria-label="Add to playlist"
+            title="Add to playlist"
+            id="now-playing-add-playlist-btn"
+          >
+            <Plus size={20} className="group-hover:scale-110 transition-transform" />
+          </button>
+
+          <button
+            onClick={onOpenQueue}
+            className="touch-target rounded-xl surface-raised text-gray-400 hover:text-gray-900 hover:bg-black/5 transition-all group"
+            aria-label="Open queue"
+            id="now-playing-queue-btn"
+          >
+            <ListMusic size={20} className="group-hover:scale-110 transition-transform" />
+          </button>
+        </div>
       </div>
 
       {/* ── Main content ── */}

@@ -1,3 +1,4 @@
+import os
 import re
 from urllib.parse import parse_qs, urlparse
 
@@ -7,6 +8,12 @@ from django.db import transaction
 from django.utils import timezone
 
 from .models import Track
+
+# Clean up broken CA bundle environment variables pointing to non-existent files (e.g. Postgres SSL)
+for _env_var in ("REQUESTS_CA_BUNDLE", "CURL_CA_BUNDLE", "SSL_CERT_FILE"):
+    _val = os.environ.get(_env_var)
+    if _val and not os.path.exists(_val):
+        os.environ.pop(_env_var, None)
 
 
 class VideoNotFound(Exception):
@@ -101,7 +108,7 @@ def _fetch_track_via_oembed(video_id):
             },
             timeout=15,
         )
-    except requests.RequestException as exc:
+    except (requests.RequestException, OSError) as exc:
         raise YouTubeAPIError("Could not fetch video details") from exc
 
     if response.status_code == 404:
@@ -154,7 +161,7 @@ def fetch_or_create_track(url_or_id):
             },
             timeout=15,
         )
-    except requests.RequestException as exc:
+    except (requests.RequestException, OSError) as exc:
         raise YouTubeAPIError("Could not fetch video details") from exc
 
     if response.status_code != 200:
@@ -220,7 +227,7 @@ def fetch_playlist_video_ids(playlist_id, max_results=100):
                 },
                 timeout=15,
             )
-        except requests.RequestException as exc:
+        except (requests.RequestException, OSError) as exc:
             raise PlaylistError("Could not fetch playlist details") from exc
 
         if response.status_code != 200:
@@ -270,7 +277,7 @@ def search_youtube_videos(query, max_results=12):
             },
             timeout=15,
         )
-    except requests.RequestException as exc:
+    except (requests.RequestException, OSError) as exc:
         raise YouTubeAPIError("Could not search YouTube") from exc
 
     if response.status_code != 200:
@@ -311,7 +318,7 @@ def search_youtube_videos(query, max_results=12):
             },
             timeout=15,
         )
-    except requests.RequestException as exc:
+    except (requests.RequestException, OSError) as exc:
         raise YouTubeAPIError("Could not fetch video details") from exc
 
     if details_response.status_code == 200:

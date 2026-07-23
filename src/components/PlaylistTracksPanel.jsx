@@ -7,7 +7,7 @@ import { toPlayerQueue } from '../utils/playerTrackAdapter';
 import { searchYouTubeTracks } from '../api/playlists';
 import AddTrackInput from './AddTrackInput';
 import SortableTrackItem from './SortableTrackItem';
-import { Loader2, Music, Play, Search } from 'lucide-react';
+import { Loader2, Music, Play, Plus, Search } from 'lucide-react';
 
 const formatDuration = (seconds) => {
   if (!seconds || Number.isNaN(seconds)) return '--:--';
@@ -28,7 +28,7 @@ const toSearchQueueTrack = (track) => ({
   duration_seconds: track.duration_seconds ?? 0,
 });
 
-const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylist }) => {
+const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylist, onAddToPlaylist }) => {
   const { playlist, tracks, isLoading, error, addTrack, removeTrack, reorderTracks } = usePlaylist(playlistId);
   const { loadQueue, currentTrack } = usePlayer();
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
@@ -213,12 +213,9 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
           ) : searchResults.length ? (
             <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {searchResults.map((track, index) => (
-                <button
+                <div
                   key={`${track.youtube_id || track.id}-${index}`}
-                  type="button"
-                  onClick={() => handleSearchPlay(index)}
-                  className="group text-left rounded-[1.5rem] border border-black/[0.06] bg-white p-3 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline-2 focus-visible:outline-gray-900 sm:p-3.5"
-                  aria-label={`Play ${track.title}`}
+                  className="group text-left rounded-[1.5rem] border border-black/[0.06] bg-white p-3 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl sm:p-3.5 flex flex-col justify-between"
                 >
                   <div className="flex items-center gap-3 sm:block">
                     <div className="w-24 h-24 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 overflow-hidden rounded-[1.1rem] bg-black/[0.03]">
@@ -244,14 +241,32 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
                           {formatDuration(track.duration_seconds)}
                         </span>
                       </div>
-
-                      <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-gray-900 px-3.5 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-white transition-transform group-hover:translate-x-1 sm:px-4">
-                        <Play size={12} fill="currentColor" />
-                        Play
-                      </div>
                     </div>
                   </div>
-                </button>
+
+                  <div className="mt-3.5 flex items-center justify-between gap-2 pt-2 border-t border-black/[0.04]">
+                    <button
+                      type="button"
+                      onClick={() => handleSearchPlay(index)}
+                      className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-white shadow-sm hover:shadow transition-all hover:scale-105 active:scale-95"
+                      aria-label={`Play ${track.title}`}
+                    >
+                      <Play size={12} fill="currentColor" />
+                      Play
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => onAddToPlaylist?.(track)}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-black/[0.05] hover:bg-black/[0.09] px-3.5 py-2 text-[10px] font-black uppercase tracking-[0.14em] text-gray-800 transition-all hover:scale-105 active:scale-95"
+                      aria-label={`Save ${track.title} to playlist`}
+                      title="Add to Playlist"
+                    >
+                      <Plus size={13} strokeWidth={2.5} />
+                      <span>Save</span>
+                    </button>
+                  </div>
+                </div>
               ))}
             </div>
           ) : (

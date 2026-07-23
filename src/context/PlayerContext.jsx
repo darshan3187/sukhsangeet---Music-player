@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useRef, useEffect, useCallback, useMemo } from 'react';
 
 const PlayerContext = createContext();
@@ -136,55 +137,6 @@ export const PlayerProvider = ({ children }) => {
     persistPlayedIds();
   }, [persistPlayedIds]);
 
-  const loadQueue = useCallback((nextQueue, options = {}) => {
-    const normalizedQueue = [];
-    const seenIds = new Set();
-
-    if (Array.isArray(nextQueue)) {
-      nextQueue.forEach(track => {
-        if (!track?.youtubeId) return;
-        if (!seenIds.has(track.youtubeId)) {
-          seenIds.add(track.youtubeId);
-          normalizedQueue.push(cloneTrack(track));
-        }
-      });
-    }
-
-    const { autoPlayIndex = null, preserveCurrentTrack = true } = options;
-    const currentYoutubeId = stateRef.current.queue[stateRef.current.currentTrackIndex]?.youtubeId;
-
-    setQueue(normalizedQueue);
-
-    if (!normalizedQueue.length) {
-      setCurrentTrackIndex(0);
-      setIsPlaying(false);
-      setIsBuffering(false);
-      if (isReadyRef.current && playerRef.current) {
-        playerRef.current.pauseVideo();
-      }
-      return;
-    }
-
-    let nextIndex = 0;
-
-    if (preserveCurrentTrack && currentYoutubeId) {
-      const foundIndex = normalizedQueue.findIndex((track) => track?.youtubeId === currentYoutubeId);
-      if (foundIndex >= 0) {
-        nextIndex = foundIndex;
-      }
-    }
-
-    if (Number.isInteger(autoPlayIndex) && autoPlayIndex >= 0 && autoPlayIndex < normalizedQueue.length) {
-      nextIndex = autoPlayIndex;
-    }
-
-    setCurrentTrackIndex(nextIndex);
-
-    if (Number.isInteger(autoPlayIndex) && autoPlayIndex >= 0) {
-      playTrackByIndex(nextIndex, true, normalizedQueue);
-    }
-  }, []);
-
   const normalizeIndex = useCallback((index, arr = stateRef.current.queue) => {
     const length = arr.length;
     if (!length) return 0;
@@ -202,24 +154,6 @@ export const PlayerProvider = ({ children }) => {
     if (!remainingIndices.length) return baseIndex;
     return remainingIndices[Math.floor(Math.random() * remainingIndices.length)] ?? baseIndex;
   }, []);
-
-  const cuePreloadTrack = useCallback((indexToPreload, arr = stateRef.current.queue) => {
-    if (!preloadReadyRef.current || !preloadPlayerRef.current || arr.length < 2) return;
-
-    const targetIndex = normalizeIndex(indexToPreload, arr);
-    const targetTrack = arr[targetIndex];
-    if (!targetTrack?.youtubeId) return;
-
-    if (preloadedVideoIdRef.current === targetTrack.youtubeId) return;
-
-    // Optimization: cue the next track silently so switching feels instant.
-    preloadPlayerRef.current.cueVideoById({
-      videoId: targetTrack.youtubeId,
-      suggestedQuality: 'small'
-    });
-    preloadPlayerRef.current.setPlaybackQuality('small');
-    preloadedVideoIdRef.current = targetTrack.youtubeId;
-  }, [normalizeIndex]);
 
   const preloadTrack = useCallback((youtubeId) => {
     if (!youtubeId || !preloadReadyRef.current || !preloadPlayerRef.current) return false;
@@ -260,6 +194,24 @@ export const PlayerProvider = ({ children }) => {
     });
   }, [preloadTrack]);
 
+  const cuePreloadTrack = useCallback((indexToPreload, arr = stateRef.current.queue) => {
+    if (!preloadReadyRef.current || !preloadPlayerRef.current || arr.length < 2) return;
+
+    const targetIndex = normalizeIndex(indexToPreload, arr);
+    const targetTrack = arr[targetIndex];
+    if (!targetTrack?.youtubeId) return;
+
+    if (preloadedVideoIdRef.current === targetTrack.youtubeId) return;
+
+    // Optimization: cue the next track silently so switching feels instant.
+    preloadPlayerRef.current.cueVideoById({
+      videoId: targetTrack.youtubeId,
+      suggestedQuality: 'small'
+    });
+    preloadPlayerRef.current.setPlaybackQuality('small');
+    preloadedVideoIdRef.current = targetTrack.youtubeId;
+  }, [normalizeIndex]);
+
   const swapToPreloadedPlayer = useCallback((targetTrack) => {
     if (!preloadReadyRef.current || !preloadPlayerRef.current) return false;
     if (!targetTrack?.youtubeId || preloadedVideoIdRef.current !== targetTrack.youtubeId) return false;
@@ -288,27 +240,6 @@ export const PlayerProvider = ({ children }) => {
     hasPreloadedCurrentTrackRef.current = false;
     return true;
   }, []);
-
-  const swapPlayers = useCallback((targetIndex) => {
-    const activeQueue = stateRef.current.queue;
-    if (!activeQueue.length) return false;
-
-    const normalizedIndex = normalizeIndex(targetIndex, activeQueue);
-    const targetTrack = activeQueue[normalizedIndex];
-    if (!targetTrack) return false;
-
-    const swapped = swapToPreloadedPlayer(targetTrack);
-    if (!swapped) return false;
-
-    setCurrentTrackIndex(normalizedIndex);
-    setDuration(0);
-    setIsPlaying(true);
-    setIsBuffering(true);
-
-    const nextOfNextIndex = getNextIndex(normalizedIndex, activeQueue);
-    cuePreloadTrack(nextOfNextIndex, activeQueue);
-    return true;
-  }, [cuePreloadTrack, getNextIndex, normalizeIndex, swapToPreloadedPlayer]);
 
   const playTrackByIndex = useCallback((targetIndex, shouldAutoplay = true, queueOverride = null) => {
     const activeQueue = queueOverride ?? stateRef.current.queue;
@@ -362,6 +293,76 @@ export const PlayerProvider = ({ children }) => {
     const nextIndex = getNextIndex(normalizedIndex, activeQueue);
     cuePreloadTrack(nextIndex, activeQueue);
   }, [cuePreloadTrack, getNextIndex, normalizeIndex, requestPlayerInitialization, swapToPreloadedPlayer]);
+
+  const loadQueue = useCallback((nextQueue, options = {}) => {
+    const normalizedQueue = [];
+    const seenIds = new Set();
+
+    if (Array.isArray(nextQueue)) {
+      nextQueue.forEach(track => {
+        if (!track?.youtubeId) return;
+        if (!seenIds.has(track.youtubeId)) {
+          seenIds.add(track.youtubeId);
+          normalizedQueue.push(cloneTrack(track));
+        }
+      });
+    }
+
+    const { autoPlayIndex = null, preserveCurrentTrack = true } = options;
+    const currentYoutubeId = stateRef.current.queue[stateRef.current.currentTrackIndex]?.youtubeId;
+
+    setQueue(normalizedQueue);
+
+    if (!normalizedQueue.length) {
+      setCurrentTrackIndex(0);
+      setIsPlaying(false);
+      setIsBuffering(false);
+      if (isReadyRef.current && playerRef.current) {
+        playerRef.current.pauseVideo();
+      }
+      return;
+    }
+
+    let nextIndex = 0;
+
+    if (preserveCurrentTrack && currentYoutubeId) {
+      const foundIndex = normalizedQueue.findIndex((track) => track?.youtubeId === currentYoutubeId);
+      if (foundIndex >= 0) {
+        nextIndex = foundIndex;
+      }
+    }
+
+    if (Number.isInteger(autoPlayIndex) && autoPlayIndex >= 0 && autoPlayIndex < normalizedQueue.length) {
+      nextIndex = autoPlayIndex;
+    }
+
+    setCurrentTrackIndex(nextIndex);
+
+    if (Number.isInteger(autoPlayIndex) && autoPlayIndex >= 0) {
+      playTrackByIndex(nextIndex, true, normalizedQueue);
+    }
+  }, [playTrackByIndex]);
+
+  const swapPlayers = useCallback((targetIndex) => {
+    const activeQueue = stateRef.current.queue;
+    if (!activeQueue.length) return false;
+
+    const normalizedIndex = normalizeIndex(targetIndex, activeQueue);
+    const targetTrack = activeQueue[normalizedIndex];
+    if (!targetTrack) return false;
+
+    const swapped = swapToPreloadedPlayer(targetTrack);
+    if (!swapped) return false;
+
+    setCurrentTrackIndex(normalizedIndex);
+    setDuration(0);
+    setIsPlaying(true);
+    setIsBuffering(true);
+
+    const nextOfNextIndex = getNextIndex(normalizedIndex, activeQueue);
+    cuePreloadTrack(nextOfNextIndex, activeQueue);
+    return true;
+  }, [cuePreloadTrack, getNextIndex, normalizeIndex, swapToPreloadedPlayer]);
 
   const switchTrack = useCallback((targetIndex) => {
     if (switchTimeoutRef.current) {

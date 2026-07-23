@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 
 const Landing = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [openFAQ, setOpenFAQ] = useState(null);
 
   return (

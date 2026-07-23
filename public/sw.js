@@ -59,8 +59,9 @@ self.addEventListener('fetch', (event) => {
       fetch(event.request)
         .then((response) => {
           if (response.ok) {
+            const copy = response.clone();
             const cacheName = url.pathname.includes('playlists') ? PLAYLIST_CACHE : RUNTIME_CACHE;
-            caches.open(cacheName).then((c) => c.put(event.request, response.clone()));
+            caches.open(cacheName).then((c) => c.put(event.request, copy));
           }
           return response;
         })
@@ -90,7 +91,10 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          caches.open(RUNTIME_CACHE).then((cache) => cache.put(event.request, response.clone()));
+          if (response.ok) {
+            const copy = response.clone();
+            caches.open(RUNTIME_CACHE).then((cache) => cache.put(event.request, copy));
+          }
           return response;
         })
         .catch(() => caches.match(event.request))
@@ -102,7 +106,8 @@ self.addEventListener('fetch', (event) => {
     fetch(event.request)
       .then((response) => {
         if (response.ok) {
-          caches.open(RUNTIME_CACHE).then((cache) => cache.put(event.request, response.clone()));
+          const copy = response.clone();
+          caches.open(RUNTIME_CACHE).then((cache) => cache.put(event.request, copy));
         }
         return response;
       })

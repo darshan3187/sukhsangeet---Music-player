@@ -4,12 +4,13 @@ import { ListMusic, Plus, Library, Play, Pause, X, LogOut, PanelLeftOpen, SkipBa
 import PlaylistSidebar from './PlaylistSidebar';
 import PlaylistTracksPanel from './PlaylistTracksPanel';
 import CreatePlaylistModal from './CreatePlaylistModal';
+import AddToPlaylistModal from './AddToPlaylistModal';
 import TrackDrawer from './TrackDrawer';
 import NowPlayingView from './NowPlayingView';
 import { usePlaylists } from '../hooks/usePlaylists';
 import { usePlayer } from '../context/PlayerContext';
 import { useAuth } from '../context/AuthContext';
-import { importPlaylist } from '../api/playlists';
+import { importPlaylist, addTrackByYoutubeId } from '../api/playlists';
 
 const PlaylistWorkspace = () => {
   const navigate = useNavigate();
@@ -21,6 +22,8 @@ const PlaylistWorkspace = () => {
   const [isQueueOpen, setIsQueueOpen] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isNowPlayingFull, setIsNowPlayingFull] = useState(false);
+  const [addToPlaylistTrack, setAddToPlaylistTrack] = useState(null);
+  const [pendingTrackForNewPlaylist, setPendingTrackForNewPlaylist] = useState(null);
   const nowPlayingResetRef = useRef(0);
 
   useEffect(() => {
@@ -59,10 +62,26 @@ const PlaylistWorkspace = () => {
 
   const handleCreatePlaylist = useCallback(async (name, description) => {
     const created = await createPlaylist(name, description);
-    if (created?.id) navigate(`/find-music/playlist/${created.id}`, { replace: true });
+    if (created?.id) {
+      if (pendingTrackForNewPlaylist) {
+        const targetYoutubeId = pendingTrackForNewPlaylist.youtubeId || pendingTrackForNewPlaylist.youtube_id || pendingTrackForNewPlaylist.id;
+        try {
+          await addTrackByYoutubeId(created.id, targetYoutubeId);
+        } catch (err) {
+          console.error('Failed to auto-add track to newly created playlist:', err);
+        }
+        setPendingTrackForNewPlaylist(null);
+      }
+      navigate(`/find-music/playlist/${created.id}`, { replace: true });
+    }
     setIsCreateOpen(false);
     return created;
-  }, [createPlaylist, navigate]);
+  }, [createPlaylist, navigate, pendingTrackForNewPlaylist]);
+
+  const handleRequestCreatePlaylist = useCallback((track) => {
+    setPendingTrackForNewPlaylist(track);
+    setIsCreateOpen(true);
+  }, []);
 
   const handleSelectPlaylist = useCallback((id) => {
     navigate(`/find-music/playlist/${id}`);
@@ -229,6 +248,7 @@ const PlaylistWorkspace = () => {
               <NowPlayingView
                 onOpenQueue={() => setIsQueueOpen(true)}
                 onClose={() => setIsNowPlayingFull(false)}
+                onAddToPlaylist={setAddToPlaylistTrack}
               />
             </div>
           ) : (
@@ -236,6 +256,7 @@ const PlaylistWorkspace = () => {
               playlistId={routePlaylistId}
               onRequestOpenLibrary={handleOpenLibrary}
               onImportPlaylist={handleImportPlaylist}
+              onAddToPlaylist={setAddToPlaylistTrack}
             />
           )}
         </div>
@@ -381,6 +402,16 @@ const PlaylistWorkspace = () => {
             </button>
 
             <button
+              onClick={() => setAddToPlaylistTrack(currentTrack)}
+              className="touch-target rounded-xl text-gray-600 hover:bg-black/5 hover:text-gray-900 transition-all"
+              aria-label="Add to playlist"
+              title="Add to playlist"
+              id="desktop-mini-add-playlist-btn"
+            >
+              <Plus size={18} />
+            </button>
+
+            <button
               onClick={() => setIsQueueOpen(true)}
               className="touch-target rounded-xl text-gray-600 hover:bg-black/5 hover:text-gray-900 transition-all"
               aria-label="Open queue"
@@ -413,8 +444,17 @@ const PlaylistWorkspace = () => {
       <TrackDrawer isOpen={isQueueOpen} onClose={() => setIsQueueOpen(false)} />
       <CreatePlaylistModal
         isOpen={isCreateOpen}
-        onClose={() => setIsCreateOpen(false)}
+        onClose={() => {
+          setIsCreateOpen(false);
+          setPendingTrackForNewPlaylist(null);
+        }}
         onCreate={handleCreatePlaylist}
+      />
+      <AddToPlaylistModal
+        isOpen={Boolean(addToPlaylistTrack)}
+        onClose={() => setAddToPlaylistTrack(null)}
+        track={addToPlaylistTrack}
+        onRequestCreatePlaylist={handleRequestCreatePlaylist}
       />
     </div>
   );

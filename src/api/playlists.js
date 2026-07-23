@@ -25,6 +25,10 @@ export const addTrack = async (playlistId, youtubeUrl) => {
   return response.data;
 };
 
+export const addTrackByYoutubeId = async (playlistId, youtubeId) => {
+  return addTrack(playlistId, `https://www.youtube.com/watch?v=${youtubeId}`);
+};
+
 export const importPlaylist = async (youtubePlaylistUrl, playlistName) => {
   const response = await api.post('/playlists/import/', { 
     url: youtubePlaylistUrl,

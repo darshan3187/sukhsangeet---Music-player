@@ -254,5 +254,7 @@ class YouTubeSearchView(APIView):
             results = search_youtube_videos(query, max_results=max_results)
         except YouTubeAPIError as exc:
             return Response({"error": str(exc)}, status=status.HTTP_502_BAD_GATEWAY)
+        except Exception as exc:
+            return Response({"error": "An unexpected error occurred while searching YouTube."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         return Response({"query": query, "results": results}, status=status.HTTP_200_OK)
