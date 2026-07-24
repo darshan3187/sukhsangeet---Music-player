@@ -5,7 +5,6 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from decouple import config
 from rest_framework.authentication import BaseAuthentication
-from rest_framework.exceptions import AuthenticationFailed
 
 User = get_user_model()
 
@@ -16,7 +15,7 @@ def get_clerk_jwks():
     if not jwks:
         issuer = config("CLERK_ISSUER", default="").rstrip("/")
         if not issuer:
-            raise AuthenticationFailed("CLERK_ISSUER not configured")
+            return None
         
         jwks_url = f"{issuer}/.well-known/jwks.json"
         try:
@@ -25,9 +24,9 @@ def get_clerk_jwks():
                 jwks = res.json()
                 cache.set("clerk_jwks", jwks, 3600 * 24)  # Cache for 24h
             else:
-                raise AuthenticationFailed("Failed to retrieve Clerk public keys")
-        except Exception as e:
-            raise AuthenticationFailed("Could not connect to Clerk auth provider") from e
+                return None
+        except Exception:
+            return None
 
     return jwks
 
@@ -41,39 +40,50 @@ class ClerkAuthentication(BaseAuthentication):
         token = auth_header.split(" ")[1]
 
         try:
-            # Unverified header to find kid
             header = jwt.get_unverified_header(token)
-            kid = header.get("kid")
-            jwks = get_clerk_jwks()
+        except Exception:
+            return None
 
-            public_key = None
-            for key in jwks.get("keys", []):
-                if key.get("kid") == kid:
-                    public_key = RSAAlgorithm.from_jwk(key)
-                    break
+        kid = header.get("kid")
+        alg = header.get("alg")
 
-            if not public_key:
-                raise AuthenticationFailed("Invalid token key identifier")
+        # Clerk tokens are RS256 signed with a JWKS key identifier ('kid')
+        if not kid or alg != "RS256":
+            return None
 
+        jwks = get_clerk_jwks()
+        if not jwks:
+            return None
+
+        public_key = None
+        for key in jwks.get("keys", []):
+            if key.get("kid") == kid:
+                public_key = RSAAlgorithm.from_jwk(key)
+                break
+
+        if not public_key:
+            return None
+
+        try:
             issuer = config("CLERK_ISSUER", default="").rstrip("/")
             payload = jwt.decode(
                 token,
                 key=public_key,
                 algorithms=["RS256"],
                 options={"verify_aud": False},
-                issuer=issuer,
+                issuer=issuer if issuer else None,
             )
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed("Authentication token has expired")
-        except jwt.InvalidTokenError as e:
-            raise AuthenticationFailed(f"Invalid authentication token: {str(e)}")
+        except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+            return None
 
         clerk_user_id = payload.get("sub")
+        if not clerk_user_id:
+            return None
+
         email = payload.get("email") or f"{clerk_user_id}@clerk.user"
         first_name = payload.get("first_name", "")
         last_name = payload.get("last_name", "")
 
-        # Get or create corresponding local Django user
         user, created = User.objects.get_or_create(
             username=clerk_user_id,
             defaults={
