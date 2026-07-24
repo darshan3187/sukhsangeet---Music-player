@@ -84,13 +84,30 @@ class ClerkAuthentication(BaseAuthentication):
         first_name = payload.get("first_name", "")
         last_name = payload.get("last_name", "")
 
-        user, created = User.objects.get_or_create(
-            username=clerk_user_id,
-            defaults={
-                "email": email,
-                "first_name": first_name,
-                "last_name": last_name,
-            },
-        )
+        user = User.objects.filter(username=clerk_user_id).first()
+        if not user and email:
+            user = User.objects.filter(email__iexact=email).first()
+            if user:
+                try:
+                    user.username = clerk_user_id
+                    user.save(update_fields=["username"])
+                except Exception:
+                    pass
+
+        if not user:
+            try:
+                user = User.objects.create(
+                    username=clerk_user_id,
+                    email=email,
+                    first_name=first_name,
+                    last_name=last_name,
+                )
+                user.set_unusable_password()
+                user.save()
+            except Exception:
+                user, _ = User.objects.get_or_create(
+                    username=f"clerk_{clerk_user_id[:20]}",
+                    defaults={"email": f"{clerk_user_id}@clerk.user"}
+                )
 
         return (user, token)
