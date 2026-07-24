@@ -96,8 +96,20 @@ const refreshAccessToken = async () => {
   return newAccessToken;
 };
 
-api.interceptors.request.use((config) => {
-  const token = getAccessToken();
+api.interceptors.request.use(async (config) => {
+  let token = null;
+  try {
+    if (window.Clerk && window.Clerk.session) {
+      token = await window.Clerk.session.getToken();
+    }
+  } catch (err) {
+    // Ignore error
+  }
+
+  if (!token) {
+    token = getAccessToken();
+  }
+
   if (token) {
     config.headers = config.headers ?? {};
     config.headers.Authorization = `Bearer ${token}`;

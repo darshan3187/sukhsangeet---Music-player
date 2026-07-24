@@ -49,15 +49,21 @@ class ErrorBoundary extends Component {
   }
 }
 
+import { ClerkProvider } from '@clerk/clerk-react';
+
+const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_dummy_key_for_dev';
+
 createRoot(document.getElementById('root')).render(
   <HelmetProvider> 
     <ErrorBoundary>
-    <BrowserRouter>
-      <AuthProvider>
-        <App />
-        <Analytics />
-      </AuthProvider>
-    </BrowserRouter>
-  </ErrorBoundary>
+      <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
+        <BrowserRouter>
+          <AuthProvider>
+            <App />
+            <Analytics />
+          </AuthProvider>
+        </BrowserRouter>
+      </ClerkProvider>
+    </ErrorBoundary>
   </HelmetProvider>
 )

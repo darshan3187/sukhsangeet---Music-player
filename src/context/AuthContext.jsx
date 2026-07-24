@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser, useAuth as useClerkAuth, useClerk } from '@clerk/clerk-react';
 import api, { setAuthFailureHandler } from '../api/axios';
 import { clearTokens, getAccessToken, getRefreshToken, setAccessToken, setRefreshToken } from '../api/tokens';
 
@@ -16,17 +17,21 @@ export const useAuth = () => {
 
 const normalizeUser = (user) => ({
   id: user?.id ?? null,
-  username: user?.username ?? '',
-  email: user?.email ?? '',
-  avatar_url: user?.avatar_url ?? null,
+  username: user?.username || user?.firstName || user?.emailAddress || 'User',
+  email: user?.email || user?.primaryEmailAddress?.emailAddress || '',
+  avatar_url: user?.avatar_url || user?.imageUrl || null,
 });
 
 const isAuthErrorStatus = (status) => status === 401 || status === 403;
 
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { isLoaded: isClerkLoaded, isSignedIn: isClerkSignedIn, user: clerkUser } = useUser();
+  const { signOut: clerkSignOut } = useClerk();
+  const { getToken: getClerkToken } = useClerkAuth();
+
+  const [localUser, setLocalUser] = useState(null);
+  const [isLoadingLocal, setIsLoadingLocal] = useState(true);
 
   const applySession = useCallback((payload) => {
     if (!payload?.access || !payload?.refresh || !payload?.user) {
@@ -35,12 +40,12 @@ export const AuthProvider = ({ children }) => {
 
     setAccessToken(payload.access);
     setRefreshToken(payload.refresh);
-    setUser(normalizeUser(payload.user));
+    setLocalUser(normalizeUser(payload.user));
   }, []);
 
   const clearSession = useCallback(() => {
     clearTokens();
-    setUser(null);
+    setLocalUser(null);
   }, []);
 
   const login = useCallback(async (email, password) => {
@@ -56,16 +61,21 @@ export const AuthProvider = ({ children }) => {
   }, [applySession]);
 
   const logout = useCallback(async () => {
+    if (isClerkSignedIn) {
+      await clerkSignOut();
+    }
     const refreshToken = getRefreshToken();
     try {
       if (refreshToken) {
         await api.post('/auth/logout/', { refresh: refreshToken });
       }
+    } catch {
+      // Ignore
     } finally {
       clearSession();
       navigate('/', { replace: true });
     }
-  }, [clearSession, navigate]);
+  }, [clearSession, isClerkSignedIn, clerkSignOut, navigate]);
 
   useEffect(() => {
     setAuthFailureHandler(() => {
@@ -85,28 +95,23 @@ export const AuthProvider = ({ children }) => {
       const accessToken = getAccessToken();
       if (!accessToken) {
         if (isActive) {
-          setIsLoading(false);
+          setIsLoadingLocal(false);
         }
         return;
       }
 
       try {
         const response = await api.get('/auth/me/');
-        if (!isActive) {
-          return;
-        }
-        setUser(normalizeUser(response.data));
+        if (!isActive) return;
+        setLocalUser(normalizeUser(response.data));
       } catch (error) {
-        if (!isActive) {
-          return;
-        }
-
+        if (!isActive) return;
         if (isAuthErrorStatus(error?.response?.status)) {
           clearSession();
         }
       } finally {
         if (isActive) {
-          setIsLoading(false);
+          setIsLoadingLocal(false);
         }
       }
     };
@@ -118,14 +123,19 @@ export const AuthProvider = ({ children }) => {
     };
   }, [clearSession]);
 
+  const activeUser = isClerkSignedIn && clerkUser ? normalizeUser(clerkUser) : localUser;
+  const isAuthenticated = Boolean(isClerkSignedIn || localUser || getAccessToken() || getRefreshToken());
+  const isLoading = !isClerkLoaded || (isLoadingLocal && !isClerkSignedIn);
+
   const value = useMemo(() => ({
-    user,
+    user: activeUser,
     login,
     register,
     logout,
-    isAuthenticated: Boolean(user || getAccessToken() || getRefreshToken()),
+    isAuthenticated,
     isLoading,
-  }), [isLoading, login, logout, register, user]);
+    getClerkToken,
+  }), [activeUser, isAuthenticated, isLoading, login, logout, register, getClerkToken]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
