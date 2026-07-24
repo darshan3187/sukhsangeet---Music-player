@@ -24,7 +24,15 @@ const normalizeUser = (user) => ({
 
 const isAuthErrorStatus = (status) => status === 401 || status === 403;
 
-export const AuthProvider = ({ children }) => {
+const rawClerkKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+const hasClerk = Boolean(
+  rawClerkKey &&
+  rawClerkKey.startsWith('pk_') &&
+  !rawClerkKey.includes('dummy')
+);
+
+// Auth provider when Clerk is enabled
+const ClerkInnerAuthProvider = ({ children }) => {
   const navigate = useNavigate();
   const { isLoaded: isClerkLoaded, isSignedIn: isClerkSignedIn, user: clerkUser } = useUser();
   const { signOut: clerkSignOut } = useClerk();
@@ -138,4 +146,117 @@ export const AuthProvider = ({ children }) => {
   }), [activeUser, isAuthenticated, isLoading, login, logout, register, getClerkToken]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+// Auth provider fallback when Clerk is not enabled
+const LocalAuthProvider = ({ children }) => {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const applySession = useCallback((payload) => {
+    if (!payload?.access || !payload?.refresh || !payload?.user) {
+      throw new Error('Invalid auth payload');
+    }
+
+    setAccessToken(payload.access);
+    setRefreshToken(payload.refresh);
+    setUser(normalizeUser(payload.user));
+  }, []);
+
+  const clearSession = useCallback(() => {
+    clearTokens();
+    setUser(null);
+  }, []);
+
+  const login = useCallback(async (email, password) => {
+    const response = await api.post('/auth/login/', { email, password });
+    applySession(response.data);
+    return response.data;
+  }, [applySession]);
+
+  const register = useCallback(async (username, email, password) => {
+    const response = await api.post('/auth/register/', { username, email, password });
+    applySession(response.data);
+    return response.data;
+  }, [applySession]);
+
+  const logout = useCallback(async () => {
+    const refreshToken = getRefreshToken();
+    try {
+      if (refreshToken) {
+        await api.post('/auth/logout/', { refresh: refreshToken });
+      }
+    } catch {
+      // Ignore
+    } finally {
+      clearSession();
+      navigate('/', { replace: true });
+    }
+  }, [clearSession, navigate]);
+
+  useEffect(() => {
+    setAuthFailureHandler(() => {
+      clearSession();
+      navigate('/login', { replace: true });
+    });
+
+    return () => {
+      setAuthFailureHandler(null);
+    };
+  }, [clearSession, navigate]);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const hydrateUser = async () => {
+      const accessToken = getAccessToken();
+      if (!accessToken) {
+        if (isActive) {
+          setIsLoading(false);
+        }
+        return;
+      }
+
+      try {
+        const response = await api.get('/auth/me/');
+        if (!isActive) return;
+        setUser(normalizeUser(response.data));
+      } catch (error) {
+        if (!isActive) return;
+        if (isAuthErrorStatus(error?.response?.status)) {
+          clearSession();
+        }
+      } finally {
+        if (isActive) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    hydrateUser();
+
+    return () => {
+      isActive = false;
+    };
+  }, [clearSession]);
+
+  const value = useMemo(() => ({
+    user,
+    login,
+    register,
+    logout,
+    isAuthenticated: Boolean(user || getAccessToken() || getRefreshToken()),
+    isLoading,
+    getClerkToken: async () => null,
+  }), [isLoading, login, logout, register, user]);
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
+
+export const AuthProvider = ({ children }) => {
+  if (hasClerk) {
+    return <ClerkInnerAuthProvider>{children}</ClerkInnerAuthProvider>;
+  }
+  return <LocalAuthProvider>{children}</LocalAuthProvider>;
 };
