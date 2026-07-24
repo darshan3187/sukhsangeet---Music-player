@@ -1,11 +1,19 @@
-import { Component } from 'react'
-import { BrowserRouter } from 'react-router-dom'
-import { createRoot } from 'react-dom/client'
-import { Analytics } from '@vercel/analytics/react'
-import './index.css'
-import App from './App.jsx'
-import { AuthProvider } from './context/AuthContext.jsx'
+import { Component } from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { createRoot } from 'react-dom/client';
+import { Analytics } from '@vercel/analytics/react';
+import './index.css';
+import App from './App.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
 import { HelmetProvider } from 'react-helmet-async';
+import { ClerkProvider } from '@clerk/clerk-react';
+
+const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+const isValidClerkKey = Boolean(
+  CLERK_PUBLISHABLE_KEY &&
+  CLERK_PUBLISHABLE_KEY.startsWith('pk_') &&
+  !CLERK_PUBLISHABLE_KEY.includes('dummy')
+);
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
@@ -21,12 +29,12 @@ if ('serviceWorker' in navigator) {
 
 class ErrorBoundary extends Component {
   constructor(props) {
-    super(props)
-    this.state = { hasError: false }
+    super(props);
+    this.state = { hasError: false };
   }
 
   static getDerivedStateFromError() {
-    return { hasError: true }
+    return { hasError: true };
   }
 
   render() {
@@ -42,28 +50,38 @@ class ErrorBoundary extends Component {
             Reload
           </button>
         </div>
-      )
+      );
     }
 
-    return this.props.children
+    return this.props.children;
   }
 }
 
-import { ClerkProvider } from '@clerk/clerk-react';
+const renderAppContent = () => {
+  const innerApp = (
+    <BrowserRouter>
+      <AuthProvider>
+        <App />
+        <Analytics />
+      </AuthProvider>
+    </BrowserRouter>
+  );
 
-const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_dummy_key_for_dev';
+  if (isValidClerkKey) {
+    return (
+      <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
+        {innerApp}
+      </ClerkProvider>
+    );
+  }
+
+  return innerApp;
+};
 
 createRoot(document.getElementById('root')).render(
-  <HelmetProvider> 
+  <HelmetProvider>
     <ErrorBoundary>
-      <ClerkProvider publishableKey={CLERK_PUBLISHABLE_KEY}>
-        <BrowserRouter>
-          <AuthProvider>
-            <App />
-            <Analytics />
-          </AuthProvider>
-        </BrowserRouter>
-      </ClerkProvider>
+      {renderAppContent()}
     </ErrorBoundary>
   </HelmetProvider>
-)
+);

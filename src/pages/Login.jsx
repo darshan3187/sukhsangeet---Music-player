@@ -3,7 +3,12 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { SignIn } from '@clerk/clerk-react';
 import { useAuth } from '../context/AuthContext';
 
-const hasClerkKey = Boolean(import.meta.env.VITE_CLERK_PUBLISHABLE_KEY);
+const rawClerkKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
+const hasClerkKey = Boolean(
+  rawClerkKey &&
+  rawClerkKey.startsWith('pk_') &&
+  !rawClerkKey.includes('dummy')
+);
 
 const inputCls = `
   w-full rounded-xl border border-black/[0.06] bg-black/[0.03]
