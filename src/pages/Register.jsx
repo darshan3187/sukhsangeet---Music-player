@@ -31,10 +31,14 @@ const Register = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (isAuthenticated && !isLoading) navigate('/find-music', { replace: true });
+    if (!hasClerkKey && isAuthenticated && !isLoading) {
+      navigate('/find-music', { replace: true });
+    }
   }, [isAuthenticated, isLoading, navigate]);
 
-  if (isAuthenticated && !isLoading) return <Navigate to="/find-music" replace />;
+  if (!hasClerkKey && isAuthenticated && !isLoading) {
+    return <Navigate to="/find-music" replace />;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
