@@ -68,7 +68,15 @@ const Register = () => {
 
       <div className="w-full max-w-[420px] relative z-10 animate-fade-in-up flex flex-col items-center">
         {hasClerkKey ? (
-          <SignUp routing="path" path="/register" signInUrl="/login" fallbackRedirectUrl="/find-music" />
+          <SignUp
+            routing="path"
+            path="/register"
+            signInUrl="/login"
+            fallbackRedirectUrl="/find-music"
+            forceRedirectUrl="/find-music"
+            signUpFallbackRedirectUrl="/find-music"
+            signUpForceRedirectUrl="/find-music"
+          />
         ) : (
           <div className="w-full surface-raised rounded-[2.5rem] p-8 md:p-10 shadow-xl">
             <div className="text-center mb-8">

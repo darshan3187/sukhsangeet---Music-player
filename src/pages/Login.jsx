@@ -47,9 +47,10 @@ const Login = () => {
       navigate('/find-music', { replace: true });
     } catch (err) {
       setError(
-        err?.response?.data?.error ||
         err?.response?.data?.detail ||
-        'Unable to sign in. Please check your credentials.'
+          err?.response?.data?.error ||
+          err?.message ||
+          'Invalid credentials.'
       );
     } finally {
       setIsSubmitting(false);
@@ -66,7 +67,15 @@ const Login = () => {
 
       <div className="w-full max-w-[420px] relative z-10 animate-fade-in-up flex flex-col items-center">
         {hasClerkKey ? (
-          <SignIn routing="path" path="/login" signUpUrl="/register" fallbackRedirectUrl="/find-music" />
+          <SignIn
+            routing="path"
+            path="/login"
+            signUpUrl="/register"
+            fallbackRedirectUrl="/find-music"
+            forceRedirectUrl="/find-music"
+            signInFallbackRedirectUrl="/find-music"
+            signInForceRedirectUrl="/find-music"
+          />
         ) : (
           <div className="w-full surface-raised rounded-[2.5rem] p-8 md:p-10 shadow-xl">
             <div className="text-center mb-8">
