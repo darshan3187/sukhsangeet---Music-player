@@ -28,8 +28,8 @@ function App() {
       <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login/*" element={<Login />} />
+          <Route path="/register/*" element={<Register />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/find-music" element={<PlayerAppShell />} />
             <Route path="/find-music/playlist/:id" element={<PlayerAppShell />} />
