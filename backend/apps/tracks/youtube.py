@@ -1,9 +1,11 @@
+import html
 import os
 import re
 from urllib.parse import parse_qs, urlparse
 
 import requests
 from decouple import config
+from django.core.cache import cache
 from django.db import transaction
 from django.utils import timezone
 
@@ -119,11 +121,13 @@ def _fetch_track_via_oembed(video_id):
 
     payload = response.json()
     thumbnail_url = payload.get("thumbnail_url") or _fallback_thumbnail_url(video_id)
+    raw_title = payload.get("title", "Unknown Title")
+    raw_artist = payload.get("author_name", "YouTube")
     track, _ = Track.objects.get_or_create(
         youtube_id=video_id,
         defaults={
-            "title": payload.get("title", "Unknown Title"),
-            "artist": payload.get("author_name", "YouTube"),
+            "title": html.unescape(raw_title) if raw_title else "Unknown Title",
+            "artist": html.unescape(raw_artist) if raw_artist else "YouTube",
             "thumbnail_url": thumbnail_url,
             "duration_seconds": 0,
             "cached_at": timezone.now(),
@@ -185,12 +189,14 @@ def fetch_or_create_track(url_or_id):
     snippet = item.get("snippet") or {}
     content_details = item.get("contentDetails") or {}
     thumbnail_url = _pick_thumbnail(snippet.get("thumbnails") or {}) or _fallback_thumbnail_url(video_id)
+    raw_title = snippet.get("title", "")
+    raw_artist = snippet.get("channelTitle", "")
 
     track, _ = Track.objects.get_or_create(
         youtube_id=video_id,
         defaults={
-            "title": snippet.get("title", ""),
-            "artist": snippet.get("channelTitle", ""),
+            "title": html.unescape(raw_title) if raw_title else "Unknown Title",
+            "artist": html.unescape(raw_artist) if raw_artist else "YouTube",
             "thumbnail_url": thumbnail_url,
             "duration_seconds": parse_iso8601_duration(content_details.get("duration", "")),
             "cached_at": timezone.now(),
@@ -254,10 +260,15 @@ def fetch_playlist_video_ids(playlist_id, max_results=100):
 
 
 def search_youtube_videos(query, max_results=12):
-    """Search YouTube for videos and return track-like metadata."""
+    """Search YouTube for videos and return track-like metadata ultra-fast."""
     search_query = (query or "").strip()
     if not search_query:
         return []
+
+    cache_key = f"yt_search_v2_{search_query.lower()}_{max_results}"
+    cached_res = cache.get(cache_key)
+    if cached_res is not None:
+        return cached_res
 
     api_key = config("YOUTUBE_API_KEY", default="")
     if not api_key:
@@ -275,10 +286,10 @@ def search_youtube_videos(query, max_results=12):
                 "videoEmbeddable": "true",
                 "key": api_key,
             },
-            timeout=15,
+            timeout=5,
         )
     except (requests.RequestException, OSError) as exc:
-        raise YouTubeAPIError("Could not search YouTube") from exc
+        raise YouTubeAPIError("Could not search YouTube due to network timeout. Try clicking 'Search on YouTube'.") from exc
 
     if response.status_code != 200:
         raise YouTubeAPIError("Could not search YouTube")
@@ -305,6 +316,7 @@ def search_youtube_videos(query, max_results=12):
         video_ids.append(video_id)
 
     if not video_ids:
+        cache.set(cache_key, [], 600)
         return []
 
     details_by_id = {}
@@ -312,48 +324,42 @@ def search_youtube_videos(query, max_results=12):
         details_response = requests.get(
             "https://www.googleapis.com/youtube/v3/videos",
             params={
-                "part": "snippet,contentDetails",
+                "part": "contentDetails",
                 "id": ",".join(video_ids),
                 "key": api_key,
             },
-            timeout=15,
+            timeout=2.5,
         )
-    except (requests.RequestException, OSError) as exc:
-        raise YouTubeAPIError("Could not fetch video details") from exc
-
-    if details_response.status_code == 200:
-        details_payload = details_response.json()
-        for item in details_payload.get("items") or []:
-            video_id = item.get("id")
-            if not video_id:
-                continue
-
-            snippet = item.get("snippet") or {}
-            content_details = item.get("contentDetails") or {}
-            details_by_id[video_id] = {
-                "title": snippet.get("title", "Unknown Title"),
-                "artist": snippet.get("channelTitle", "YouTube"),
-                "thumbnail_url": _pick_thumbnail(snippet.get("thumbnails") or {}) or _fallback_thumbnail_url(video_id),
-                "duration_seconds": parse_iso8601_duration(content_details.get("duration", "")),
-            }
+        if details_response.status_code == 200:
+            details_payload = details_response.json()
+            for item in details_payload.get("items") or []:
+                v_id = item.get("id")
+                content_details = item.get("contentDetails") or {}
+                if v_id:
+                    details_by_id[v_id] = parse_iso8601_duration(content_details.get("duration", ""))
+    except Exception:
+        pass
 
     results = []
     for video_id in video_ids[:max_results]:
-        detail = details_by_id.get(video_id)
         snippet = search_meta.get(video_id) or {}
         thumbnail_url = _pick_thumbnail(snippet.get("thumbnails") or {}) or _fallback_thumbnail_url(video_id)
+        raw_snip_t = snippet.get("title", "Unknown Title")
+        raw_snip_a = snippet.get("channelTitle", "YouTube")
+        duration = details_by_id.get(video_id, 0)
 
         results.append(
             {
                 "id": video_id,
                 "youtube_id": video_id,
-                "title": (detail or {}).get("title") or snippet.get("title", "Unknown Title"),
-                "artist": (detail or {}).get("artist") or snippet.get("channelTitle", "YouTube"),
-                "thumbnail_url": (detail or {}).get("thumbnail_url") or thumbnail_url,
-                "duration_seconds": (detail or {}).get("duration_seconds", 0),
+                "title": html.unescape(raw_snip_t) if raw_snip_t else "Unknown Title",
+                "artist": html.unescape(raw_snip_a) if raw_snip_a else "YouTube",
+                "thumbnail_url": thumbnail_url,
+                "duration_seconds": duration,
             }
         )
 
+    cache.set(cache_key, results, 900)
     return results
 
 

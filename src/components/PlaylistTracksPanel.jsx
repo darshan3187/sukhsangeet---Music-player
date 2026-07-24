@@ -360,8 +360,8 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
               <Search size={28} className="text-gray-400" aria-hidden="true" />
             </div>
             <p className="text-label">No Tracks Yet</p>
-            <p className="text-body-sm mt-2 max-w-[200px] text-center">
-              Paste a YouTube URL above to add your first track.
+            <p className="text-body-sm mt-2 max-w-[260px] text-center">
+              Search YouTube above or paste a URL to add your first track.
             </p>
           </div>
         ) : (
