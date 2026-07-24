@@ -1,6 +1,6 @@
-const CACHE_NAME = 'sukh-sangeet-v1';
-const RUNTIME_CACHE = 'sukh-sangeet-runtime';
-const PLAYLIST_CACHE = 'sukh-sangeet-playlists';
+const CACHE_NAME = 'sukh-sangeet-v2';
+const RUNTIME_CACHE = 'sukh-sangeet-runtime-v2';
+const PLAYLIST_CACHE = 'sukh-sangeet-playlists-v2';
 
 const STATIC_ASSETS = [
   '/',
@@ -38,7 +38,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Event - Network first, with fallback to cache
+// Fetch Event - Only intercept same-origin first-party requests
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
@@ -50,7 +50,8 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (event.request.destination === 'image' && url.origin !== self.location.origin) {
+  // Do NOT intercept any third-party requests (Clerk, Google Fonts, Cloudflare, YouTube)
+  if (url.origin !== self.location.origin) {
     return;
   }
 
