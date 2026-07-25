@@ -134,7 +134,7 @@ const PlaylistWorkspace = () => {
       >
         {/* Sidebar header */}
         <div className="px-5 pt-6 pb-5 flex items-center justify-between shrink-0 border-b border-[#ebebeb]">
-          <Link to="/" className="flex items-center gap-3 group" aria-label="Go to landing page">
+          <Link to="/find-music" className="flex items-center gap-3 group" aria-label="Go to landing page">
             <img
               src="/logo-sukhsangeet.webp"
               alt="Sukh Sangeet"
