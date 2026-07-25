@@ -95,7 +95,7 @@ const Landing = () => {
           <div className="flex items-center gap-2 sm:gap-3">
             {isAuthenticated ? (
               <Link
-                to="/app"
+                to="/find-music"
                 className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gray-950 px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(17,24,39,0.18)] transition-all hover:-translate-y-0.5 hover:bg-black sm:w-auto sm:px-8 sm:py-3.5 sm:text-base"
               >
                 Continue Listening
