@@ -12,10 +12,10 @@ export default function TrackInfo() {
   if (!currentTrack) {
     return (
       <div className="flex items-center gap-3" aria-busy="true" aria-label="Loading track info">
-        <div className="w-11 h-11 rounded-xl bg-black/[0.06] skeleton-shimmer shrink-0" />
-        <div className="space-y-2 flex-1 min-w-0">
-          <div className="h-2.5 w-32 bg-black/[0.06] rounded-full skeleton-shimmer" />
-          <div className="h-2 w-20 bg-black/[0.04] rounded-full skeleton-shimmer" />
+        <div className="w-10 h-10 rounded-md bg-[#f5f5f5] shrink-0 animate-pulse border border-[#ebebeb]" />
+        <div className="space-y-1.5 flex-1 min-w-0">
+          <div className="h-2 w-28 bg-[#f5f5f5] rounded-full animate-pulse" />
+          <div className="h-2 w-16 bg-[#f5f5f5] rounded-full animate-pulse" />
         </div>
       </div>
     );
@@ -24,10 +24,10 @@ export default function TrackInfo() {
   return (
     <div className="flex items-center gap-3 min-w-0" aria-label={`Now playing: ${currentTrack.title}`}>
       <div className="relative shrink-0 flex items-center justify-center">
-        <div className="w-11 h-11 rounded-xl overflow-hidden bg-black/[0.06] flex items-center justify-center">
+        <div className="w-10 h-10 rounded-md overflow-hidden bg-[#fafafa] border border-[#ebebeb] flex items-center justify-center">
           {imageError || !currentTrack.poster ? (
-            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-              <span className="text-sm font-bold text-gray-500">♪</span>
+            <div className="w-full h-full bg-[#f5f5f5] flex items-center justify-center">
+              <span className="font-mono text-xs font-semibold text-[#888888]">♪</span>
             </div>
           ) : (
             <img
@@ -35,9 +35,9 @@ export default function TrackInfo() {
               alt={currentTrack.title}
               onError={handleImageError}
               className={`
-                w-full h-full rounded-xl object-cover shadow-md
-                transition-opacity duration-300
-                ${isBuffering ? 'opacity-60 animate-pulse' : 'opacity-100'}
+                w-full h-full object-cover
+                transition-opacity duration-150
+                ${isBuffering ? 'opacity-50 animate-pulse' : 'opacity-100'}
               `}
             />
           )}
@@ -45,17 +45,17 @@ export default function TrackInfo() {
       </div>
 
       <div className="min-w-0 flex-1 overflow-hidden">
-        <div className="relative overflow-hidden h-[1.2em]">
+        <div className="relative overflow-hidden h-[1.25em]">
           <h4
             className={`
-              text-sm font-bold text-gray-900 leading-tight whitespace-nowrap
+              text-xs font-semibold text-[#171717] leading-tight whitespace-nowrap
               ${currentTrack.title.length > 28 ? 'animate-marquee' : ''}
             `}
           >
             {currentTrack.title}
           </h4>
         </div>
-        <p className="text-caption mt-0.5 truncate">
+        <p className="font-mono text-[10px] text-[#888888] mt-0.5 truncate uppercase">
           {currentTrack.artist || 'Unknown Artist'}
         </p>
       </div>

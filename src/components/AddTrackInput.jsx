@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { Plus, Link as LinkIcon, Search, Loader2, Download, ExternalLink, Check, Music, X } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Plus, Link as LinkIcon, Search, Loader2, Download, ExternalLink, Check } from 'lucide-react';
 import { searchYouTubeTracks } from '../api/playlists';
 
 const isYouTubeUrl = (value) =>
@@ -159,13 +159,13 @@ const AddTrackInput = ({ onAddTrack, onImportPlaylist, isLoading = false }) => {
   return (
     <div ref={containerRef} className="w-full relative" role="search" aria-label="Add track or search music">
       <form onSubmit={handleSubmit} className="relative group" noValidate>
-        {/* Left Icon: Search or Link */}
+        {/* Left Icon */}
         <div
-          className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none
-                     text-gray-400 group-focus-within:text-gray-700 transition-colors duration-200"
+          className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none
+                     text-[#888888] group-focus-within:text-[#171717] transition-colors duration-150"
           aria-hidden="true"
         >
-          {isUrl ? <LinkIcon size={18} /> : <Search size={18} />}
+          {isUrl ? <LinkIcon size={16} /> : <Search size={16} />}
         </div>
 
         {/* Input field */}
@@ -183,33 +183,31 @@ const AddTrackInput = ({ onAddTrack, onImportPlaylist, isLoading = false }) => {
           }}
           placeholder="Search song or paste YouTube link…"
           className={`
-            w-full bg-black/[0.03] hover:bg-black/[0.05]
-            focus:bg-white focus:shadow-sm
-            border border-black/[0.06] focus:border-gray-300
-            focus:ring-2 focus:ring-gray-900/10
-            rounded-xl pl-12 pr-36 py-4
-            text-sm font-semibold text-gray-900
-            outline-none transition-all duration-200
-            placeholder:text-gray-400/60 placeholder:font-normal
-            min-h-[52px]
+            w-full bg-white hover:border-[#a1a1a1]
+            focus:bg-white focus:border-[#171717]
+            border border-[#ebebeb] focus:ring-1 focus:ring-[#171717]
+            rounded-md pl-10 pr-32 py-2.5
+            text-sm font-sans text-[#171717]
+            outline-none transition-all duration-150
+            placeholder:text-[#888888]
+            h-[40px]
           `}
           aria-describedby={error ? 'add-track-error' : undefined}
           autoComplete="off"
         />
 
         {/* Action Button */}
-        <div className="absolute inset-y-2 right-2 flex items-center gap-1.5">
+        <div className="absolute inset-y-1 right-1 flex items-center gap-1">
           <button
             type="submit"
             disabled={showLoading}
             className="
-              h-full px-4 bg-gray-900 text-white rounded-lg
-              text-[10px] font-black uppercase tracking-[0.16em]
-              flex items-center gap-2
-              shadow-md hover:shadow-lg active:scale-95
-              disabled:opacity-50 disabled:pointer-events-none
-              transition-all duration-200
-              min-w-[95px] justify-center
+              h-[32px] px-3.5 bg-[#171717] text-white rounded-md
+              font-mono text-[11px] font-medium uppercase tracking-wider
+              flex items-center gap-1.5
+              hover:bg-black active:scale-[0.98]
+              disabled:opacity-40 disabled:pointer-events-none
+              transition-all duration-150 cursor-pointer
             "
             aria-label={
               showLoading
@@ -219,13 +217,13 @@ const AddTrackInput = ({ onAddTrack, onImportPlaylist, isLoading = false }) => {
             id="add-track-submit-btn"
           >
             {showLoading ? (
-              <Loader2 size={15} className="animate-spin shrink-0" />
+              <Loader2 size={13} className="animate-spin shrink-0" />
             ) : isPlaylist ? (
-              <Download size={15} strokeWidth={3} className="shrink-0" />
+              <Download size={13} strokeWidth={2} className="shrink-0" />
             ) : isUrl ? (
-              <Plus size={15} strokeWidth={3} className="shrink-0" />
+              <Plus size={13} strokeWidth={2} className="shrink-0" />
             ) : (
-              <Search size={15} strokeWidth={2.5} className="shrink-0" />
+              <Search size={13} strokeWidth={2} className="shrink-0" />
             )}
             <span>
               {showLoading
@@ -241,10 +239,9 @@ const AddTrackInput = ({ onAddTrack, onImportPlaylist, isLoading = false }) => {
         <p
           id="add-track-error"
           role="alert"
-          className="mt-2.5 ml-1 text-xs font-semibold text-red-500 flex items-center gap-2"
+          className="mt-2 text-xs font-mono text-[#ee0000] flex items-center gap-1.5"
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" aria-hidden="true" />
-          {error}
+          <span>• {error}</span>
         </p>
       )}
 
@@ -252,62 +249,62 @@ const AddTrackInput = ({ onAddTrack, onImportPlaylist, isLoading = false }) => {
       {isOpenPopover && !isUrl && trimmedValue.length >= 2 && (
         <div
           className="
-            absolute left-0 right-0 top-full mt-2.5 z-50
-            bg-white/95 backdrop-blur-md border border-black/10
-            rounded-2xl shadow-2xl p-4 overflow-hidden
-            animate-in fade-in slide-in-from-top-2 duration-200
-            max-h-[420px] flex flex-col
+            absolute left-0 right-0 top-full mt-2 z-50
+            bg-white border border-[#ebebeb]
+            rounded-xl shadow-level-5 p-3 overflow-hidden
+            animate-in fade-in duration-150
+            max-h-[380px] flex flex-col
           "
         >
           {/* Header row with External YouTube Search link */}
-          <div className="flex items-center justify-between pb-3 mb-2 border-b border-black/[0.06] shrink-0">
-            <span className="text-[11px] font-black uppercase tracking-wider text-gray-400">
-              YouTube Results
+          <div className="flex items-center justify-between pb-2.5 mb-2 border-b border-[#ebebeb] shrink-0">
+            <span className="font-mono text-[10px] font-semibold uppercase tracking-wider text-[#888888]">
+              YouTube Search Results
             </span>
 
             <a
               href={youtubeSearchUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-700 hover:text-gray-900 bg-black/[0.04] hover:bg-black/[0.08] px-3 py-1.5 rounded-lg transition-colors"
+              className="inline-flex items-center gap-1 text-[11px] font-mono text-[#171717] hover:text-[#0070f3] bg-[#fafafa] border border-[#ebebeb] px-2.5 py-1 rounded-md transition-colors"
               title="Open YouTube search in a new tab"
             >
-              <span>Search on YouTube</span>
-              <ExternalLink size={12} strokeWidth={2.5} />
+              <span>YouTube.com</span>
+              <ExternalLink size={11} />
             </a>
           </div>
 
           {/* Results content */}
-          <div className="flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-1">
+          <div className="flex-1 overflow-y-auto custom-scrollbar space-y-1.5 pr-0.5">
             {isSearching ? (
-              <div className="py-8 flex items-center justify-center text-gray-400 gap-2">
-                <Loader2 size={18} className="animate-spin" />
-                <span className="text-xs font-semibold">Searching YouTube for "{trimmedValue}"…</span>
+              <div className="py-6 flex items-center justify-center text-[#888888] gap-2 font-mono text-xs">
+                <Loader2 size={15} className="animate-spin text-[#171717]" />
+                <span>Searching YouTube for "{trimmedValue}"…</span>
               </div>
             ) : searchError ? (
-              <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-center space-y-2">
-                <p className="text-xs font-bold text-red-600">{searchError}</p>
+              <div className="p-3 rounded-md bg-[#f7d4d6]/40 border border-[#ee0000]/20 text-center space-y-2 font-mono text-xs">
+                <p className="text-[#ee0000]">{searchError}</p>
                 <a
                   href={youtubeSearchUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-xs font-black text-gray-900 bg-white border border-black/10 px-4 py-2 rounded-lg shadow-sm hover:shadow transition-all"
+                  className="inline-flex items-center gap-1.5 text-xs text-[#171717] bg-white border border-[#ebebeb] px-3 py-1.5 rounded-md hover:bg-[#fafafa] transition-all"
                 >
-                  <span>Open "{trimmedValue}" on YouTube.com</span>
-                  <ExternalLink size={14} />
+                  <span>Open "{trimmedValue}" on YouTube</span>
+                  <ExternalLink size={12} />
                 </a>
               </div>
             ) : searchResults.length === 0 ? (
-              <div className="py-8 text-center text-gray-500 space-y-3">
-                <p className="text-xs font-semibold">No direct results found.</p>
+              <div className="py-6 text-center text-[#888888] space-y-2 font-mono text-xs">
+                <p>No direct results found.</p>
                 <a
                   href={youtubeSearchUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-xs font-black text-gray-900 bg-black/[0.04] hover:bg-black/[0.08] px-4 py-2 rounded-xl transition-all"
+                  className="inline-flex items-center gap-1 text-[#171717] bg-[#fafafa] border border-[#ebebeb] hover:bg-[#f5f5f5] px-3 py-1.5 rounded-md transition-all"
                 >
-                  <span>Search directly on YouTube.com</span>
-                  <ExternalLink size={14} />
+                  <span>Search on YouTube.com</span>
+                  <ExternalLink size={12} />
                 </a>
               </div>
             ) : (
@@ -321,12 +318,12 @@ const AddTrackInput = ({ onAddTrack, onImportPlaylist, isLoading = false }) => {
                   <div
                     key={videoId}
                     className="
-                      flex items-center gap-3 p-2.5 rounded-xl border border-black/[0.04]
-                      bg-white hover:bg-black/[0.02] transition-all duration-150 group/item
+                      flex items-center gap-3 p-2 rounded-md border border-[#ebebeb]
+                      bg-white hover:bg-[#fafafa] transition-all duration-150 group/item
                     "
                   >
                     {/* Thumbnail */}
-                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-black/5 shrink-0 relative">
+                    <div className="w-10 h-10 rounded-md overflow-hidden bg-[#f5f5f5] shrink-0 border border-[#ebebeb]">
                       <img
                         src={track.thumbnail_url}
                         alt={track.title}
@@ -337,15 +334,15 @@ const AddTrackInput = ({ onAddTrack, onImportPlaylist, isLoading = false }) => {
 
                     {/* Meta */}
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-black text-gray-900 truncate leading-snug">
+                      <p className="text-xs font-medium text-[#171717] truncate leading-snug">
                         {track.title}
                       </p>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-[11px] font-semibold text-gray-500 truncate">
+                      <div className="flex items-center gap-2 mt-0.5 font-mono text-[10px]">
+                        <span className="text-[#888888] truncate">
                           {track.artist || 'YouTube'}
                         </span>
                         {durationStr && (
-                          <span className="text-[10px] font-bold text-gray-400 bg-black/[0.04] px-1.5 py-0.5 rounded">
+                          <span className="text-[#4d4d4d] bg-[#fafafa] border border-[#ebebeb] px-1 py-0.2 rounded">
                             {durationStr}
                           </span>
                         )}
@@ -353,15 +350,15 @@ const AddTrackInput = ({ onAddTrack, onImportPlaylist, isLoading = false }) => {
                     </div>
 
                     {/* Action Button */}
-                    <div className="shrink-0 flex items-center gap-1.5">
+                    <div className="shrink-0 flex items-center gap-1">
                       <a
                         href={`https://www.youtube.com/watch?v=${videoId}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-2 rounded-lg text-gray-400 hover:text-gray-900 hover:bg-black/5 transition-colors"
+                        className="p-1.5 rounded-md text-[#888888] hover:text-[#171717] hover:bg-[#f5f5f5] transition-colors"
                         title="Watch on YouTube"
                       >
-                        <ExternalLink size={14} />
+                        <ExternalLink size={13} />
                       </a>
 
                       <button
@@ -369,23 +366,23 @@ const AddTrackInput = ({ onAddTrack, onImportPlaylist, isLoading = false }) => {
                         onClick={() => handleAddSearchResult(track)}
                         disabled={isAddingThis || isAddedThis}
                         className={`
-                          px-3 py-1.5 rounded-lg text-xs font-black flex items-center gap-1.5 transition-all
+                          px-2.5 py-1 rounded-md font-mono text-[10px] font-medium uppercase tracking-wider flex items-center gap-1 transition-all cursor-pointer
                           ${
                             isAddedThis
-                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                              : 'bg-gray-900 hover:bg-black text-white active:scale-95 shadow-sm'
+                              ? 'bg-[#fafafa] text-[#0070f3] border border-[#ebebeb]'
+                              : 'bg-[#171717] hover:bg-black text-white active:scale-95 shadow-xs'
                           }
-                          disabled:opacity-60 disabled:pointer-events-none
+                          disabled:opacity-50 disabled:pointer-events-none
                         `}
                       >
                         {isAddingThis ? (
-                          <Loader2 size={13} className="animate-spin" />
+                          <Loader2 size={11} className="animate-spin" />
                         ) : isAddedThis ? (
-                          <Check size={13} strokeWidth={3} />
+                          <Check size={11} strokeWidth={2.5} />
                         ) : (
-                          <Plus size={13} strokeWidth={3} />
+                          <Plus size={11} strokeWidth={2.5} />
                         )}
-                        <span>{isAddingThis ? 'Adding…' : isAddedThis ? 'Added ✓' : 'Add'}</span>
+                        <span>{isAddingThis ? 'Adding…' : isAddedThis ? 'Added' : 'Add'}</span>
                       </button>
                     </div>
                   </div>

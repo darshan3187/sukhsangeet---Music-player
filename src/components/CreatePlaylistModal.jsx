@@ -2,13 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 
 const inputCls = `
-  w-full rounded-xl border border-black/[0.06] bg-black/[0.03]
-  px-5 py-3.5 text-sm font-semibold text-gray-900
-  outline-none transition-all duration-200
-  placeholder:text-gray-400/60 placeholder:font-normal
-  focus:bg-white focus:border-gray-300
-  focus:ring-2 focus:ring-gray-900/10
-  min-h-[48px]
+  w-full rounded-md border border-[#ebebeb] bg-[#fafafa]
+  px-3.5 py-2.5 text-sm font-sans text-[#171717]
+  outline-none transition-all duration-150
+  placeholder:text-[#888888] placeholder:font-normal
+  focus:bg-white focus:border-[#171717] focus:ring-1 focus:ring-[#171717]
+  h-[40px]
 `;
 
 const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
@@ -80,7 +79,7 @@ const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
   return (
     <div
       className="fixed inset-0 z-[200] flex items-end md:items-center justify-center
-                 bg-black/20 backdrop-blur-sm px-4 pb-4 md:py-8 animate-in fade-in duration-200"
+                 bg-black/30 backdrop-blur-xs px-4 pb-4 md:py-8 animate-in fade-in duration-150"
       onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}
       aria-label="Create playlist dialog backdrop"
     >
@@ -90,35 +89,35 @@ const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
         aria-modal="true"
         aria-labelledby="create-playlist-title"
         className="
-          w-full max-w-md surface-raised rounded-[2rem] md:rounded-[2.5rem]
-          p-7 md:p-9 shadow-2xl
-          animate-in slide-in-from-bottom-6 md:zoom-in-95 duration-300
+          w-full max-w-md bg-white border border-[#ebebeb] rounded-xl
+          p-6 md:p-8 shadow-level-5
+          animate-in slide-in-from-bottom-4 md:zoom-in-95 duration-150
         "
       >
         {/* Header */}
-        <div className="flex items-start justify-between mb-6">
+        <div className="flex items-start justify-between mb-5">
           <div>
+            <span className="mono-eyebrow mb-1 block">NEW COLLECTION</span>
             <h2
               id="create-playlist-title"
-              className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight"
+              className="text-xl md:text-2xl font-semibold text-[#171717] tracking-tight"
             >
-              New Playlist
+              Create Playlist.
             </h2>
-            <p className="text-caption mt-1">Give it a name and description.</p>
           </div>
           <button
             onClick={onClose}
-            className="touch-target rounded-xl text-gray-400 hover:text-gray-900 hover:bg-black/5 transition-all -mt-1 -mr-1"
+            className="p-1.5 rounded-md text-[#888888] hover:text-[#171717] hover:bg-[#fafafa] transition-all -mt-1 -mr-1 cursor-pointer"
             aria-label="Close dialog"
             id="close-create-modal-btn"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <label className="block" htmlFor="playlist-name">
-            <span className="text-label mb-2 block">Playlist Name</span>
+            <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[#4d4d4d] mb-1.5 block">Playlist Name</span>
             <input
               ref={firstInputRef}
               id="playlist-name"
@@ -132,30 +131,30 @@ const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
           </label>
 
           <label className="block" htmlFor="playlist-desc">
-            <span className="text-label mb-2 block">Description <span className="opacity-40 normal-case font-semibold tracking-normal">(optional)</span></span>
+            <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[#4d4d4d] mb-1.5 block">Description <span className="text-[#888888] font-normal lowercase">(optional)</span></span>
             <textarea
               id="playlist-desc"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className={`${inputCls} min-h-[96px] resize-none`}
+              className={`${inputCls} h-[80px] resize-none py-2`}
               placeholder="What's the vibe?"
               maxLength={200}
             />
           </label>
 
           {error && (
-            <p role="alert" className="rounded-xl bg-red-50 border border-red-100 px-4 py-3 text-xs font-bold text-red-600">
+            <p role="alert" className="rounded-md bg-[#f7d4d6]/40 border border-[#ee0000]/20 px-3 py-2 font-mono text-xs text-[#ee0000]">
               {error}
             </p>
           )}
 
-          <div className="flex items-center gap-3 pt-2">
+          <div className="flex items-center gap-2.5 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 rounded-xl bg-black/[0.05] hover:bg-black/[0.09] px-5 py-3.5
-                         text-xs font-black uppercase tracking-[0.18em] text-gray-600
-                         transition-all duration-150 min-h-[48px]"
+              className="flex-1 rounded-md bg-[#fafafa] border border-[#ebebeb] hover:bg-[#f5f5f5] px-4 h-10
+                         font-mono text-xs font-medium uppercase tracking-wider text-[#4d4d4d]
+                         transition-all duration-150 cursor-pointer"
               id="cancel-create-modal-btn"
             >
               Cancel
@@ -163,11 +162,11 @@ const CreatePlaylistModal = ({ isOpen, onClose, onCreate }) => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-[1.6] rounded-xl bg-gray-900 px-5 py-3.5
-                         text-xs font-black uppercase tracking-[0.18em] text-white
-                         shadow-md hover:shadow-lg hover:scale-[1.01] active:scale-[0.98]
-                         disabled:opacity-50 disabled:pointer-events-none
-                         transition-all duration-150 min-h-[48px]"
+              className="flex-[1.5] rounded-md bg-[#171717] px-4 h-10
+                         font-mono text-xs font-medium uppercase tracking-wider text-white
+                         shadow-sm hover:bg-black active:scale-[0.98]
+                         disabled:opacity-40 disabled:pointer-events-none
+                         transition-all duration-150 cursor-pointer"
               id="submit-create-modal-btn"
             >
               {isSubmitting ? 'Creating…' : 'Create Playlist'}

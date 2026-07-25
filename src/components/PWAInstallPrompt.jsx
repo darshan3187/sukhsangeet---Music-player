@@ -37,17 +37,18 @@ export default function PWAInstallPrompt() {
   if (!showPrompt || !deferredPrompt) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex items-center gap-1.5 bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-2 shadow-lg">
+    <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2 bg-[#171717] border border-[#ebebeb]/20 rounded-md px-3 py-2 shadow-level-4 text-white">
       <button
         onClick={handleInstall}
-        className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold text-blue-400 hover:bg-slate-800 hover:text-blue-300 transition-colors"
+        className="inline-flex items-center gap-1.5 font-mono text-xs font-medium uppercase tracking-wider text-white hover:text-[#0070f3] transition-colors cursor-pointer"
       >
-        <Download size={16} className="text-blue-400 flex-shrink-0" />
-        Install
+        <Download size={14} className="flex-shrink-0" />
+        <span>Install App</span>
       </button>
       <button
         onClick={() => setShowPrompt(false)}
-        className="inline-flex h-7 w-7 items-center justify-center rounded-md text-slate-400 hover:bg-slate-700 transition-colors"
+        className="inline-flex h-6 w-6 items-center justify-center rounded text-[#888888] hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+        aria-label="Dismiss install prompt"
       >
         <X size={14} />
       </button>

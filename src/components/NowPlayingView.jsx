@@ -67,40 +67,40 @@ const NowPlayingView = ({ onOpenQueue, onClose, onAddToPlaylist, layout = 'split
 
   return (
     <div
-      className="flex flex-col h-full min-w-0 animate-fade-in-up"
+      className="flex flex-col h-full min-w-0 bg-[#fafafa]"
       role="region"
       aria-label="Now Playing"
     >
-      <div className={layout === 'stacked' ? 'h-16 md:h-20 px-6 md:px-8 flex items-center justify-between shrink-0' : 'h-20 md:h-24 px-8 md:px-12 flex items-center justify-between shrink-0'}>
+      <div className={layout === 'stacked' ? 'h-14 px-5 flex items-center justify-between shrink-0 border-b border-[#ebebeb] bg-white' : 'h-16 px-8 flex items-center justify-between shrink-0 border-b border-[#ebebeb] bg-white'}>
         <button
           onClick={onClose}
-          className="touch-target rounded-xl surface-raised text-gray-400 hover:text-gray-900 hover:bg-black/5 transition-all group lg:hidden"
+          className="p-2 rounded-md border border-[#ebebeb] bg-[#fafafa] text-[#888888] hover:text-[#171717] hover:bg-[#f5f5f5] transition-all cursor-pointer lg:hidden"
           aria-label="Close now playing"
           id="now-playing-close-btn"
         >
-          <ChevronDown size={22} className="group-hover:translate-y-0.5 transition-transform" />
+          <ChevronDown size={18} />
         </button>
 
-        <span className="text-label tracking-[0.35em]">Now Playing</span>
+        <span className="mono-eyebrow">NOW PLAYING</span>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => onAddToPlaylist?.(currentTrack)}
-            className="touch-target rounded-xl surface-raised text-gray-400 hover:text-gray-900 hover:bg-black/5 transition-all group"
+            className="p-2 rounded-md border border-[#ebebeb] bg-[#fafafa] text-[#888888] hover:text-[#171717] hover:bg-[#f5f5f5] transition-all cursor-pointer"
             aria-label="Add to playlist"
             title="Add to playlist"
             id="now-playing-add-playlist-btn"
           >
-            <Plus size={20} className="group-hover:scale-110 transition-transform" />
+            <Plus size={18} />
           </button>
 
           <button
             onClick={onOpenQueue}
-            className="touch-target rounded-xl surface-raised text-gray-400 hover:text-gray-900 hover:bg-black/5 transition-all group"
+            className="p-2 rounded-md border border-[#ebebeb] bg-[#fafafa] text-[#888888] hover:text-[#171717] hover:bg-[#f5f5f5] transition-all cursor-pointer"
             aria-label="Open queue"
             id="now-playing-queue-btn"
           >
-            <ListMusic size={20} className="group-hover:scale-110 transition-transform" />
+            <ListMusic size={18} />
           </button>
         </div>
       </div>
@@ -109,27 +109,16 @@ const NowPlayingView = ({ onOpenQueue, onClose, onAddToPlaylist, layout = 'split
       <div
         className={
           layout === 'stacked'
-            ? 'flex-1 flex flex-col items-center justify-start overflow-hidden min-w-0 px-6 md:px-10 lg:px-12 pt-3 md:pt-4 pb-4 gap-5 md:gap-6'
-            : 'flex-1 flex flex-col md:flex-row items-center justify-center overflow-hidden min-w-0 px-8 md:px-12 lg:px-20 py-6 gap-10 md:gap-14 lg:gap-20'
+            ? 'flex-1 flex flex-col items-center justify-start overflow-hidden min-w-0 px-5 pt-4 pb-4 gap-4'
+            : 'flex-1 flex flex-col md:flex-row items-center justify-center overflow-hidden min-w-0 px-8 md:px-14 lg:px-20 py-6 gap-8 md:gap-12 lg:gap-16'
         }
       >
-
-        {/* Album Art */}
-        <div className={layout === 'stacked' ? 'relative group w-full max-w-[240px] sm:max-w-[280px] md:max-w-[320px] aspect-square shrink-0' : 'relative group w-full max-w-[280px] sm:max-w-[320px] md:max-w-md lg:max-w-lg aspect-square shrink-0'}>
-          {/* Blurred glow */}
-          {currentTrack.poster && !imageError && (
-            <div
-              className="absolute inset-[-16px] rounded-[3.5rem] blur-[72px] opacity-30 scale-95 transition-all duration-1000 group-hover:opacity-50 group-hover:scale-100"
-              style={{ backgroundImage: `url(${currentTrack.poster})`, backgroundSize: 'cover' }}
-              aria-hidden="true"
-            />
-          )}
-
-          {/* Art frame */}
-          <div className="relative z-10 w-full h-full rounded-[2rem] md:rounded-[3rem] overflow-hidden shadow-2xl border-[6px] border-white transition-transform duration-500 group-hover:scale-[1.02] flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
+        {/* Album Art Frame */}
+        <div className={layout === 'stacked' ? 'relative group w-full max-w-[220px] sm:max-w-[260px] aspect-square shrink-0' : 'relative group w-full max-w-[260px] sm:max-w-[300px] md:max-w-md aspect-square shrink-0'}>
+          <div className="relative z-10 w-full h-full rounded-xl overflow-hidden shadow-level-4 border border-[#ebebeb] flex items-center justify-center bg-[#fafafa]">
             {imageError || !currentTrack.poster ? (
-              <div className="flex flex-col items-center justify-center text-gray-500">
-                <span className="text-8xl font-bold">♪</span>
+              <div className="flex flex-col items-center justify-center text-[#888888]">
+                <span className="font-mono text-6xl font-semibold">♪</span>
               </div>
             ) : (
               <img
@@ -139,28 +128,25 @@ const NowPlayingView = ({ onOpenQueue, onClose, onAddToPlaylist, layout = 'split
                 className="w-full h-full object-cover"
               />
             )}
-            {/* Gradient overlay on hover */}
-            <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
 
           {/* Buffering spinner */}
           {isBuffering && (
-            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/15 backdrop-blur-sm rounded-[2rem] md:rounded-[3rem]">
-              <div className="w-10 h-10 border-[3px] border-white border-t-transparent rounded-full animate-spin" />
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/20 backdrop-blur-xs rounded-xl">
+              <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
             </div>
           )}
         </div>
 
         {/* Info + Controls */}
-        <div className={layout === 'stacked' ? 'flex-1 flex flex-col justify-center items-center text-center w-full max-w-[360px] min-w-0 space-y-4 md:space-y-5' : 'flex-1 flex flex-col justify-center items-center md:items-start text-center md:text-left w-full max-w-md min-w-0 space-y-8 md:space-y-10'}>
-
+        <div className={layout === 'stacked' ? 'flex-1 flex flex-col justify-center items-center text-center w-full max-w-[340px] min-w-0 space-y-4' : 'flex-1 flex flex-col justify-center items-center md:items-start text-center md:text-left w-full max-w-md min-w-0 space-y-6'}>
           {/* Track info */}
-          <div className="space-y-2 w-full">
+          <div className="space-y-1.5 w-full">
             <h2
-              className="font-black text-gray-900 tracking-tight w-full"
+              className="font-semibold text-[#171717] tracking-tight w-full"
               style={{
-                fontSize: layout === 'stacked' ? 'clamp(1.15rem, 2.4vw, 2.35rem)' : 'clamp(1.5rem, 3.5vw, 3.25rem)',
-                lineHeight: 1.1,
+                fontSize: layout === 'stacked' ? 'clamp(1.1rem, 2vw, 1.8rem)' : 'clamp(1.4rem, 3vw, 2.5rem)',
+                lineHeight: 1.15,
                 display: '-webkit-box',
                 WebkitBoxOrient: 'vertical',
                 WebkitLineClamp: 2,
@@ -170,15 +156,14 @@ const NowPlayingView = ({ onOpenQueue, onClose, onAddToPlaylist, layout = 'split
               {currentTrack.title}
             </h2>
             <p
-              className="font-semibold text-gray-500 uppercase tracking-[0.18em] opacity-70"
-              style={{ fontSize: layout === 'stacked' ? 'clamp(0.65rem, 1vw, 0.8rem)' : 'clamp(0.7rem, 1.2vw, 0.875rem)' }}
+              className="font-mono text-xs text-[#888888] uppercase tracking-wider"
             >
               {currentTrack.artist || 'Unknown Artist'}
             </p>
           </div>
 
           {/* Progress */}
-          <div className={layout === 'stacked' ? 'w-full space-y-2' : 'w-full space-y-3'}>
+          <div className="w-full space-y-2">
             <input
               type="range"
               min={0}
@@ -197,71 +182,63 @@ const NowPlayingView = ({ onOpenQueue, onClose, onAddToPlaylist, layout = 'split
               aria-valuenow={Math.floor(currentTime)}
               aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
             />
-            <div className="flex justify-between text-[11px] font-bold text-gray-400/70 tabular-nums tracking-widest px-0.5">
+            <div className="flex justify-between font-mono text-[11px] text-[#888888] px-0.5">
               <span>{formatTime(currentTime)}</span>
               <span>{formatTime(duration)}</span>
             </div>
           </div>
 
           {/* Playback controls */}
-          <div className={layout === 'stacked' ? 'flex items-center justify-center gap-3 md:gap-4 w-full max-w-[360px] flex-nowrap' : 'flex items-center justify-between w-full'}>
-
+          <div className={layout === 'stacked' ? 'flex items-center justify-center gap-3 w-full flex-nowrap' : 'flex items-center justify-between w-full'}>
             {/* Shuffle */}
             <button
               onClick={toggleShuffle}
               className={`
-                touch-target rounded-xl transition-all shrink-0
-                ${layout === 'stacked' ? 'h-11 w-11 md:h-12 md:w-12' : ''}
+                w-10 h-10 rounded-md border flex items-center justify-center transition-all cursor-pointer shrink-0
                 ${isShuffleOn
-                  ? 'text-gray-900 bg-gray-900/8'
-                  : 'text-gray-400 hover:text-gray-700 hover:bg-black/5'}
+                  ? 'bg-[#171717] text-white border-[#171717]'
+                  : 'bg-white text-[#888888] border-[#ebebeb] hover:text-[#171717] hover:bg-[#fafafa]'}
               `}
               aria-label={`Shuffle ${isShuffleOn ? 'on' : 'off'}`}
               aria-pressed={isShuffleOn}
               id="shuffle-btn"
             >
-              <Shuffle size={19} />
-              {isShuffleOn && (
-                <span className="block w-1 h-1 rounded-full bg-gray-900 mt-0.5 mx-auto" aria-hidden="true" />
-              )}
+              <Shuffle size={16} />
             </button>
 
             {/* Prev / Play / Next cluster */}
-            <div className={layout === 'stacked' ? 'flex items-center gap-2 md:gap-3 shrink-0' : 'flex items-center gap-4 md:gap-6'}>
+            <div className="flex items-center gap-3 shrink-0">
               <button
                 onClick={prev}
-                className={`touch-target rounded-xl text-gray-700 hover:bg-black/5 active:scale-90 transition-all shrink-0 ${layout === 'stacked' ? 'h-11 w-11 md:h-12 md:w-12' : ''}`}
+                className="w-10 h-10 rounded-md border border-[#ebebeb] bg-white text-[#171717] hover:bg-[#fafafa] transition-all flex items-center justify-center cursor-pointer shrink-0"
                 aria-label="Previous track"
                 id="prev-track-btn"
               >
-                <SkipBack size={layout === 'stacked' ? 22 : 26} fill="currentColor" />
+                <SkipBack size={18} fill="currentColor" />
               </button>
 
               <button
                 onClick={isPlaying ? pause : play}
                 className="
-                  flex items-center justify-center
-                  rounded-[1.75rem] md:rounded-[2rem] lg:rounded-[2.5rem]
-                  bg-gray-900 text-white shadow-xl hover:shadow-2xl
-                  hover:scale-105 active:scale-95 transition-all duration-200
-                  ring-6 ring-white focus-visible:outline-2 focus-visible:outline-gray-900
+                  w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#171717] text-white
+                  flex items-center justify-center shadow-level-2 hover:bg-black
+                  active:scale-95 transition-all duration-150 cursor-pointer
                 "
-                style={{ width: layout === 'stacked' ? 'clamp(3.2rem, 4vw, 4.5rem)' : 'clamp(4rem, 5vw, 6rem)', height: layout === 'stacked' ? 'clamp(3.2rem, 4vw, 4.5rem)' : 'clamp(4rem, 5vw, 6rem)' }}
                 aria-label={isPlaying ? 'Pause' : 'Play'}
                 id="now-playing-play-btn"
               >
                 {isPlaying
-                  ? <Pause size={layout === 'stacked' ? 22 : 28} fill="currentColor" />
-                  : <Play size={layout === 'stacked' ? 22 : 28} fill="currentColor" className="translate-x-0.5" />}
+                  ? <Pause size={20} fill="currentColor" />
+                  : <Play size={20} fill="currentColor" className="translate-x-0.5" />}
               </button>
 
               <button
                 onClick={next}
-                className={`touch-target rounded-xl text-gray-700 hover:bg-black/5 active:scale-90 transition-all shrink-0 ${layout === 'stacked' ? 'h-11 w-11 md:h-12 md:w-12' : ''}`}
+                className="w-10 h-10 rounded-md border border-[#ebebeb] bg-white text-[#171717] hover:bg-[#fafafa] transition-all flex items-center justify-center cursor-pointer shrink-0"
                 aria-label="Next track"
                 id="next-track-btn"
               >
-                <SkipForward size={layout === 'stacked' ? 22 : 26} fill="currentColor" />
+                <SkipForward size={18} fill="currentColor" />
               </button>
             </div>
 
@@ -269,22 +246,18 @@ const NowPlayingView = ({ onOpenQueue, onClose, onAddToPlaylist, layout = 'split
             <button
               onClick={toggleRepeat}
               className={`
-                touch-target rounded-xl transition-all flex flex-col items-center shrink-0
-                ${layout === 'stacked' ? 'h-11 w-11 md:h-12 md:w-12' : ''}
+                w-10 h-10 rounded-md border flex items-center justify-center transition-all cursor-pointer shrink-0
                 ${isRepeatOn
-                  ? 'text-gray-900 bg-gray-900/8'
-                  : 'text-gray-400 hover:text-gray-700 hover:bg-black/5'}
+                  ? 'bg-[#171717] text-white border-[#171717]'
+                  : 'bg-white text-[#888888] border-[#ebebeb] hover:text-[#171717] hover:bg-[#fafafa]'}
               `}
               aria-label={`Repeat ${repeatMode}`}
               aria-pressed={isRepeatOn}
               id="repeat-btn"
             >
               {repeatMode === 'one'
-                ? <Repeat1 size={layout === 'stacked' ? 17 : 19} />
-                : <Repeat size={layout === 'stacked' ? 17 : 19} />}
-              {isRepeatOn && (
-                <span className="block w-1 h-1 rounded-full bg-gray-900 mt-0.5" aria-hidden="true" />
-              )}
+                ? <Repeat1 size={16} />
+                : <Repeat size={16} />}
             </button>
           </div>
         </div>

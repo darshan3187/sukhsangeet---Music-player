@@ -11,13 +11,12 @@ const hasClerkKey = Boolean(
 );
 
 const inputCls = `
-  w-full rounded-xl border border-black/[0.06] bg-black/[0.03]
-  px-5 py-3.5 text-sm font-semibold text-gray-900
-  outline-none transition-all duration-200
-  placeholder:text-gray-400/60 placeholder:font-normal
-  focus:bg-black/[0.05] focus:border-gray-300
-  focus:ring-2 focus:ring-gray-900/10
-  min-h-[48px]
+  w-full rounded-md border border-[#ebebeb] bg-[#fafafa]
+  px-3.5 py-2.5 text-sm font-sans text-[#171717]
+  outline-none transition-all duration-150
+  placeholder:text-[#888888] placeholder:font-normal
+  focus:bg-white focus:border-[#171717] focus:ring-1 focus:ring-[#171717]
+  h-[40px]
 `;
 
 const Register = () => {
@@ -60,13 +59,12 @@ const Register = () => {
 
   return (
     <div
-      className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12 relative overflow-hidden"
+      className="min-h-screen bg-[#fafafa] flex items-center justify-center px-4 py-12 relative overflow-hidden"
       aria-label="Register page"
     >
-      <div className="absolute top-0 right-0 w-[480px] h-[480px] bg-gray-200/40 rounded-full blur-[100px] -mr-40 -mt-40 pointer-events-none" aria-hidden="true" />
-      <div className="absolute bottom-0 left-0 w-[480px] h-[480px] bg-gray-100/60 rounded-full blur-[100px] -ml-40 -mb-40 pointer-events-none" aria-hidden="true" />
+      <div className="vercel-mesh-gradient pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
 
-      <div className="w-full max-w-[420px] relative z-10 animate-fade-in-up flex flex-col items-center">
+      <div className="w-full max-w-[400px] relative z-10 flex flex-col items-center">
         {hasClerkKey ? (
           <SignUp
             routing="path"
@@ -78,28 +76,28 @@ const Register = () => {
             signUpForceRedirectUrl="/find-music"
           />
         ) : (
-          <div className="w-full surface-raised rounded-[2.5rem] p-8 md:p-10 shadow-xl">
-            <div className="text-center mb-8">
-              <Link to="/" className="inline-block mb-5" aria-label="Go to landing page">
+          <div className="w-full rounded-xl border border-[#ebebeb] bg-white p-8 shadow-level-4">
+            <div className="text-center mb-6">
+              <Link to="/" className="inline-block mb-4" aria-label="Go to landing page">
                 <img
                   src="/logo-sukhsangeet.webp"
                   alt="Sukh Sangeet"
-                  className="w-12 h-12 mx-auto rounded-2xl shadow-sm object-cover"
+                  className="w-12 h-12 mx-auto rounded-xl shadow-sm object-contain"
                 />
               </Link>
-              <h1 className="text-2xl font-black text-gray-900 tracking-tight">Create Account</h1>
-              <p className="text-body-sm mt-1">Start listening for free</p>
+              <h1 className="text-xl font-semibold text-[#171717] tracking-tight">Create Account</h1>
+              <p className="font-mono text-xs text-[#888888] mt-1">Start listening for free</p>
             </div>
 
             {error && (
-              <p role="alert" className="mb-4 rounded-xl border border-red-100 bg-red-50 p-3 text-xs font-bold text-red-600">
+              <p role="alert" className="mb-4 rounded-md border border-[#ee0000]/20 bg-[#f7d4d6]/40 p-3 font-mono text-xs text-[#ee0000]">
                 {error}
               </p>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+            <form onSubmit={handleSubmit} className="space-y-3.5" noValidate>
               <div>
-                <label className="text-label mb-2 block" htmlFor="reg-username">Username</label>
+                <label className="font-mono text-[11px] uppercase tracking-wider text-[#4d4d4d] mb-1.5 block" htmlFor="reg-username">Username</label>
                 <input
                   id="reg-username"
                   type="text"
@@ -112,7 +110,7 @@ const Register = () => {
               </div>
 
               <div>
-                <label className="text-label mb-2 block" htmlFor="reg-email">Email</label>
+                <label className="font-mono text-[11px] uppercase tracking-wider text-[#4d4d4d] mb-1.5 block" htmlFor="reg-email">Email</label>
                 <input
                   id="reg-email"
                   type="email"
@@ -125,7 +123,7 @@ const Register = () => {
               </div>
 
               <div>
-                <label className="text-label mb-2 block" htmlFor="reg-password">Password</label>
+                <label className="font-mono text-[11px] uppercase tracking-wider text-[#4d4d4d] mb-1.5 block" htmlFor="reg-password">Password</label>
                 <input
                   id="reg-password"
                   type="password"
@@ -138,7 +136,7 @@ const Register = () => {
               </div>
 
               <div>
-                <label className="text-label mb-2 block" htmlFor="reg-confirm-password">Confirm Password</label>
+                <label className="font-mono text-[11px] uppercase tracking-wider text-[#4d4d4d] mb-1.5 block" htmlFor="reg-confirm-password">Confirm Password</label>
                 <input
                   id="reg-confirm-password"
                   type="password"
@@ -153,15 +151,15 @@ const Register = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-4 bg-gray-900 text-white rounded-xl text-xs font-black uppercase tracking-widest shadow-md hover:shadow-lg active:scale-95 transition-all mt-2"
+                className="w-full h-10 bg-[#171717] text-white rounded-md text-xs font-mono font-medium uppercase tracking-wider shadow-sm hover:bg-black active:scale-[0.98] transition-all mt-2 cursor-pointer"
               >
                 {isSubmitting ? 'Creating account…' : 'Create Account'}
               </button>
             </form>
 
-            <p className="mt-6 text-center text-xs font-semibold text-gray-500">
+            <p className="mt-6 text-center text-xs text-[#888888]">
               Already have an account?{' '}
-              <Link to="/login" className="font-black text-gray-900 underline hover:no-underline">
+              <Link to="/login" className="font-medium text-[#171717] underline underline-offset-2 hover:text-[#0070f3]">
                 Sign in
               </Link>
             </p>

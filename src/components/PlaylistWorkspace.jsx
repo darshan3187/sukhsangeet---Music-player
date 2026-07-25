@@ -115,7 +115,7 @@ const PlaylistWorkspace = () => {
   }, [navigate]);
 
   return (
-    <div className="relative h-dvh w-full overflow-hidden flex min-h-0 bg-gray-50 font-sans selection:bg-gray-200">
+    <div className="relative h-dvh w-full overflow-hidden flex min-h-0 bg-[#fafafa] font-sans text-[#171717] selection:bg-[#171717] selection:text-white">
 
       {/* ── Sidebar – Library ── */}
       <aside
@@ -123,48 +123,48 @@ const PlaylistWorkspace = () => {
         className={`
           fixed inset-y-0 left-0 z-[100] lg:z-50
           w-72 xl:w-80
-          bg-white lg:bg-white/70 backdrop-blur-3xl
-          border-r border-black/[0.04]
-          transition-all duration-500 ease-in-out
+          bg-white border-r border-[#ebebeb]
+          transition-all duration-300 ease-in-out
           flex flex-col
           lg:relative lg:translate-x-0
-          ${isLibraryOpen ? 'translate-x-0' : '-translate-x-full'}
+          ${isLibraryOpen ? 'translate-x-0 shadow-level-5 lg:shadow-none' : '-translate-x-full'}
           ${!isLibraryOpen ? 'lg:w-0 lg:min-w-0 lg:max-w-0 lg:overflow-hidden lg:opacity-0 lg:pointer-events-none lg:border-r-0' : ''}
         `}
         aria-label="Library sidebar"
       >
         {/* Sidebar header */}
-        <div className="px-6 pt-8 pb-6 flex items-center justify-between shrink-0">
-          <Link to="/" className="flex items-center gap-3.5 group" aria-label="Go to landing page">
+        <div className="px-5 pt-6 pb-5 flex items-center justify-between shrink-0 border-b border-[#ebebeb]">
+          <Link to="/" className="flex items-center gap-3 group" aria-label="Go to landing page">
             <img
               src="/logo-sukhsangeet.webp"
               alt="Sukh Sangeet"
-              className="w-10 h-10 rounded-xl object-cover shadow-md transition-transform duration-200 hover:scale-110"
+              className="w-8 h-8 rounded-lg object-contain shadow-xs"
             />
-            <h1 className="text-xl font-black tracking-tight text-gray-900 group-hover:text-gray-700 transition-colors">Platform</h1>
+            <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#171717]">
+              SukhSangeet
+            </span>
           </Link>
           <button
             onClick={() => setIsLibraryOpen(false)}
-            className="touch-target text-gray-400 hover:text-gray-900 hover:bg-black/5 rounded-xl transition-all"
+            className="p-1.5 text-[#888888] hover:text-[#171717] hover:bg-[#f5f5f5] rounded-md transition-all cursor-pointer"
             aria-label="Close library"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
         {/* Library list */}
-        <div className="flex-1 overflow-y-auto px-4 custom-scrollbar">
-          <div className="px-2 mb-5 flex items-center justify-between">
-            <span className="text-label">Your Library</span>
+        <div className="flex-1 overflow-y-auto px-4 pt-5 custom-scrollbar">
+          <div className="px-1 mb-4 flex items-center justify-between">
+            <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-[#888888]">Your Library</span>
             <button
               onClick={() => setIsCreateOpen(true)}
-              className="w-9 h-9 rounded-full surface-raised hover:bg-gray-900 hover:text-white
-                         transition-all flex items-center justify-center text-gray-500 active:scale-90
-                         focus-visible:outline-2 focus-visible:outline-gray-900"
+              className="w-7 h-7 rounded-md bg-[#fafafa] border border-[#ebebeb] text-[#171717] hover:bg-[#171717] hover:text-white hover:border-[#171717]
+                         transition-all flex items-center justify-center cursor-pointer active:scale-95"
               aria-label="Create new playlist"
               id="create-playlist-btn"
             >
-              <Plus size={17} strokeWidth={2.5} />
+              <Plus size={15} strokeWidth={2} />
             </button>
           </div>
 
@@ -178,61 +178,61 @@ const PlaylistWorkspace = () => {
         </div>
 
         {/* User Profile */}
-        <div className="px-4 pb-6 pt-4 mt-auto border-t border-black/[0.04] shrink-0">
-          <div className="flex items-center gap-3 p-3.5 surface-raised rounded-2xl mb-3 group hover-lift">
+        <div className="px-4 pb-5 pt-4 mt-auto border-t border-[#ebebeb] shrink-0 bg-white">
+          <div className="flex items-center gap-3 p-3 rounded-lg border border-[#ebebeb] bg-[#fafafa] mb-3">
             <div
-              className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center
-                         text-gray-700 font-black text-sm shadow-xs ring-2 ring-gray-200/70 shrink-0"
+              className="w-8 h-8 rounded-md bg-[#171717] text-white flex items-center justify-center
+                         font-mono text-xs font-semibold shrink-0"
             >
               {user?.username?.charAt(0).toUpperCase() || 'U'}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-black truncate text-gray-900 tracking-tight leading-tight">
+              <p className="text-xs font-semibold truncate text-[#171717]">
                 {user?.username || 'User'}
               </p>
+              <p className="font-mono text-[10px] text-[#888888] truncate">Active Session</p>
             </div>
           </div>
 
           <button
             onClick={logout}
             id="logout-btn"
-            className="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-gray-500
-                       hover:bg-red-50 hover:text-red-600 transition-all font-semibold text-sm
-                       group min-h-[44px]"
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-[#4d4d4d]
+                       hover:bg-[#f7d4d6]/40 hover:text-[#ee0000] transition-all font-mono text-xs font-medium cursor-pointer"
           >
-            <LogOut size={17} className="group-hover:translate-x-0.5 transition-transform shrink-0" />
+            <LogOut size={15} className="shrink-0" />
             <span>Log Out</span>
           </button>
         </div>
       </aside>
 
       {/* ── Main Content ── */}
-      <main id="main-content" className="flex-1 flex flex-col relative overflow-hidden min-h-0 bg-gray-50/80" tabIndex={-1}>
+      <main id="main-content" className="flex-1 flex flex-col relative overflow-hidden min-h-0 bg-[#fafafa]" tabIndex={-1}>
         {!isLibraryOpen && (
           <button
             onClick={handleOpenLibrary}
-            className="hidden lg:flex absolute left-6 top-6 z-40 items-center gap-2.5 px-4 py-2.5 rounded-xl surface-raised text-gray-700 hover:text-gray-900 hover:shadow-md transition-all"
+            className="hidden lg:flex absolute left-6 top-6 z-40 items-center gap-2 px-3.5 py-2 rounded-md bg-white border border-[#ebebeb] text-[#171717] hover:border-[#a1a1a1] shadow-level-2 transition-all cursor-pointer"
             aria-label="Open library sidebar"
             id="open-library-desktop-btn"
           >
-            <PanelLeftOpen size={18} />
-            <span className="text-xs font-black uppercase tracking-[0.14em]">Library</span>
+            <PanelLeftOpen size={16} />
+            <span className="font-mono text-xs font-medium uppercase tracking-wider">Library</span>
           </button>
         )}
-        <header className="lg:hidden px-4 pt-4 pb-2 border-b border-black/[0.04] bg-white/70 backdrop-blur-xl">
+        <header className="lg:hidden px-4 py-3 border-b border-[#ebebeb] bg-white">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
-              <p className="text-label mb-1">Music Hub</p>
-              <p className="truncate text-sm font-black tracking-tight text-gray-900" aria-live="polite">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-[#888888] block">Workspace</span>
+              <p className="truncate text-sm font-semibold text-[#171717]" aria-live="polite">
                 {selectedPlaylistLabel}
               </p>
             </div>
             <button
               onClick={handleOpenLibrary}
-              className="touch-target rounded-xl text-gray-500 hover:text-gray-900 hover:bg-black/5"
+              className="p-2 rounded-md text-[#4d4d4d] hover:text-[#171717] hover:bg-[#f5f5f5]"
               aria-label="Open library"
             >
-              <Library size={19} />
+              <Library size={18} />
             </button>
           </div>
         </header>
@@ -262,45 +262,45 @@ const PlaylistWorkspace = () => {
         </div>
       </main>
 
-      {/* ── Floating Mini-Player / Nav Bar ── */}
+      {/* ── Floating Mini-Player / Nav Bar (Mobile) ── */}
       <div
-        className="fixed bottom-2 right-2 left-2 md:bottom-8 md:right-8 md:left-8 md:left-auto md:right-12 md:w-[400px] z-50 lg:hidden"
+        className="fixed bottom-3 right-3 left-3 md:bottom-6 md:right-6 md:left-auto md:w-[400px] z-50 lg:hidden"
         style={{ paddingBottom: 'max(0px, env(safe-area-inset-bottom))' }}
         role="region"
         aria-label="Now playing controls"
       >
         {!currentTrack ? (
           /* Mobile bottom nav – no track */
-          <div className="lg:hidden glass-card rounded-[2.25rem] p-2 flex items-center gap-1">
+          <div className="lg:hidden bg-white border border-[#ebebeb] shadow-level-4 rounded-xl p-2 flex items-center gap-1">
             <button
               onClick={handleOpenLibrary}
-              className="flex-1 flex flex-col items-center gap-1 text-gray-500 py-1.5 hover:text-gray-900 transition-colors min-h-[40px]"
+              className="flex-1 flex flex-col items-center gap-1 text-[#4d4d4d] py-1.5 hover:text-[#171717] transition-colors min-h-[40px]"
               aria-label="Open library"
             >
-              <Library size={20} />
-              <span className="text-[8px] font-black uppercase tracking-[0.18em]">Library</span>
+              <Library size={18} />
+              <span className="font-mono text-[9px] uppercase tracking-wider">Library</span>
             </button>
             <button
               onClick={() => setIsCreateOpen(true)}
-              className="w-14 h-14 rounded-full bg-gray-900 text-white flex items-center justify-center
-                         shadow-2xl -mt-10 border-[4px] border-gray-50 hover:scale-110 active:scale-90 transition-all"
+              className="w-11 h-11 rounded-full bg-[#171717] text-white flex items-center justify-center
+                         shadow-level-3 -mt-6 border-2 border-white hover:scale-105 active:scale-95 transition-all"
               aria-label="Create new playlist"
             >
-              <Plus size={24} strokeWidth={2.5} />
+              <Plus size={20} strokeWidth={2} />
             </button>
             <button
               onClick={() => setIsQueueOpen(true)}
-              className="flex-1 flex flex-col items-center gap-1 text-gray-500 py-1.5 hover:text-gray-900 transition-colors min-h-[40px]"
+              className="flex-1 flex flex-col items-center gap-1 text-[#4d4d4d] py-1.5 hover:text-[#171717] transition-colors min-h-[40px]"
               aria-label="Open queue"
             >
-              <ListMusic size={20} />
-              <span className="text-[8px] font-black uppercase tracking-[0.18em]">Queue</span>
+              <ListMusic size={18} />
+              <span className="font-mono text-[9px] uppercase tracking-wider">Queue</span>
             </button>
           </div>
         ) : !isNowPlayingFull ? (
           /* Mini player */
           <div
-            className="glass-card rounded-[2rem] p-3.5 flex items-center gap-4 animate-fade-in-up group cursor-pointer"
+            className="bg-white border border-[#ebebeb] shadow-level-4 rounded-xl p-3 flex items-center gap-3.5 cursor-pointer"
             onClick={() => setIsNowPlayingFull(true)}
             role="button"
             tabIndex={0}
@@ -314,22 +314,19 @@ const PlaylistWorkspace = () => {
             id="mini-player"
           >
             {/* Album art */}
-            <div className="relative w-14 h-14 shrink-0">
-              <div className="absolute inset-0 rounded-xl blur-xl bg-gray-900/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <img
-                src={currentTrack.poster}
-                alt={currentTrack.title}
-                loading="lazy"
-                className="relative z-10 w-full h-full rounded-xl object-cover shadow-md transition-transform duration-300 group-hover:scale-105"
-              />
-            </div>
+            <img
+              src={currentTrack.poster}
+              alt={currentTrack.title}
+              loading="lazy"
+              className="w-12 h-12 rounded-md object-cover border border-[#ebebeb] shrink-0"
+            />
 
             {/* Track info */}
             <div className="flex-1 min-w-0 py-0.5" role="presentation">
-              <p className="text-sm font-black truncate text-gray-900 tracking-tight leading-tight">
+              <p className="text-xs font-semibold truncate text-[#171717]">
                 {currentTrack.title}
               </p>
-              <p className="text-caption mt-1 truncate">
+              <p className="font-mono text-[10px] text-[#888888] mt-0.5 truncate">
                 Up Next: {queue[currentTrackIndex + 1]?.title || 'End of Queue'}
               </p>
             </div>
@@ -337,14 +334,14 @@ const PlaylistWorkspace = () => {
             {/* Play/Pause */}
             <button
               onClick={(e) => { e.stopPropagation(); isPlaying ? pause() : play(); }}
-              className="w-12 h-12 rounded-xl bg-gray-900 text-white flex items-center justify-center
-                         hover:scale-110 active:scale-95 transition-all shadow-lg hover:shadow-xl shrink-0"
+              className="w-10 h-10 rounded-md bg-[#171717] text-white flex items-center justify-center
+                         hover:bg-black active:scale-95 transition-all shadow-sm shrink-0 cursor-pointer"
               aria-label={isPlaying ? 'Pause' : 'Play'}
               id="mini-player-play-btn"
             >
               {isPlaying
-                ? <Pause size={20} fill="currentColor" />
-                : <Play size={20} fill="currentColor" className="ml-0.5" />}
+                ? <Pause size={18} fill="currentColor" />
+                : <Play size={18} fill="currentColor" className="ml-0.5" />}
             </button>
           </div>
         ) : null}
@@ -353,9 +350,9 @@ const PlaylistWorkspace = () => {
       {/* Desktop mini player dock */}
       {currentTrack && !isNowPlayingFull && (
         <div
-          className="hidden lg:flex fixed right-8 bottom-8 z-50 w-[min(620px,calc(100vw-4rem))]
-                     items-center gap-4 rounded-2xl bg-white/90 backdrop-blur-2xl border border-black/[0.06]
-                     shadow-[0_24px_80px_-24px_rgba(0,0,0,0.3)] p-3.5"
+          className="hidden lg:flex fixed right-8 bottom-8 z-50 w-[min(600px,calc(100vw-4rem))]
+                     items-center gap-4 rounded-xl bg-white border border-[#ebebeb]
+                     shadow-level-4 p-3"
           role="region"
           aria-label="Desktop now playing dock"
         >
@@ -363,66 +360,66 @@ const PlaylistWorkspace = () => {
             src={currentTrack.poster}
             alt={currentTrack.title}
             loading="lazy"
-            className="w-14 h-14 rounded-xl object-cover shrink-0 shadow-sm"
+            className="w-12 h-12 rounded-md object-cover shrink-0 border border-[#ebebeb]"
           />
 
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-black truncate text-gray-900 tracking-tight">{currentTrack.title}</p>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-gray-500 truncate mt-1">
+            <p className="text-xs font-semibold truncate text-[#171717]">{currentTrack.title}</p>
+            <p className="font-mono text-[10px] uppercase tracking-wider text-[#888888] truncate mt-0.5">
               {currentTrack.artist || 'Unknown Artist'}
             </p>
           </div>
 
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-1 shrink-0">
             <button
               onClick={prev}
-              className="touch-target rounded-xl text-gray-600 hover:bg-black/5 hover:text-gray-900 transition-all"
+              className="p-2 rounded-md text-[#4d4d4d] hover:bg-[#fafafa] hover:text-[#171717] transition-all cursor-pointer"
               aria-label="Previous track"
               id="desktop-mini-prev-btn"
             >
-              <SkipBack size={18} fill="currentColor" />
+              <SkipBack size={16} fill="currentColor" />
             </button>
 
             <button
               onClick={isPlaying ? pause : play}
-              className="w-11 h-11 rounded-xl bg-gray-900 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-all"
+              className="w-9 h-9 rounded-md bg-[#171717] text-white flex items-center justify-center hover:bg-black active:scale-95 transition-all cursor-pointer"
               aria-label={isPlaying ? 'Pause' : 'Play'}
               id="desktop-mini-play-btn"
             >
-              {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" className="translate-x-0.5" />}
+              {isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" className="translate-x-0.5" />}
             </button>
 
             <button
               onClick={next}
-              className="touch-target rounded-xl text-gray-600 hover:bg-black/5 hover:text-gray-900 transition-all"
+              className="p-2 rounded-md text-[#4d4d4d] hover:bg-[#fafafa] hover:text-[#171717] transition-all cursor-pointer"
               aria-label="Next track"
               id="desktop-mini-next-btn"
             >
-              <SkipForward size={18} fill="currentColor" />
+              <SkipForward size={16} fill="currentColor" />
             </button>
 
             <button
               onClick={() => setAddToPlaylistTrack(currentTrack)}
-              className="touch-target rounded-xl text-gray-600 hover:bg-black/5 hover:text-gray-900 transition-all"
+              className="p-2 rounded-md text-[#4d4d4d] hover:bg-[#fafafa] hover:text-[#171717] transition-all cursor-pointer"
               aria-label="Add to playlist"
               title="Add to playlist"
               id="desktop-mini-add-playlist-btn"
             >
-              <Plus size={18} />
+              <Plus size={16} />
             </button>
 
             <button
               onClick={() => setIsQueueOpen(true)}
-              className="touch-target rounded-xl text-gray-600 hover:bg-black/5 hover:text-gray-900 transition-all"
+              className="p-2 rounded-md text-[#4d4d4d] hover:bg-[#fafafa] hover:text-[#171717] transition-all cursor-pointer"
               aria-label="Open queue"
               id="desktop-mini-queue-btn"
             >
-              <ListMusic size={18} />
+              <ListMusic size={16} />
             </button>
 
             <button
               onClick={() => setIsNowPlayingFull(true)}
-              className="px-3.5 h-10 rounded-xl bg-black/[0.04] hover:bg-black/[0.08] text-gray-800 text-[11px] font-black uppercase tracking-[0.12em] transition-all"
+              className="px-3 h-8 rounded-md bg-[#fafafa] border border-[#ebebeb] hover:bg-[#f5f5f5] text-[#171717] font-mono text-[11px] font-medium uppercase tracking-wider transition-all cursor-pointer"
               aria-label="Open full player"
               id="desktop-mini-open-btn"
             >
@@ -435,7 +432,7 @@ const PlaylistWorkspace = () => {
       {/* Mobile Sidebar Overlay */}
       {isLibraryOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-[90] bg-black/20 backdrop-blur-sm animate-in fade-in duration-300"
+          className="lg:hidden fixed inset-0 z-[90] bg-black/30 backdrop-blur-xs transition-opacity"
           onClick={() => setIsLibraryOpen(false)}
           aria-hidden="true"
         />

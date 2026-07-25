@@ -56,76 +56,75 @@ export default function PlayerControls() {
 
   return (
     <div className="flex flex-col items-center gap-3 w-full" role="region" aria-label="Player controls">
-
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-4">
         <button
           onClick={toggleShuffle}
           disabled={!appReady}
           className={`
-            touch-target rounded-xl transition-all
-            ${shuffle ? 'text-gray-900 bg-black/[0.06]' : 'text-gray-400 hover:text-gray-700 hover:bg-black/5'}
+            w-9 h-9 rounded-md border flex items-center justify-center transition-all cursor-pointer
+            ${shuffle ? 'bg-[#171717] text-white border-[#171717]' : 'bg-white text-[#888888] border-[#ebebeb] hover:text-[#171717] hover:bg-[#fafafa]'}
             disabled:opacity-30
           `}
           aria-label={`Shuffle ${shuffle ? 'on' : 'off'}`}
           aria-pressed={shuffle}
         >
-          <Shuffle size={18} />
+          <Shuffle size={15} />
         </button>
 
         <button
           onClick={prev}
           disabled={!appReady}
-          className="touch-target rounded-xl text-gray-700 hover:bg-black/5 active:scale-90 transition-all disabled:opacity-30"
+          className="w-9 h-9 rounded-md border border-[#ebebeb] bg-white text-[#171717] hover:bg-[#fafafa] transition-all flex items-center justify-center cursor-pointer disabled:opacity-30"
           aria-label="Previous track"
         >
-          <SkipBack size={20} fill="currentColor" />
+          <SkipBack size={16} fill="currentColor" />
         </button>
 
         <button
           onClick={isPlaying ? pause : play}
           disabled={!appReady}
           className="
-            w-14 h-14 flex items-center justify-center rounded-2xl
-            bg-gray-900 text-white shadow-lg hover:shadow-xl
-            hover:scale-105 active:scale-95 transition-all
-            disabled:opacity-50 disabled:pointer-events-none
+            w-11 h-11 flex items-center justify-center rounded-full
+            bg-[#171717] text-white shadow-level-2 hover:bg-black
+            active:scale-95 transition-all cursor-pointer
+            disabled:opacity-40 disabled:pointer-events-none
           "
           aria-label={isPlaying ? 'Pause' : 'Play'}
         >
           {isBuffering
-            ? <Loader2 size={22} className="animate-spin" />
+            ? <Loader2 size={18} className="animate-spin" />
             : isPlaying
-              ? <Pause size={22} fill="currentColor" />
-              : <Play size={22} fill="currentColor" className="translate-x-0.5" />
+              ? <Pause size={18} fill="currentColor" />
+              : <Play size={18} fill="currentColor" className="translate-x-0.5" />
           }
         </button>
 
         <button
           onClick={next}
           disabled={!appReady}
-          className="touch-target rounded-xl text-gray-700 hover:bg-black/5 active:scale-90 transition-all disabled:opacity-30"
+          className="w-9 h-9 rounded-md border border-[#ebebeb] bg-white text-[#171717] hover:bg-[#fafafa] transition-all flex items-center justify-center cursor-pointer disabled:opacity-30"
           aria-label="Next track"
         >
-          <SkipForward size={20} fill="currentColor" />
+          <SkipForward size={16} fill="currentColor" />
         </button>
 
         <button
           onClick={toggleRepeat}
           disabled={!appReady}
           className={`
-            touch-target rounded-xl transition-all
-            ${repeatMode !== 'off' ? 'text-gray-900 bg-black/[0.06]' : 'text-gray-400 hover:text-gray-700 hover:bg-black/5'}
+            w-9 h-9 rounded-md border flex items-center justify-center transition-all cursor-pointer
+            ${repeatMode !== 'off' ? 'bg-[#171717] text-white border-[#171717]' : 'bg-white text-[#888888] border-[#ebebeb] hover:text-[#171717] hover:bg-[#fafafa]'}
             disabled:opacity-30
           `}
           aria-label={`Repeat ${repeatMode}`}
           aria-pressed={repeatMode !== 'off'}
         >
-          {repeatMode === 'one' ? <Repeat1 size={18} /> : <Repeat size={18} />}
+          {repeatMode === 'one' ? <Repeat1 size={15} /> : <Repeat size={15} />}
         </button>
       </div>
 
       <div className="flex items-center gap-3 w-full" role="group" aria-label="Seek bar">
-        <span className="text-[11px] font-bold tabular-nums text-gray-400 w-10 text-right select-none">
+        <span className="font-mono text-[11px] text-[#888888] w-10 text-right select-none">
           {formatTime(currentTime)}
         </span>
 
@@ -150,7 +149,7 @@ export default function PlayerControls() {
           aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
         />
 
-        <span className="text-[11px] font-bold tabular-nums text-gray-400 w-10 select-none">
+        <span className="font-mono text-[11px] text-[#888888] w-10 select-none">
           {formatTime(duration)}
         </span>
       </div>

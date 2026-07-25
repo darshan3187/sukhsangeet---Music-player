@@ -111,28 +111,25 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
   if (isLoading) {
     return (
       <div className="flex-1 flex flex-col min-h-0" aria-busy="true" aria-label="Loading playlist">
-        <div className="px-8 md:px-12 pt-10 md:pt-14 pb-8 shrink-0 space-y-6">
-          <div className="space-y-3">
-            <div className="w-20 h-3 bg-black/5 rounded-full skeleton-shimmer" />
-            <div className="w-64 h-10 bg-black/[0.06] rounded-2xl skeleton-shimmer" />
+        <div className="px-6 md:px-10 pt-8 md:pt-12 pb-6 shrink-0 space-y-4">
+          <div className="space-y-2">
+            <div className="w-16 h-2.5 bg-[#ebebeb] rounded-full animate-pulse" />
+            <div className="w-56 h-8 bg-[#ebebeb] rounded-md animate-pulse" />
           </div>
-          <div className="w-full max-w-2xl h-14 bg-black/[0.04] rounded-2xl skeleton-shimmer" />
+          <div className="w-full max-w-xl h-10 bg-[#ebebeb] rounded-md animate-pulse" />
         </div>
-        {/* Track skeletons – match SortableTrackItem structure */}
-        <div className="flex-1 px-8 md:px-12 pb-12 space-y-3">
+        <div className="flex-1 px-6 md:px-10 pb-8 space-y-2">
           {[1, 2, 3, 4, 5].map((i) => (
             <div
               key={i}
-              className="flex items-center gap-4 p-2.5 rounded-xl"
-              style={{ opacity: 1 - i * 0.13 }}
+              className="flex items-center gap-3 p-2.5 rounded-md border border-[#ebebeb] bg-white"
+              style={{ opacity: 1 - i * 0.15 }}
             >
-              <div className="hidden md:block w-10 h-3 bg-black/[0.04] rounded-full skeleton-shimmer" />
-              <div className="w-11 h-11 md:w-14 md:h-14 rounded-xl bg-black/[0.05] skeleton-shimmer shrink-0" />
-              <div className="flex-1 space-y-2">
-                <div className="h-3 w-2/5 bg-black/[0.06] rounded-full skeleton-shimmer" />
-                <div className="h-2.5 w-1/4 bg-black/[0.04] rounded-full skeleton-shimmer" />
+              <div className="w-10 h-10 rounded-md bg-[#f5f5f5] shrink-0 animate-pulse" />
+              <div className="flex-1 space-y-1.5">
+                <div className="h-2.5 w-2/5 bg-[#f5f5f5] rounded-full animate-pulse" />
+                <div className="h-2 w-1/4 bg-[#f5f5f5] rounded-full animate-pulse" />
               </div>
-              <div className="hidden md:block w-10 h-2.5 bg-black/[0.04] rounded-full skeleton-shimmer" />
             </div>
           ))}
         </div>
@@ -142,62 +139,64 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
 
   if (!playlistId) {
     return (
-      <div className="flex-1 flex flex-col min-h-0 h-full overflow-y-auto overflow-x-hidden animate-fade-in-up custom-scrollbar" role="main" aria-label="YouTube music search">
-        <div className="px-5 md:px-10 pt-8 md:pt-12 pb-5 shrink-0">
+      <div className="flex-1 flex flex-col min-h-0 h-full overflow-y-auto overflow-x-hidden custom-scrollbar" role="main" aria-label="YouTube music search">
+        <div className="px-5 md:px-10 pt-8 md:pt-12 pb-4 shrink-0">
           <div className="max-w-4xl">
-            <span className="text-label block mb-3">Search Music</span>
-            <h2 className="font-black text-gray-900 tracking-tighter" style={{ fontSize: 'clamp(2rem, 4vw, 4rem)', lineHeight: 1.02 }}>
-              Find a song on YouTube
+            <span className="mono-eyebrow mb-2">SEARCH YOUTUBE</span>
+            <h2 className="font-semibold text-[#171717] tracking-tight text-3xl sm:text-5xl">
+              Find a song on YouTube.
             </h2>
-            <p className="text-body-sm mt-4 max-w-2xl">
+            <p className="text-xs text-[#4d4d4d] mt-3 max-w-xl leading-relaxed">
               Search directly from the workspace when no playlist is selected. Pick a result to play it immediately, or open the library to switch to your saved playlists.
             </p>
 
-            <div className="mt-7 max-w-2xl relative group">
+            <div className="mt-6 max-w-xl relative group">
               <Search
-                size={18}
-                className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gray-700 transition-colors pointer-events-none"
+                size={16}
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-[#888888] group-focus-within:text-[#171717] transition-colors pointer-events-none"
                 aria-hidden="true"
               />
               <input
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder="Search music..."
-                className="w-full rounded-full bg-black/[0.04] hover:bg-black/[0.06] focus:bg-white focus:shadow-sm border border-black/[0.06] focus:border-gray-300 focus:ring-2 focus:ring-gray-900/10 pl-[3.25rem] pr-4 py-4 md:py-[1.125rem] text-base md:text-lg font-semibold text-gray-900 outline-none transition-all duration-200 placeholder:text-gray-400/65 placeholder:font-normal"
+                placeholder="Search music, artist, or song..."
+                className="w-full rounded-md bg-white border border-[#ebebeb] hover:border-[#a1a1a1] focus:border-[#171717] focus:ring-1 focus:ring-[#171717] pl-[2.75rem] pr-4 h-11 text-sm font-sans text-[#171717] outline-none transition-all duration-150 placeholder:text-[#888888]"
                 autoComplete="off"
                 aria-label="Search music on YouTube"
               />
             </div>
 
             {searchError && (
-              <p role="alert" className="mt-3 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-xs font-bold text-red-600">
+              <p role="alert" className="mt-3 rounded-md border border-[#ee0000]/20 bg-[#f7d4d6]/40 px-4 py-2.5 font-mono text-xs text-[#ee0000]">
                 {searchError}
               </p>
             )}
           </div>
         </div>
 
-        <div className="flex-1 min-h-0 px-5 md:px-10 pb-10 md:pb-10">
+        <div className="flex-1 min-h-0 px-5 md:px-10 pb-10">
           {!searchQuery.trim() ? (
             <div className="mt-4 grid gap-4 lg:grid-cols-[1.3fr_0.7fr]">
-              <div className="rounded-[2rem] bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white p-8 md:p-10 shadow-[0_24px_80px_-40px_rgba(0,0,0,0.6)]">
-                <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center mb-6">
-                  <Music size={28} aria-hidden="true" />
+              <div className="rounded-xl border border-[#ebebeb] bg-[#171717] text-white p-8 shadow-level-4">
+                <div className="w-10 h-10 rounded-md bg-white/10 flex items-center justify-center mb-5 border border-white/10">
+                  <Music size={20} aria-hidden="true" />
                 </div>
-                <h3 className="text-2xl md:text-3xl font-black tracking-tight">Search from the workspace</h3>
-                <p className="mt-4 max-w-xl text-sm md:text-base text-white/75 leading-7">
+                <span className="font-mono text-xs uppercase tracking-wider text-[#a1a1a1]">Workspace Search</span>
+                <h3 className="text-xl md:text-2xl font-semibold tracking-tight text-white mt-1">Search from the workspace</h3>
+                <p className="mt-3 max-w-md text-xs text-white/70 leading-relaxed font-sans">
                   Enter any song, artist, or mood and pull matching videos from YouTube without leaving the workspace.
                 </p>
               </div>
 
-              <div className="rounded-[2rem] border border-black/[0.06] bg-white p-7 md:p-8 shadow-sm">
-                <p className="text-label">Need your playlists instead?</p>
-                <p className="mt-3 text-body-sm text-gray-600">
+              <div className="rounded-xl border border-[#ebebeb] bg-white p-6 shadow-level-2">
+                <span className="mono-eyebrow mb-2">SAVED PLAYLISTS</span>
+                <p className="text-sm font-semibold text-[#171717]">Need your playlists instead?</p>
+                <p className="mt-2 text-xs text-[#4d4d4d] leading-relaxed">
                   Open the library to browse, add tracks, or jump back into a saved playlist.
                 </p>
                 <button
                   onClick={() => onRequestOpenLibrary?.()}
-                  className="mt-6 btn-primary text-sm px-7 py-3.5 rounded-xl"
+                  className="mt-5 btn-vercel-primary text-xs px-5 h-9"
                   aria-label="Open library to choose a playlist"
                   id="open-library-cta-btn"
                 >
@@ -206,63 +205,63 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
               </div>
             </div>
           ) : searchLoading ? (
-            <div className="mt-8 flex items-center justify-center rounded-[2rem] border border-black/[0.06] bg-white py-16 text-gray-500">
-              <Loader2 size={20} className="mr-3 animate-spin" />
-              <span className="text-sm font-semibold">Searching YouTube...</span>
+            <div className="mt-6 flex items-center justify-center rounded-xl border border-[#ebebeb] bg-white py-14 text-[#888888]">
+              <Loader2 size={18} className="mr-2.5 animate-spin text-[#171717]" />
+              <span className="font-mono text-xs uppercase tracking-wider">Searching YouTube...</span>
             </div>
           ) : searchResults.length ? (
             <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
               {searchResults.map((track, index) => (
                 <div
                   key={`${track.youtube_id || track.id}-${index}`}
-                  className="group text-left rounded-[1.5rem] border border-black/[0.06] bg-white p-3 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl sm:p-3.5 flex flex-col justify-between"
+                  className="group text-left rounded-xl border border-[#ebebeb] bg-white p-3.5 shadow-level-2 transition-all duration-150 hover:shadow-level-3 flex flex-col justify-between"
                 >
                   <div className="flex items-center gap-3 sm:block">
-                    <div className="w-24 h-24 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 overflow-hidden rounded-[1.1rem] bg-black/[0.03]">
+                    <div className="w-20 h-20 sm:w-full sm:h-auto sm:aspect-[16/10] shrink-0 overflow-hidden rounded-md border border-[#ebebeb] bg-[#fafafa]">
                       <img
                         src={track.thumbnail_url}
                         alt={track.title}
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                        className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
                         loading="lazy"
                       />
                     </div>
 
-                    <div className="min-w-0 flex-1 sm:mt-4">
-                      <div className="flex items-start gap-2 sm:gap-3">
+                    <div className="min-w-0 flex-1 sm:mt-3">
+                      <div className="flex items-start gap-2">
                         <div className="min-w-0 flex-1">
-                          <p className="line-clamp-2 text-sm font-black leading-snug tracking-tight text-gray-900 sm:truncate sm:leading-tight">
+                          <p className="line-clamp-2 text-xs font-semibold leading-snug text-[#171717] sm:truncate">
                             {track.title}
                           </p>
-                          <p className="mt-1 truncate text-[11px] sm:text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
+                          <p className="mt-1 truncate font-mono text-[10px] uppercase text-[#888888]">
                             {track.artist || 'YouTube'}
                           </p>
                         </div>
-                        <span className="shrink-0 rounded-full bg-black/[0.04] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.16em] text-gray-600">
+                        <span className="shrink-0 rounded-md bg-[#fafafa] border border-[#ebebeb] px-2 py-0.5 font-mono text-[10px] text-[#4d4d4d]">
                           {formatDuration(track.duration_seconds)}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="mt-3.5 flex items-center justify-between gap-2 pt-2 border-t border-black/[0.04]">
+                  <div className="mt-3 flex items-center justify-between gap-2 pt-2.5 border-t border-[#ebebeb]">
                     <button
                       type="button"
                       onClick={() => handleSearchPlay(index)}
-                      className="inline-flex items-center gap-2 rounded-full bg-gray-900 px-4 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-white shadow-sm hover:shadow transition-all hover:scale-105 active:scale-95"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-[#171717] px-3 py-1 font-mono text-[10px] font-medium uppercase tracking-wider text-white shadow-sm hover:bg-black transition-all cursor-pointer"
                       aria-label={`Play ${track.title}`}
                     >
-                      <Play size={12} fill="currentColor" />
+                      <Play size={10} fill="currentColor" />
                       Play
                     </button>
 
                     <button
                       type="button"
                       onClick={() => onAddToPlaylist?.(track)}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-black/[0.05] hover:bg-black/[0.09] px-3.5 py-2 text-[10px] font-black uppercase tracking-[0.14em] text-gray-800 transition-all hover:scale-105 active:scale-95"
+                      className="inline-flex items-center gap-1 rounded-full bg-[#fafafa] border border-[#ebebeb] hover:bg-[#f5f5f5] px-3 py-1 font-mono text-[10px] font-medium uppercase tracking-wider text-[#171717] transition-all cursor-pointer"
                       aria-label={`Save ${track.title} to playlist`}
                       title="Add to Playlist"
                     >
-                      <Plus size={13} strokeWidth={2.5} />
+                      <Plus size={11} strokeWidth={2} />
                       <span>Save</span>
                     </button>
                   </div>
@@ -270,12 +269,12 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
               ))}
             </div>
           ) : (
-            <div className="mt-8 rounded-[2rem] border border-dashed border-black/[0.08] bg-black/[0.015] px-6 py-14 text-center">
-              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-black/[0.04] text-gray-700">
-                <Search size={30} aria-hidden="true" />
+            <div className="mt-6 rounded-xl border border-dashed border-[#ebebeb] bg-white px-6 py-12 text-center shadow-level-1">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-md border border-[#ebebeb] bg-[#fafafa] text-[#888888]">
+                <Search size={22} aria-hidden="true" />
               </div>
-              <p className="text-label">No results yet</p>
-              <p className="mx-auto mt-2 max-w-md text-body-sm text-gray-600">
+              <span className="mono-eyebrow mb-1">NO MATCHES FOUND</span>
+              <p className="mx-auto mt-2 max-w-sm text-xs text-[#888888]">
                 Search for a song, artist, or phrase to show matching YouTube videos here.
               </p>
             </div>
@@ -289,22 +288,20 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
 
   return (
     <div className="w-full h-full flex flex-col min-h-0 relative" role="main">
-
       {playlist && (
-        <div className="px-8 md:px-12 pt-10 md:pt-14 pb-6 shrink-0">
-          <div className="flex items-end justify-between gap-6 mb-8">
+        <div className="px-6 md:px-10 pt-8 md:pt-12 pb-5 shrink-0">
+          <div className="flex items-end justify-between gap-4 mb-6">
             <div className="flex-1 min-w-0">
-              <span className="text-label block mb-3">
-                Collective · Playlist
+              <span className="mono-eyebrow mb-1.5 block">
+                PLAYLIST WORKSPACE
               </span>
               <h2
-                className="font-black text-gray-900 tracking-tighter truncate"
-                style={{ fontSize: 'clamp(1.75rem, 4vw, 3.5rem)', lineHeight: 1.1 }}
+                className="font-semibold text-[#171717] tracking-tight truncate text-2xl md:text-4xl"
               >
                 {playlist?.name}
               </h2>
               {tracks.length > 0 && (
-                <p className="text-caption mt-2">
+                <p className="font-mono text-xs text-[#888888] mt-1">
                   {tracks.length} {tracks.length === 1 ? 'track' : 'tracks'}
                 </p>
               )}
@@ -314,16 +311,15 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
               onClick={() => handleTrackPlay(0)}
               disabled={!tracks.length}
               className="
-                w-14 h-14 md:w-16 md:h-16 rounded-[1.25rem] bg-gray-900 text-white shrink-0
-                flex items-center justify-center mb-1
-                shadow-lg hover:shadow-xl active:scale-95 transition-all duration-200
-                hover:scale-105 disabled:opacity-40 disabled:pointer-events-none
-                focus-visible:outline-2 focus-visible:outline-gray-900
+                w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#171717] text-white shrink-0
+                flex items-center justify-center
+                shadow-level-2 hover:bg-black active:scale-95 transition-all duration-150
+                disabled:opacity-30 disabled:pointer-events-none cursor-pointer
               "
               aria-label={`Play ${playlist?.name || 'playlist'}`}
               id="play-playlist-btn"
             >
-              <Play size={24} fill="currentColor" className="translate-x-0.5" />
+              <Play size={20} fill="currentColor" className="translate-x-0.5" />
             </button>
           </div>
 
@@ -340,10 +336,10 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
 
       {/* ── Tracks List ── */}
       <div
-        className="flex-1 min-h-0 overflow-y-auto px-5 md:px-12 pb-44 lg:pb-20 custom-scrollbar"
+        className="flex-1 min-h-0 overflow-y-auto px-5 md:px-10 pb-44 lg:pb-20 custom-scrollbar"
       >
         {error && (
-          <p role="alert" className="mb-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-xs font-bold text-red-600">
+          <p role="alert" className="mb-4 rounded-md border border-[#ee0000]/20 bg-[#f7d4d6]/40 px-4 py-2.5 font-mono text-xs text-[#ee0000]">
             {error}
           </p>
         )}
@@ -351,23 +347,23 @@ const PlaylistTracksPanel = ({ playlistId, onRequestOpenLibrary, onImportPlaylis
           /* Empty state */
           <div
             className="
-              mt-4 py-24 flex flex-col items-center justify-center
-              border-2 border-dashed border-black/[0.05] rounded-3xl bg-black/[0.01]
+              mt-4 py-20 flex flex-col items-center justify-center
+              border border-dashed border-[#ebebeb] rounded-xl bg-white shadow-level-1
             "
             aria-label="No tracks in this playlist"
           >
-            <div className="w-16 h-16 rounded-2xl bg-black/[0.04] flex items-center justify-center mb-6">
-              <Search size={28} className="text-gray-400" aria-hidden="true" />
+            <div className="w-12 h-12 rounded-md bg-[#fafafa] border border-[#ebebeb] flex items-center justify-center mb-4 text-[#888888]">
+              <Search size={22} aria-hidden="true" />
             </div>
-            <p className="text-label">No Tracks Yet</p>
-            <p className="text-body-sm mt-2 max-w-[260px] text-center">
+            <span className="mono-eyebrow mb-1">EMPTY PLAYLIST</span>
+            <p className="text-xs text-[#888888] mt-1 max-w-[260px] text-center">
               Search YouTube above or paste a URL to add your first track.
             </p>
           </div>
         ) : (
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={trackIds} strategy={verticalListSortingStrategy}>
-              <div className="space-y-1.5 md:space-y-2 pt-1" role="list" aria-label={`Tracks in ${playlist?.name || 'playlist'}`}>
+              <div className="space-y-2 pt-1" role="list" aria-label={`Tracks in ${playlist?.name || 'playlist'}`}>
                 {tracks.map((track, index) => (
                   <SortableTrackItem
                     key={track.playlistTrackId}

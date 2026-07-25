@@ -30,22 +30,26 @@ const PlaylistItem = memo(function PlaylistItem({ playlist, isSelected, onSelect
         type="button"
         onClick={() => onSelectPlaylist(playlist.id)}
         className={`
-          group flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
-          cursor-pointer text-left w-full min-h-[52px] pr-12
-          focus-visible:outline-2 focus-visible:outline-gray-900
+          group flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-150
+          cursor-pointer text-left w-full min-h-[44px] pr-10 relative
           ${isSelected
-            ? 'surface-raised text-gray-900'
-            : 'hover:bg-black/[0.04] text-gray-500 hover:text-gray-800'}
+            ? 'bg-[#fafafa] border border-[#ebebeb] text-[#171717] shadow-level-1 font-semibold'
+            : 'hover:bg-[#fafafa] border border-transparent text-[#4d4d4d] hover:text-[#171717]'}
         `}
         aria-current={isSelected ? 'page' : undefined}
         aria-label={`${playlist.name}, ${trackCount} tracks`}
         id={`playlist-item-${playlist.id}`}
       >
+        {/* Left edge active indicator */}
+        {isSelected && (
+          <div className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-[#171717] rounded-r-full" />
+        )}
+
         <div
           className={`
-            shrink-0 w-10 h-10 flex items-center justify-center
-            font-black text-sm uppercase rounded-xl transition-colors duration-200 leading-none
-            ${isSelected ? 'bg-gray-900 text-white' : 'bg-black/[0.05] text-gray-600'}
+            shrink-0 w-7 h-7 flex items-center justify-center
+            font-mono text-xs font-medium uppercase rounded-md transition-colors duration-150 leading-none
+            ${isSelected ? 'bg-[#171717] text-white' : 'bg-[#f5f5f5] text-[#4d4d4d] border border-[#ebebeb]'}
           `}
           aria-hidden="true"
         >
@@ -55,14 +59,14 @@ const PlaylistItem = memo(function PlaylistItem({ playlist, isSelected, onSelect
         <div className="flex-1 min-w-0">
           <p
             className={`
-              truncate text-sm leading-tight font-bold tracking-tight
-              ${isSelected ? 'text-gray-900' : 'text-gray-700'}
+              truncate text-xs leading-tight font-medium
+              ${isSelected ? 'text-[#171717]' : 'text-[#4d4d4d] group-hover:text-[#171717]'}
             `}
           >
             {playlist.name}
           </p>
-          <p className="text-caption mt-0.5">
-            {trackCount} tracks
+          <p className="font-mono text-[10px] text-[#888888] mt-0.5">
+            {trackCount} {trackCount === 1 ? 'track' : 'tracks'}
           </p>
         </div>
       </button>
@@ -74,16 +78,16 @@ const PlaylistItem = memo(function PlaylistItem({ playlist, isSelected, onSelect
         }}
         className={`
           absolute right-2 top-1/2 -translate-y-1/2
-          min-w-[36px] min-h-[36px] flex items-center justify-center shrink-0
-          rounded-lg transition-all duration-150
-          hover:bg-red-50 hover:text-red-500
-          ${isSelected ? 'opacity-60' : 'opacity-0 group-hover:opacity-60'}
+          w-7 h-7 flex items-center justify-center shrink-0
+          rounded-md transition-all duration-150 cursor-pointer
+          hover:bg-[#f7d4d6]/40 hover:text-[#ee0000] text-[#888888]
+          ${isSelected ? 'opacity-80' : 'opacity-0 group-hover:opacity-80'}
           focus-visible:opacity-100
         `}
         aria-label={`Delete ${playlist.name} playlist`}
         id={`delete-playlist-${playlist.id}`}
       >
-        <Trash2 size={15} />
+        <Trash2 size={13} />
       </button>
     </div>
   );
@@ -101,11 +105,11 @@ const PlaylistSidebar = ({
       {isLoading ? (
         <div className="space-y-2 px-1">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="flex gap-3 items-center p-3 rounded-xl">
-              <div className="w-10 h-10 rounded-xl bg-black/[0.05] skeleton-shimmer shrink-0" />
-              <div className="flex-1 space-y-2">
-                <div className="h-2.5 w-3/5 bg-black/[0.05] rounded-full skeleton-shimmer" />
-                <div className="h-2 w-2/5 bg-black/[0.03] rounded-full skeleton-shimmer" />
+            <div key={i} className="flex gap-3 items-center p-2.5 rounded-md border border-[#ebebeb] bg-white">
+              <div className="w-7 h-7 rounded-md bg-[#f5f5f5] shrink-0 animate-pulse" />
+              <div className="flex-1 space-y-1.5">
+                <div className="h-2 w-3/5 bg-[#f5f5f5] rounded-full animate-pulse" />
+                <div className="h-2 w-2/5 bg-[#f5f5f5] rounded-full animate-pulse" />
               </div>
             </div>
           ))}
@@ -125,8 +129,8 @@ const PlaylistSidebar = ({
           );
         })
       ) : (
-        <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-          <p className="text-label">No Playlists Yet</p>
+        <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
+          <p className="font-mono text-xs text-[#888888]">No Playlists Created</p>
         </div>
       )}
     </div>
