@@ -28,4 +28,4 @@ Allow: /track/*
 Crawl-delay: 1
 
 # Sitemap for efficient discovery
-Sitemap: https://sukhsangeet.tech/sitemap.xml
+Sitemap: https://www.sukhsangeet.tech/sitemap.xml
