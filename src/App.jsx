@@ -10,6 +10,7 @@ const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
 const About = lazy(() => import('./pages/About'));
 const Terms = lazy(() => import('./pages/Terms'));
 const Contact = lazy(() => import('./pages/Contact'));
+const HowItWorks = lazy(() => import('./pages/HowItWorks'));
 const PlaylistWorkspace = lazy(() => import('./components/PlaylistWorkspace'));
 const PWAInstallPrompt = lazy(() => import('./components/PWAInstallPrompt'));
 
@@ -34,6 +35,8 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login/*" element={<Login />} />
           <Route path="/register/*" element={<Register />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/how" element={<HowItWorks />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/about-us" element={<About />} />

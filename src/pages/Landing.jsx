@@ -552,6 +552,7 @@ const Landing = () => {
           <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6 lg:px-8">
             <p>© 2026 Sukh Sangeet Inc. All rights reserved.</p>
             <div className="flex flex-wrap items-center justify-center gap-4 text-[#4d4d4d]">
+              <Link to="/how-it-works" className="hover:text-[#171717] transition-colors font-medium">How It Works</Link>
               <Link to="/about-us" className="hover:text-[#171717] transition-colors">About Us</Link>
               <Link to="/privacy-policy" className="hover:text-[#171717] transition-colors">Privacy Policy</Link>
               <Link to="/terms-and-conditions" className="hover:text-[#171717] transition-colors">Terms & Conditions</Link>
