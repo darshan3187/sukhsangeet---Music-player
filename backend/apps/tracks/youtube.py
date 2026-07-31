@@ -163,13 +163,13 @@ def fetch_or_create_track(url_or_id):
                 "id": video_id,
                 "key": api_key,
             },
-            timeout=15,
+            timeout=50,
         )
     except (requests.RequestException, OSError) as exc:
         raise YouTubeAPIError("Could not fetch video details") from exc
 
     if response.status_code != 200:
-        return _fetch_track_via_oembed(video_id)
+        raise YouTubeAPIError("Could not fetch video details from YouTube API")
 
     payload = response.json()
     if isinstance(payload, dict) and payload.get("error"):
@@ -178,8 +178,8 @@ def fetch_or_create_track(url_or_id):
         if errors:
             reason = errors[0].get("reason")
         if reason in {"quotaExceeded", "dailyLimitExceeded", "rateLimitExceeded"}:
-            return _fetch_track_via_oembed(video_id)
-        return _fetch_track_via_oembed(video_id)
+            raise YouTubeAPIError("YouTube API quota exceeded")
+        raise YouTubeAPIError("YouTube API error")
 
     items = payload.get("items") or []
     if not items:

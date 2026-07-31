@@ -109,6 +109,18 @@ const Contact = () => {
                   We review user messages daily and strive to reply to all inquiries within 24 to 48 hours.
                 </p>
               </div>
+
+              <div className="rounded-xl border border-[#ebebeb] bg-white p-6 shadow-level-2 space-y-3">
+                <span className="mono-eyebrow">DPDP ACT 2023 COMPLIANCE</span>
+                <h2 className="text-base font-semibold text-[#171717]">Grievance Officer (India)</h2>
+                <p className="text-xs text-[#4d4d4d]">Designated Data Protection & Grievance Officer:</p>
+                <div className="font-mono text-xs text-[#171717] space-y-1">
+                  <p><strong>Name:</strong> Darshan Rajgor</p>
+                  <p><strong>Role:</strong> Data Protection & Grievance Officer</p>
+                  <p><strong>Location:</strong> Gujarat, India</p>
+                  <p><strong>Email:</strong> <a href="mailto:darshanrajgor73@gmail.com" className="text-[#0070f3] hover:underline">grievance@sukhsangeet.tech</a></p>
+                </div>
+              </div>
             </div>
 
             {/* Contact Form */}

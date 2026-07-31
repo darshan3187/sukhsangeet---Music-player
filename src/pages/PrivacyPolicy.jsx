@@ -93,40 +93,24 @@ const PrivacyPolicy = () => {
                 </li>
               </ul>
               <p>
+                Users can manage and revoke Sukh Sangeet's access to their YouTube data at any time via the <a href="https://security.google.com/settings/security/permissions" target="_blank" rel="noopener noreferrer" className="text-[#0070f3] hover:underline font-medium">Google Security Settings Page</a>.
+              </p>
+              <p>
                 We do not store private YouTube account credentials or sell your YouTube viewing metrics.
               </p>
             </section>
 
             <section className="rounded-xl border border-[#ebebeb] bg-white p-6 sm:p-8 shadow-level-2 space-y-4">
-              <h2 className="text-lg font-semibold text-[#171717]">4. Cookies & Local Storage</h2>
+              <h2 className="text-lg font-semibold text-[#171717]">7. Contact & Grievance Redressal (DPDP Act 2023)</h2>
               <p>
-                We use cookies and browser Local Storage to preserve active authentication sessions, remember user preferences (such as playback volume and library sidebar states), and ensure uninterrupted playback functionality across navigation.
+                In compliance with the Indian Digital Personal Data Protection (DPDP) Act 2023 and global privacy standards, if you have any questions, grievances, or requests regarding your personal data, data erasure, or data export, please contact our designated Grievance Officer:
               </p>
-            </section>
-
-            <section className="rounded-xl border border-[#ebebeb] bg-white p-6 sm:p-8 shadow-level-2 space-y-4">
-              <h2 className="text-lg font-semibold text-[#171717]">5. How We Use Your Information</h2>
-              <p>Your information is used strictly for the following purposes:</p>
-              <ul className="list-disc pl-5 space-y-2">
-                <li>To provide, operate, and maintain the Sukh Sangeet platform.</li>
-                <li>To synchronize your custom playlists securely across your devices.</li>
-                <li>To troubleshoot technical errors and improve system performance.</li>
-                <li>To protect our application against spam, unauthorized access, and security threats.</li>
-              </ul>
-            </section>
-
-            <section className="rounded-xl border border-[#ebebeb] bg-white p-6 sm:p-8 shadow-level-2 space-y-4">
-              <h2 className="text-lg font-semibold text-[#171717]">6. Data Security</h2>
-              <p>
-                We employ industry-standard encryption protocols (HTTPS/TLS) and secure database storage mechanisms to safeguard your personal data against unauthorized access, disclosure, or destruction.
-              </p>
-            </section>
-
-            <section className="rounded-xl border border-[#ebebeb] bg-white p-6 sm:p-8 shadow-level-2 space-y-4">
-              <h2 className="text-lg font-semibold text-[#171717]">7. Contact Us</h2>
-              <p>
-                If you have any questions, concerns, or requests regarding this Privacy Policy or your personal data, please contact us via our <Link to="/contact-us" className="text-[#0070f3] hover:underline font-medium">Contact Page</Link> or email us at <a href="mailto:darshanrajgor73@gmail.com" className="font-mono text-[#0070f3] hover:underline">darshanrajgor73@gmail.com</a>.
-              </p>
+              <div className="font-mono text-xs text-[#171717] bg-[#fafafa] p-4 rounded-lg border border-[#ebebeb] space-y-1">
+                <p><strong>Grievance Officer:</strong> Darshan Rajgor</p>
+                <p><strong>Entity:</strong> Sukh Sangeet Technologies</p>
+                <p><strong>Location:</strong> Gujarat, India</p>
+                <p><strong>Email:</strong> <a href="mailto:darshanrajgor73@gmail.com" className="text-[#0070f3] hover:underline">grievance@sukhsangeet.tech</a> / <a href="mailto:darshanrajgor73@gmail.com" className="text-[#0070f3] hover:underline">darshanrajgor73@gmail.com</a></p>
+              </div>
             </section>
           </div>
         </main>

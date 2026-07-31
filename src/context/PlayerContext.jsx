@@ -1,7 +1,46 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useRef, useEffect, useCallback, useMemo } from 'react';
 
-const PlayerContext = createContext();
+const defaultPlayerState = {
+  queue: [],
+  setQueue: () => {},
+  loadQueue: () => {},
+  appReady: false,
+  currentTrack: null,
+  currentTrackIndex: 0,
+  isPlaying: false,
+  isBuffering: false,
+  duration: 0,
+  volume: 1,
+  isMuted: false,
+  shuffle: false,
+  repeatMode: 'off',
+  trackDurations: {},
+  play: () => {},
+  pause: () => {},
+  next: () => {},
+  prev: () => {},
+  seekTo: () => {},
+  setVolume: () => {},
+  setIsMuted: () => {},
+  toggleShuffle: () => {},
+  toggleRepeat: () => {},
+  playerRef: { current: null },
+  preloadPlayerRef: { current: null },
+  playTrack: () => {},
+  playNext: () => {},
+  addToEnd: () => {},
+  removeFromQueue: () => {},
+  clearQueue: () => {},
+  reorderQueue: () => {},
+  shuffleQueue: () => {},
+  playFromTop: () => {},
+  getTrackDuration: () => null,
+  preloadTrack: () => false,
+  swapPlayers: () => false
+};
+
+const PlayerContext = createContext(defaultPlayerState);
 const YOUTUBE_IFRAME_API_SRC = 'https://www.youtube.com/iframe_api';
 
 let youtubeIframeApiPromise = null;
@@ -47,7 +86,7 @@ const loadYouTubeIframeApi = () => {
   return youtubeIframeApiPromise;
 };
 
-export const usePlayer = () => useContext(PlayerContext);
+export const usePlayer = () => useContext(PlayerContext) || defaultPlayerState;
 
 const cloneTrack = (track) => ({ ...track });
 
@@ -1005,20 +1044,10 @@ export const PlayerProvider = ({ children }) => {
     <PlayerContext.Provider value={contextValue}>
       {children}
       <div 
-        style={{ 
-          position: 'fixed',
-          top: '-100px',
-          left: '-100px',
-          width: '1px',
-          height: '1px',
-          overflow: 'hidden',
-          opacity: 0,
-          pointerEvents: 'none',
-          zIndex: -1
-        }}
+        id="yt-player-container"
+        className="fixed top-16 right-3 sm:top-auto sm:bottom-4 sm:right-4 z-40 w-44 h-28 sm:w-72 sm:h-44 rounded-xl overflow-hidden shadow-2xl border border-neutral-300 bg-black transition-all duration-300 pointer-events-auto"
       >
-        <div id="yt-player-main"></div>
-        <div id="yt-player-preload"></div>
+        <div id="yt-player-main" className="w-full h-full"></div>
       </div>
     </PlayerContext.Provider>
   );
