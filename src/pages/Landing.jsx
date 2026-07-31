@@ -72,44 +72,49 @@ const Landing = () => {
 
       <div className="relative min-h-screen bg-[#fafafa] text-[#171717] antialiased selection:bg-[#171717] selection:text-white">
         {/* Sticky Header Navigation */}
-        <header className="sticky top-0 z-40 border-b border-[#ebebeb] bg-white/90 backdrop-blur-md">
-          <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-            <Link to="/" className="flex items-center gap-3 shrink-0" aria-label="SukhSangeet home">
+        <header className="sticky top-0 z-40 border-b border-[#ebebeb] bg-white/95 backdrop-blur-md">
+          <div className="mx-auto flex h-14 sm:h-16 w-full max-w-6xl items-center justify-between px-3.5 sm:px-6 lg:px-8">
+            <Link to="/" className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0" aria-label="SukhSangeet home">
               <img
                 src="/logo-sukhsangeet.webp"
                 alt="SukhSangeet"
                 width="36"
                 height="36"
                 fetchPriority="high"
-                className="h-9 w-9 object-contain rounded-lg shadow-sm"
+                className="h-8 w-8 sm:h-9 sm:w-9 object-contain rounded-lg shadow-sm shrink-0"
                 loading="eager"
               />
-              <span className="font-mono text-xs font-semibold uppercase tracking-wider text-[#171717]">
+              <span className="font-mono text-xs sm:text-xs font-semibold uppercase tracking-wider text-[#171717] truncate">
                 SukhSangeet
               </span>
             </Link>
 
-            <div className="flex items-center gap-4 sm:gap-6 shrink-0">
-              <Link to="/blog" className="text-xs font-semibold text-[#171717] hover:text-[#0066cc] transition-colors flex items-center gap-1">
-                <BookOpen size={14} />
-                <span>Content Hub</span>
+            <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+              <Link 
+                to="/blog" 
+                className="text-xs font-semibold text-[#171717] hover:text-[#0070f3] transition-colors flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-black/5"
+              >
+                <BookOpen size={15} className="shrink-0 text-[#0070f3]" />
+                <span className="hidden xs:inline">Content Hub</span>
               </Link>
 
               {isAuthenticated ? (
                 <Link
                   to="/find-music"
-                  className="btn-vercel-primary whitespace-nowrap"
+                  className="btn-vercel-primary !h-9 sm:!h-10 !px-3 sm:!px-4 text-xs sm:text-sm whitespace-nowrap"
                 >
-                  <span>Continue Listening</span>
-                  <ChevronRight size={14} />
+                  <span>Continue</span>
+                  <span className="hidden sm:inline">Listening</span>
+                  <ChevronRight size={14} className="shrink-0" />
                 </Link>
               ) : (
                 <Link
                   to="/register"
-                  className="btn-vercel-primary whitespace-nowrap"
+                  className="btn-vercel-primary !h-9 sm:!h-10 !px-3 sm:!px-4 text-xs sm:text-sm whitespace-nowrap"
                 >
-                  <span>Start Workspace</span>
-                  <ChevronRight size={14} />
+                  <span>Start</span>
+                  <span className="hidden sm:inline">Workspace</span>
+                  <ChevronRight size={14} className="shrink-0" />
                 </Link>
               )}
             </div>
@@ -118,35 +123,35 @@ const Landing = () => {
 
         <main>
           {/* Hero Section with Mesh Gradient Backdrop */}
-          <section className="relative overflow-hidden border-b border-[#ebebeb] bg-white py-16 sm:py-24 lg:py-28" aria-labelledby="hero-title">
+          <section className="relative overflow-hidden border-b border-[#ebebeb] bg-white py-10 sm:py-20 lg:py-28" aria-labelledby="hero-title">
             <div
               aria-hidden="true"
               className="vercel-mesh-gradient pointer-events-none absolute inset-0 opacity-70"
             />
-            <div className="relative mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#ebebeb] bg-white/80 px-4 py-1.5 backdrop-blur-sm shadow-level-1 max-w-full">
+            <div className="relative mx-auto max-w-5xl px-3.5 text-center sm:px-6 lg:px-8">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#ebebeb] bg-white/90 px-3 py-1 sm:px-4 sm:py-1.5 backdrop-blur-sm shadow-level-1 max-w-full">
                 <span className="h-2 w-2 rounded-full bg-[#0070f3] shrink-0 animate-pulse" />
-                <span className="font-mono text-xs font-medium uppercase tracking-wider text-[#4d4d4d] whitespace-normal sm:whitespace-nowrap text-center">
+                <span className="font-mono text-[10px] sm:text-xs font-medium uppercase tracking-wider text-[#4d4d4d] leading-normal text-center">
                   SukhSangeet // Personal Audio Workspace & Playlist Engine
                 </span>
               </div>
 
               <h1
                 id="hero-title"
-                className="mx-auto mt-6 max-w-4xl font-sans text-3xl font-semibold leading-tight tracking-tight text-[#171717] sm:text-5xl lg:text-6xl sm:tracking-tighter"
+                className="mx-auto mt-4 sm:mt-6 max-w-4xl font-sans text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-semibold leading-[1.18] sm:leading-tight tracking-tight sm:tracking-tighter text-[#171717]"
               >
                 Build better focus with clean, curated YouTube playlists.
               </h1>
 
-              <p className="mx-auto mt-4 max-w-3xl text-sm font-normal text-[#4d4d4d] sm:text-base md:text-lg leading-relaxed">
+              <p className="mx-auto mt-3 sm:mt-4 max-w-3xl text-xs xs:text-sm sm:text-base md:text-lg font-normal text-[#4d4d4d] leading-relaxed">
                 Sukh Sangeet transforms how you listen to music online. Search YouTube tracks directly, create organized playlists, eliminate algorithmic feed distractions, and experience real-time audio visualization with PWA offline support.
               </p>
 
-              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+              <div className="mt-6 sm:mt-8 flex flex-col xs:flex-row items-center justify-center gap-2.5 sm:gap-4 w-full xs:w-auto">
                 {isAuthenticated ? (
                   <Link
                     to="/find-music"
-                    className="btn-vercel-primary text-sm px-6 h-11 w-full sm:w-auto"
+                    className="btn-vercel-primary text-xs sm:text-sm px-5 sm:px-6 h-10 sm:h-11 w-full xs:w-auto justify-center"
                   >
                     <span>Open Music Workspace</span>
                     <ChevronRight size={16} />
@@ -154,7 +159,7 @@ const Landing = () => {
                 ) : (
                   <Link
                     to="/register"
-                    className="btn-vercel-primary text-sm px-6 h-11 w-full sm:w-auto"
+                    className="btn-vercel-primary text-xs sm:text-sm px-5 sm:px-6 h-10 sm:h-11 w-full xs:w-auto justify-center"
                   >
                     <span>Start Free Workspace</span>
                     <ChevronRight size={16} />
@@ -162,72 +167,82 @@ const Landing = () => {
                 )}
                 <a
                   href="#services"
-                  className="btn-vercel-secondary text-sm px-6 h-11 w-full sm:w-auto"
+                  className="btn-vercel-secondary text-xs sm:text-sm px-5 sm:px-6 h-10 sm:h-11 w-full xs:w-auto justify-center"
                 >
                   <span>Explore Capabilities</span>
                 </a>
               </div>
 
               {/* Key Platform Highlights Bar */}
-              <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4 text-left">
-                <div className="rounded-xl border border-[#ebebeb] bg-white/90 p-4 shadow-level-1 backdrop-blur-sm">
-                  <div className="flex items-center gap-2 text-xs font-mono text-[#0070f3] font-semibold">
-                    <ShieldCheck size={14} /> 100% CLEAN
+              <div className="mt-8 sm:mt-12 grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 text-left">
+                <div className="rounded-xl border border-[#ebebeb] bg-white/90 p-3.5 sm:p-4 shadow-level-1 backdrop-blur-sm flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-mono text-[#0070f3] font-semibold">
+                      <ShieldCheck size={14} className="shrink-0" /> 100% CLEAN
+                    </div>
+                    <p className="mt-1 text-xs sm:text-sm text-[#171717] font-medium leading-tight">Zero Feed Distractions</p>
                   </div>
-                  <p className="mt-1 text-xs text-[#171717] font-medium">Zero Feed Distractions</p>
-                  <p className="text-[11px] text-[#888888] leading-tight mt-0.5">No comments or recommended rabbit holes.</p>
+                  <p className="text-[11px] text-[#888888] leading-tight mt-1">No comments or recommended rabbit holes.</p>
                 </div>
 
-                <div className="rounded-xl border border-[#ebebeb] bg-white/90 p-4 shadow-level-1 backdrop-blur-sm">
-                  <div className="flex items-center gap-2 text-xs font-mono text-[#0070f3] font-semibold">
-                    <Search size={14} /> DIRECT YOUTUBE
+                <div className="rounded-xl border border-[#ebebeb] bg-white/90 p-3.5 sm:p-4 shadow-level-1 backdrop-blur-sm flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-mono text-[#0070f3] font-semibold">
+                      <Search size={14} className="shrink-0" /> DIRECT YOUTUBE
+                    </div>
+                    <p className="mt-1 text-xs sm:text-sm text-[#171717] font-medium leading-tight">Instant Song Discovery</p>
                   </div>
-                  <p className="mt-1 text-xs text-[#171717] font-medium">Instant Song Discovery</p>
-                  <p className="text-[11px] text-[#888888] leading-tight mt-0.5">Search millions of public audio tracks.</p>
+                  <p className="text-[11px] text-[#888888] leading-tight mt-1">Search millions of public audio tracks.</p>
                 </div>
 
-                <div className="rounded-xl border border-[#ebebeb] bg-white/90 p-4 shadow-level-1 backdrop-blur-sm">
-                  <div className="flex items-center gap-2 text-xs font-mono text-[#0070f3] font-semibold">
-                    <WifiOff size={14} /> PWA READY
+                <div className="rounded-xl border border-[#ebebeb] bg-white/90 p-3.5 sm:p-4 shadow-level-1 backdrop-blur-sm flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-mono text-[#0070f3] font-semibold">
+                      <WifiOff size={14} className="shrink-0" /> PWA READY
+                    </div>
+                    <p className="mt-1 text-xs sm:text-sm text-[#171717] font-medium leading-tight">Offline Playback Sync</p>
                   </div>
-                  <p className="mt-1 text-xs text-[#171717] font-medium">Offline Playback Sync</p>
-                  <p className="text-[11px] text-[#888888] leading-tight mt-0.5">Install on desktop & mobile devices.</p>
+                  <p className="text-[11px] text-[#888888] leading-tight mt-1">Install on desktop & mobile devices.</p>
                 </div>
 
-                <div className="rounded-xl border border-[#ebebeb] bg-white/90 p-4 shadow-level-1 backdrop-blur-sm">
-                  <div className="flex items-center gap-2 text-xs font-mono text-[#0070f3] font-semibold">
-                    <Waves size={14} /> VISUALIZER
+                <div className="rounded-xl border border-[#ebebeb] bg-white/90 p-3.5 sm:p-4 shadow-level-1 backdrop-blur-sm flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-1.5 text-[11px] sm:text-xs font-mono text-[#0070f3] font-semibold">
+                      <Waves size={14} className="shrink-0" /> VISUALIZER
+                    </div>
+                    <p className="mt-1 text-xs sm:text-sm text-[#171717] font-medium leading-tight">Live Frequency Feedback</p>
                   </div>
-                  <p className="mt-1 text-xs text-[#171717] font-medium">Live Frequency Feedback</p>
-                  <p className="text-[11px] text-[#888888] leading-tight mt-0.5">Real-time canvas waveform effects.</p>
+                  <p className="text-[11px] text-[#888888] leading-tight mt-1">Real-time canvas waveform effects.</p>
                 </div>
               </div>
             </div>
           </section>
 
           {/* Section 01: Platform Services & Capabilities */}
-          <section id="services" className="border-b border-[#ebebeb] bg-[#fafafa] py-16 sm:py-24" aria-labelledby="services-title">
-            <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-              <div className="mb-12 text-center">
-                <span className="mono-eyebrow mb-2">01 // SERVICES & CAPABILITIES</span>
-                <h2 id="services-title" className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#171717]">
+          <section id="services" className="border-b border-[#ebebeb] bg-[#fafafa] py-12 sm:py-20 lg:py-24" aria-labelledby="services-title">
+            <div className="mx-auto w-full max-w-6xl px-3.5 sm:px-6 lg:px-8">
+              <div className="mb-8 sm:mb-12 text-center">
+                <span className="mono-eyebrow mb-1.5 sm:mb-2 text-[11px] sm:text-xs">01 // SERVICES & CAPABILITIES</span>
+                <h2 id="services-title" className="text-xl xs:text-2xl sm:text-3xl font-semibold tracking-tight text-[#171717]">
                   What Sukh Sangeet Delivers.
                 </h2>
-                <p className="mx-auto mt-2 max-w-2xl text-sm text-[#4d4d4d]">
+                <p className="mx-auto mt-2 max-w-2xl text-xs sm:text-sm text-[#4d4d4d] leading-relaxed">
                   A purpose-built suite of music management services designed to simplify audio curation and protect your focus.
                 </p>
               </div>
 
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {platformServices.map((service) => (
-                  <article key={service.title} className="rounded-xl border border-[#ebebeb] bg-white p-6 shadow-level-2 transition-all hover:shadow-level-3">
-                    <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg border border-[#ebebeb] bg-[#fafafa] text-[#171717]">
-                      <service.icon className="h-5 w-5 text-[#0070f3]" />
+                  <article key={service.title} className="rounded-xl border border-[#ebebeb] bg-white p-4 sm:p-6 shadow-level-2 transition-all hover:shadow-level-3 flex flex-col justify-between">
+                    <div>
+                      <div className="mb-3.5 inline-flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-lg border border-[#ebebeb] bg-[#fafafa] text-[#171717]">
+                        <service.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#0070f3]" />
+                      </div>
+                      <h3 className="text-sm sm:text-base font-semibold text-[#171717]">{service.title}</h3>
+                      <p className="mt-2 text-xs leading-relaxed text-[#4d4d4d]">{service.description}</p>
                     </div>
-                    <h3 className="text-base font-semibold text-[#171717]">{service.title}</h3>
-                    <p className="mt-2 text-xs leading-relaxed text-[#4d4d4d]">{service.description}</p>
                     
-                    <ul className="mt-4 space-y-1.5 border-t border-[#ebebeb] pt-4 text-[11px] text-[#4d4d4d]">
+                    <ul className="mt-4 space-y-1.5 border-t border-[#ebebeb] pt-3.5 text-[11px] sm:text-xs text-[#4d4d4d]">
                       {service.highlights.map((item, idx) => (
                         <li key={idx} className="flex items-center gap-2">
                           <Check size={12} className="text-[#0070f3] shrink-0" />
@@ -242,30 +257,32 @@ const Landing = () => {
           </section>
 
           {/* Section 02: How to Use & Workflow Guide */}
-          <section id="how-it-works" className="border-b border-[#ebebeb] bg-white py-16 sm:py-24" aria-labelledby="how-to-title">
-            <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-              <div className="mb-12 text-center">
-                <span className="mono-eyebrow mb-2">02 // STEP-BY-STEP WORKFLOW</span>
-                <h2 id="how-to-title" className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#171717]">
+          <section id="how-it-works" className="border-b border-[#ebebeb] bg-white py-12 sm:py-20 lg:py-24" aria-labelledby="how-to-title">
+            <div className="mx-auto w-full max-w-6xl px-3.5 sm:px-6 lg:px-8">
+              <div className="mb-8 sm:mb-12 text-center">
+                <span className="mono-eyebrow mb-1.5 sm:mb-2 text-[11px] sm:text-xs">02 // STEP-BY-STEP WORKFLOW</span>
+                <h2 id="how-to-title" className="text-xl xs:text-2xl sm:text-3xl font-semibold tracking-tight text-[#171717]">
                   How to Use Sukh Sangeet.
                 </h2>
-                <p className="mx-auto mt-2 max-w-xl text-sm text-[#4d4d4d]">
+                <p className="mx-auto mt-2 max-w-xl text-xs sm:text-sm text-[#4d4d4d] leading-relaxed">
                   Set up your personalized music workspace in four quick, intuitive steps.
                 </p>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-3.5 sm:gap-4 grid-cols-1 xs:grid-cols-2 lg:grid-cols-4">
                 {howToSteps.map((step, index) => (
-                  <article key={step.title} className="relative rounded-xl border border-[#ebebeb] bg-[#fafafa] p-6 shadow-level-2">
-                    <div className="mb-3 flex items-center justify-between">
-                      <span className="font-mono text-xs font-semibold text-[#0070f3]">
-                        STEP 0{index + 1}
-                      </span>
-                      <step.icon size={18} className="text-[#888888]" />
+                  <article key={step.title} className="relative rounded-xl border border-[#ebebeb] bg-[#fafafa] p-4 sm:p-6 shadow-level-2 flex flex-col justify-between">
+                    <div>
+                      <div className="mb-3 flex items-center justify-between">
+                        <span className="font-mono text-xs font-semibold text-[#0070f3]">
+                          STEP 0{index + 1}
+                        </span>
+                        <step.icon size={18} className="text-[#888888]" />
+                      </div>
+                      <h3 className="text-sm sm:text-base font-semibold text-[#171717]">{step.title}</h3>
+                      <p className="mt-2 text-xs leading-relaxed text-[#4d4d4d]">{step.description}</p>
                     </div>
-                    <h3 className="text-base font-semibold text-[#171717]">{step.title}</h3>
-                    <p className="mt-2 text-xs leading-relaxed text-[#4d4d4d]">{step.description}</p>
-                    <div className="mt-4 rounded-md border border-[#ebebeb] bg-white p-2 text-[11px] font-mono text-[#888888]">
+                    <div className="mt-3.5 rounded-md border border-[#ebebeb] bg-white p-2.5 text-[11px] font-mono text-[#737373]">
                       Tip: {step.proTip}
                     </div>
                   </article>
@@ -273,34 +290,34 @@ const Landing = () => {
               </div>
 
               {/* Pro Tips Box */}
-              <div className="mt-8 rounded-xl border border-[#ebebeb] bg-[#fafafa] p-6 sm:p-8 shadow-level-2">
+              <div className="mt-6 sm:mt-8 rounded-xl border border-[#ebebeb] bg-[#fafafa] p-4 sm:p-8 shadow-level-2">
                 <div className="flex items-center gap-2">
-                  <Sparkles size={16} className="text-[#0070f3]" />
-                  <span className="mono-eyebrow">POWER USER HINTS</span>
+                  <Sparkles size={16} className="text-[#0070f3] shrink-0" />
+                  <span className="mono-eyebrow text-[11px] sm:text-xs">POWER USER HINTS</span>
                 </div>
-                <h3 className="mt-2 text-lg font-semibold text-[#171717]">Maximized Efficiency for Daily Listening</h3>
-                <ul className="mt-4 grid gap-3 text-xs text-[#4d4d4d] sm:grid-cols-2 lg:grid-cols-3">
-                  <li className="flex items-start gap-2.5 rounded-lg border border-[#ebebeb] bg-white p-3">
+                <h3 className="mt-2 text-base sm:text-lg font-semibold text-[#171717]">Maximized Efficiency for Daily Listening</h3>
+                <ul className="mt-4 grid gap-2.5 sm:gap-3 text-xs sm:text-sm text-[#4d4d4d] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                  <li className="flex items-start gap-2.5 rounded-lg border border-[#ebebeb] bg-white p-2.5 sm:p-3 shadow-sm">
                     <span className="font-mono text-[#0070f3] font-semibold shrink-0">01.</span>
                     <span><strong>Drag-and-Drop Order:</strong> Drag tracks to reorder your playback sequence instantly.</span>
                   </li>
-                  <li className="flex items-start gap-2.5 rounded-lg border border-[#ebebeb] bg-white p-3">
+                  <li className="flex items-start gap-2.5 rounded-lg border border-[#ebebeb] bg-white p-2.5 sm:p-3 shadow-sm">
                     <span className="font-mono text-[#0070f3] font-semibold shrink-0">02.</span>
                     <span><strong>Live Visualizer Canvas:</strong> Toggle the audio visualizer for active frequency feedback.</span>
                   </li>
-                  <li className="flex items-start gap-2.5 rounded-lg border border-[#ebebeb] bg-white p-3">
+                  <li className="flex items-start gap-2.5 rounded-lg border border-[#ebebeb] bg-white p-2.5 sm:p-3 shadow-sm">
                     <span className="font-mono text-[#0070f3] font-semibold shrink-0">03.</span>
                     <span><strong>PWA Home Screen:</strong> Install Sukh Sangeet on iOS/Android for native app feel.</span>
                   </li>
-                  <li className="flex items-start gap-2.5 rounded-lg border border-[#ebebeb] bg-white p-3">
+                  <li className="flex items-start gap-2.5 rounded-lg border border-[#ebebeb] bg-white p-2.5 sm:p-3 shadow-sm">
                     <span className="font-mono text-[#0070f3] font-semibold shrink-0">04.</span>
                     <span><strong>Session Recovery:</strong> Your active track position and queue persist across browser tabs.</span>
                   </li>
-                  <li className="flex items-start gap-2.5 rounded-lg border border-[#ebebeb] bg-white p-3">
+                  <li className="flex items-start gap-2.5 rounded-lg border border-[#ebebeb] bg-white p-2.5 sm:p-3 shadow-sm">
                     <span className="font-mono text-[#0070f3] font-semibold shrink-0">05.</span>
                     <span><strong>Task-Specific Lists:</strong> Maintain separate playlists for Deep Work, Gym, and Chill routines.</span>
                   </li>
-                  <li className="flex items-start gap-2.5 rounded-lg border border-[#ebebeb] bg-white p-3">
+                  <li className="flex items-start gap-2.5 rounded-lg border border-[#ebebeb] bg-white p-2.5 sm:p-3 shadow-sm">
                     <span className="font-mono text-[#0070f3] font-semibold shrink-0">06.</span>
                     <span><strong>Offline Caching:</strong> Cache your favorite playlists for listening without internet connectivity.</span>
                   </li>
@@ -310,28 +327,30 @@ const Landing = () => {
           </section>
 
           {/* Section 03: Versatile Applications & Use Cases */}
-          <section id="use-cases" className="border-b border-[#ebebeb] bg-[#fafafa] py-16 sm:py-24" aria-labelledby="use-cases-title">
-            <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-              <div className="mb-12 text-center">
-                <span className="mono-eyebrow mb-2">03 // APPLICATIONS & USE CASES</span>
-                <h2 id="use-cases-title" className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#171717]">
+          <section id="use-cases" className="border-b border-[#ebebeb] bg-[#fafafa] py-12 sm:py-20 lg:py-24" aria-labelledby="use-cases-title">
+            <div className="mx-auto w-full max-w-6xl px-3.5 sm:px-6 lg:px-8">
+              <div className="mb-8 sm:mb-12 text-center">
+                <span className="mono-eyebrow mb-1.5 sm:mb-2 text-[11px] sm:text-xs">03 // APPLICATIONS & USE CASES</span>
+                <h2 id="use-cases-title" className="text-xl xs:text-2xl sm:text-3xl font-semibold tracking-tight text-[#171717]">
                   Designed for Every Focus Scenario.
                 </h2>
-                <p className="mx-auto mt-2 max-w-xl text-sm text-[#4d4d4d]">
+                <p className="mx-auto mt-2 max-w-xl text-xs sm:text-sm text-[#4d4d4d] leading-relaxed">
                   Discover how professionals, students, creators, and commuters use Sukh Sangeet daily.
                 </p>
               </div>
 
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                 {useCases.map((useCase) => (
-                  <article key={useCase.title} className="rounded-xl border border-[#ebebeb] bg-white p-6 shadow-level-2 transition-all hover:shadow-level-3">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2.5 rounded-lg border border-[#ebebeb] bg-[#fafafa]">
-                        <useCase.icon className="h-5 w-5 text-[#0070f3]" />
+                  <article key={useCase.title} className="rounded-xl border border-[#ebebeb] bg-white p-4 sm:p-6 shadow-level-2 transition-all hover:shadow-level-3 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 sm:p-2.5 rounded-lg border border-[#ebebeb] bg-[#fafafa]">
+                          <useCase.icon className="h-4 w-4 sm:h-5 sm:w-5 text-[#0070f3]" />
+                        </div>
+                        <h3 className="text-sm sm:text-base font-semibold text-[#171717]">{useCase.title}</h3>
                       </div>
-                      <h3 className="text-base font-semibold text-[#171717]">{useCase.title}</h3>
+                      <p className="mt-3 text-xs leading-relaxed text-[#4d4d4d]">{useCase.description}</p>
                     </div>
-                    <p className="mt-3 text-xs leading-relaxed text-[#4d4d4d]">{useCase.description}</p>
                     <div className="mt-4 border-t border-[#ebebeb] pt-3 text-[11px] font-mono text-[#888888]">
                       Ideal audio: <span className="text-[#171717] font-sans font-medium">{useCase.idealAudio}</span>
                     </div>
@@ -342,47 +361,47 @@ const Landing = () => {
           </section>
 
           {/* Section 04: System Architecture & Performance */}
-          <section id="architecture" className="border-b border-[#ebebeb] bg-white py-16 sm:py-24" aria-labelledby="architecture-title">
-            <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-              <div className="mb-12 text-center">
-                <span className="mono-eyebrow mb-2">04 // UNDER THE HOOD</span>
-                <h2 id="architecture-title" className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#171717]">
+          <section id="architecture" className="border-b border-[#ebebeb] bg-white py-12 sm:py-20 lg:py-24" aria-labelledby="architecture-title">
+            <div className="mx-auto w-full max-w-6xl px-3.5 sm:px-6 lg:px-8">
+              <div className="mb-8 sm:mb-12 text-center">
+                <span className="mono-eyebrow mb-1.5 sm:mb-2 text-[11px] sm:text-xs">04 // UNDER THE HOOD</span>
+                <h2 id="architecture-title" className="text-xl xs:text-2xl sm:text-3xl font-semibold tracking-tight text-[#171717]">
                   Modern Full-Stack Architecture.
                 </h2>
-                <p className="mx-auto mt-2 max-w-2xl text-sm text-[#4d4d4d]">
+                <p className="mx-auto mt-2 max-w-2xl text-xs sm:text-sm text-[#4d4d4d] leading-relaxed">
                   Engineered with a high-performance React frontend and Django backend for speed, security, and offline resilience.
                 </p>
               </div>
 
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                <div className="rounded-xl border border-[#ebebeb] bg-[#fafafa] p-6 shadow-level-2">
-                  <Cpu className="h-6 w-6 text-[#0070f3] mb-3" />
-                  <h3 className="text-sm font-semibold text-[#171717]">React + Vite Frontend</h3>
-                  <p className="mt-2 text-xs text-[#4d4d4d] leading-relaxed">
+              <div className="grid gap-3.5 sm:gap-6 grid-cols-1 xs:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-xl border border-[#ebebeb] bg-[#fafafa] p-4 sm:p-6 shadow-level-2">
+                  <Cpu className="h-5 w-5 sm:h-6 sm:w-6 text-[#0070f3] mb-2.5 sm:mb-3" />
+                  <h3 className="text-xs sm:text-sm font-semibold text-[#171717]">React + Vite Frontend</h3>
+                  <p className="mt-1.5 text-xs text-[#4d4d4d] leading-relaxed">
                     Ultra-fast single-page application rendering with sub-second route changes and responsive component architecture.
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-[#ebebeb] bg-[#fafafa] p-6 shadow-level-2">
-                  <Globe className="h-6 w-6 text-[#0070f3] mb-3" />
-                  <h3 className="text-sm font-semibold text-[#171717]">Django REST Framework</h3>
-                  <p className="mt-2 text-xs text-[#4d4d4d] leading-relaxed">
+                <div className="rounded-xl border border-[#ebebeb] bg-[#fafafa] p-4 sm:p-6 shadow-level-2">
+                  <Globe className="h-5 w-5 sm:h-6 sm:w-6 text-[#0070f3] mb-2.5 sm:mb-3" />
+                  <h3 className="text-xs sm:text-sm font-semibold text-[#171717]">Django REST Framework</h3>
+                  <p className="mt-1.5 text-xs text-[#4d4d4d] leading-relaxed">
                     Robust REST API managing user profiles, encrypted tokens, playlists, and track metadata seamlessly.
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-[#ebebeb] bg-[#fafafa] p-6 shadow-level-2">
-                  <WifiOff className="h-6 w-6 text-[#0070f3] mb-3" />
-                  <h3 className="text-sm font-semibold text-[#171717]">Service Worker Cache</h3>
-                  <p className="mt-2 text-xs text-[#4d4d4d] leading-relaxed">
+                <div className="rounded-xl border border-[#ebebeb] bg-[#fafafa] p-4 sm:p-6 shadow-level-2">
+                  <WifiOff className="h-5 w-5 sm:h-6 sm:w-6 text-[#0070f3] mb-2.5 sm:mb-3" />
+                  <h3 className="text-xs sm:text-sm font-semibold text-[#171717]">Service Worker Cache</h3>
+                  <p className="mt-1.5 text-xs text-[#4d4d4d] leading-relaxed">
                     PWA offline capabilities enable listening to cached audio and playlists without an active internet connection.
                   </p>
                 </div>
 
-                <div className="rounded-xl border border-[#ebebeb] bg-[#fafafa] p-6 shadow-level-2">
-                  <Lock className="h-6 w-6 text-[#0070f3] mb-3" />
-                  <h3 className="text-sm font-semibold text-[#171717]">Token Authentication</h3>
-                  <p className="mt-2 text-xs text-[#4d4d4d] leading-relaxed">
+                <div className="rounded-xl border border-[#ebebeb] bg-[#fafafa] p-4 sm:p-6 shadow-level-2">
+                  <Lock className="h-5 w-5 sm:h-6 sm:w-6 text-[#0070f3] mb-2.5 sm:mb-3" />
+                  <h3 className="text-xs sm:text-sm font-semibold text-[#171717]">Token Authentication</h3>
+                  <p className="mt-1.5 text-xs text-[#4d4d4d] leading-relaxed">
                     Secure user login with token persistence protecting personal playlists and custom audio configurations.
                   </p>
                 </div>
@@ -391,70 +410,75 @@ const Landing = () => {
           </section>
 
           {/* Section 05: Benchmark & Comparison Table */}
-          <section id="comparison" className="border-b border-[#ebebeb] bg-[#fafafa] py-16 sm:py-24" aria-labelledby="comparison-title">
-            <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
-              <div className="mb-12 text-center">
-                <span className="mono-eyebrow mb-2">05 // PLATFORM BENCHMARK</span>
-                <h2 id="comparison-title" className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#171717]">
+          <section id="comparison" className="border-b border-[#ebebeb] bg-[#fafafa] py-12 sm:py-20 lg:py-24" aria-labelledby="comparison-title">
+            <div className="mx-auto w-full max-w-5xl px-3.5 sm:px-6 lg:px-8">
+              <div className="mb-8 sm:mb-12 text-center">
+                <span className="mono-eyebrow mb-1.5 sm:mb-2 text-[11px] sm:text-xs">05 // PLATFORM BENCHMARK</span>
+                <h2 id="comparison-title" className="text-xl xs:text-2xl sm:text-3xl font-semibold tracking-tight text-[#171717]">
                   Sukh Sangeet vs. Alternative Music Platforms.
                 </h2>
-                <p className="mx-auto mt-2 max-w-xl text-sm text-[#4d4d4d]">
+                <p className="mx-auto mt-2 max-w-xl text-xs sm:text-sm text-[#4d4d4d] leading-relaxed">
                   Compare the advantages of a dedicated distraction-free YouTube playlist manager.
                 </p>
               </div>
 
-              <div className="overflow-x-auto rounded-xl border border-[#ebebeb] bg-white shadow-level-3">
-                <table className="w-full text-left text-xs text-[#4d4d4d] min-w-[650px]">
-                  <thead className="bg-[#fafafa] border-b border-[#ebebeb] font-mono uppercase text-[11px] text-[#171717]">
+              <div className="flex items-center justify-between text-[11px] font-mono text-[#888888] mb-2 sm:hidden px-1">
+                <span>BENCHMARK MATRIX</span>
+                <span>SWIPE HORIZONTALLY &rarr;</span>
+              </div>
+
+              <div className="overflow-x-auto rounded-xl border border-[#ebebeb] bg-white shadow-level-3 custom-scrollbar touch-pan-x">
+                <table className="w-full text-left text-xs text-[#4d4d4d] min-w-[580px] sm:min-w-[650px]">
+                  <thead className="bg-[#fafafa] border-b border-[#ebebeb] font-mono uppercase text-[10px] sm:text-[11px] text-[#171717]">
                     <tr>
-                      <th className="px-6 py-4 font-semibold">Platform Feature</th>
-                      <th className="px-6 py-4 font-semibold text-[#0070f3] bg-[#0070f3]/[0.04]">Sukh Sangeet</th>
-                      <th className="px-6 py-4 font-semibold">YouTube App</th>
-                      <th className="px-6 py-4 font-semibold">Spotify (Free)</th>
+                      <th className="px-3.5 sm:px-6 py-3 sm:py-4 font-semibold">Platform Feature</th>
+                      <th className="px-3.5 sm:px-6 py-3 sm:py-4 font-semibold text-[#0070f3] bg-[#0070f3]/[0.05]">Sukh Sangeet</th>
+                      <th className="px-3.5 sm:px-6 py-3 sm:py-4 font-semibold">YouTube App</th>
+                      <th className="px-3.5 sm:px-6 py-3 sm:py-4 font-semibold">Spotify (Free)</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#ebebeb] font-sans">
                     <tr>
-                      <td className="px-6 py-4 font-medium text-[#171717]">Distraction-Free Focus Mode</td>
-                      <td className="px-6 py-4 bg-[#0070f3]/[0.02] font-semibold text-[#0070f3] flex items-center gap-1.5"><CheckCircle2 size={14} /> Yes (Zero feed clutter)</td>
-                      <td className="px-6 py-4">No (Feed & comments)</td>
-                      <td className="px-6 py-4">Partial</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4 font-medium text-[#171717]">Distraction-Free Focus Mode</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4 bg-[#0070f3]/[0.02] font-semibold text-[#0070f3] flex items-center gap-1.5"><CheckCircle2 size={14} className="shrink-0" /> Yes (Zero feed clutter)</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4">No (Feed & comments)</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4">Partial</td>
                     </tr>
                     <tr>
-                      <td className="px-6 py-4 font-medium text-[#171717]">Free Custom YouTube Playlists</td>
-                      <td className="px-6 py-4 bg-[#0070f3]/[0.02] font-semibold text-[#0070f3] flex items-center gap-1.5"><CheckCircle2 size={14} /> Yes (Unlimited)</td>
-                      <td className="px-6 py-4">Yes</td>
-                      <td className="px-6 py-4">No (Forced Shuffle)</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4 font-medium text-[#171717]">Free Custom YouTube Playlists</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4 bg-[#0070f3]/[0.02] font-semibold text-[#0070f3] flex items-center gap-1.5"><CheckCircle2 size={14} className="shrink-0" /> Yes (Unlimited)</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4">Yes</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4">No (Forced Shuffle)</td>
                     </tr>
                     <tr>
-                      <td className="px-6 py-4 font-medium text-[#171717]">Direct YouTube Track Search</td>
-                      <td className="px-6 py-4 bg-[#0070f3]/[0.02] font-semibold text-[#0070f3] flex items-center gap-1.5"><CheckCircle2 size={14} /> Yes (Integrated API)</td>
-                      <td className="px-6 py-4">Yes</td>
-                      <td className="px-6 py-4">No</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4 font-medium text-[#171717]">Direct YouTube Track Search</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4 bg-[#0070f3]/[0.02] font-semibold text-[#0070f3] flex items-center gap-1.5"><CheckCircle2 size={14} className="shrink-0" /> Yes (Integrated API)</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4">Yes</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4">No</td>
                     </tr>
                     <tr>
-                      <td className="px-6 py-4 font-medium text-[#171717]">Drag-and-Drop Track Sorting</td>
-                      <td className="px-6 py-4 bg-[#0070f3]/[0.02] font-semibold text-[#0070f3] flex items-center gap-1.5"><CheckCircle2 size={14} /> Yes</td>
-                      <td className="px-6 py-4">Limited</td>
-                      <td className="px-6 py-4">Premium only</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4 font-medium text-[#171717]">Drag-and-Drop Track Sorting</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4 bg-[#0070f3]/[0.02] font-semibold text-[#0070f3] flex items-center gap-1.5"><CheckCircle2 size={14} className="shrink-0" /> Yes</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4">Limited</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4">Premium only</td>
                     </tr>
                     <tr>
-                      <td className="px-6 py-4 font-medium text-[#171717]">Real-Time Audio Visualizer</td>
-                      <td className="px-6 py-4 bg-[#0070f3]/[0.02] font-semibold text-[#0070f3] flex items-center gap-1.5"><CheckCircle2 size={14} /> Yes (Live Canvas)</td>
-                      <td className="px-6 py-4">No</td>
-                      <td className="px-6 py-4">No</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4 font-medium text-[#171717]">Real-Time Audio Visualizer</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4 bg-[#0070f3]/[0.02] font-semibold text-[#0070f3] flex items-center gap-1.5"><CheckCircle2 size={14} className="shrink-0" /> Yes (Live Canvas)</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4">No</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4">No</td>
                     </tr>
                     <tr>
-                      <td className="px-6 py-4 font-medium text-[#171717]">PWA Mobile & Desktop Install</td>
-                      <td className="px-6 py-4 bg-[#0070f3]/[0.02] font-semibold text-[#0070f3] flex items-center gap-1.5"><CheckCircle2 size={14} /> Yes</td>
-                      <td className="px-6 py-4">Native app only</td>
-                      <td className="px-6 py-4">Native app only</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4 font-medium text-[#171717]">PWA Mobile & Desktop Install</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4 bg-[#0070f3]/[0.02] font-semibold text-[#0070f3] flex items-center gap-1.5"><CheckCircle2 size={14} className="shrink-0" /> Yes</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4">Native app only</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4">Native app only</td>
                     </tr>
                     <tr>
-                      <td className="px-6 py-4 font-medium text-[#171717]">Offline Music Caching</td>
-                      <td className="px-6 py-4 bg-[#0070f3]/[0.02] font-semibold text-[#0070f3] flex items-center gap-1.5"><CheckCircle2 size={14} /> Yes (Supported)</td>
-                      <td className="px-6 py-4">Paid Premium only</td>
-                      <td className="px-6 py-4">Paid Premium only</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4 font-medium text-[#171717]">Offline Music Caching</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4 bg-[#0070f3]/[0.02] font-semibold text-[#0070f3] flex items-center gap-1.5"><CheckCircle2 size={14} className="shrink-0" /> Yes (Supported)</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4">Paid Premium only</td>
+                      <td className="px-3.5 sm:px-6 py-3 sm:py-4">Paid Premium only</td>
                     </tr>
                   </tbody>
                 </table>
@@ -465,34 +489,34 @@ const Landing = () => {
           {/* Section 06: Knowledge Base & FAQ */}
           <section
             id="faq"
-            className="border-b border-[#ebebeb] bg-white py-16 sm:py-24"
+            className="border-b border-[#ebebeb] bg-white py-12 sm:py-20 lg:py-24"
             aria-labelledby="faq-title"
           >
-            <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-              <div className="mb-12 text-center">
-                <span className="mono-eyebrow mb-2">06 // KNOWLEDGE BASE & HELP</span>
+            <div className="mx-auto max-w-4xl px-3.5 sm:px-6 lg:px-8">
+              <div className="mb-8 sm:mb-12 text-center">
+                <span className="mono-eyebrow mb-1.5 sm:mb-2 text-[11px] sm:text-xs">06 // KNOWLEDGE BASE & HELP</span>
                 <h2
                   id="faq-title"
-                  className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#171717]"
+                  className="text-xl xs:text-2xl sm:text-3xl font-semibold tracking-tight text-[#171717]"
                 >
                   Frequently Asked Questions.
                 </h2>
-                <p className="mt-2 text-sm text-[#4d4d4d]">
+                <p className="mt-2 text-xs sm:text-sm text-[#4d4d4d] leading-relaxed">
                   Everything you need to know about Sukh Sangeet services, functionality, and security.
                 </p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2.5 sm:space-y-3">
                 {faqItems.map((faq, index) => (
                   <div
                     key={index}
-                    className="rounded-xl border border-[#ebebeb] bg-white shadow-level-1 transition-all"
+                    className="rounded-xl border border-[#ebebeb] bg-white shadow-level-1 transition-all overflow-hidden"
                   >
                     <button
                       onClick={() => setOpenFAQ(openFAQ === index ? null : index)}
-                      className="flex w-full items-center justify-between p-5 text-left text-sm font-medium text-[#171717] cursor-pointer"
+                      className="flex w-full items-center justify-between p-3.5 sm:p-5 text-left text-xs xs:text-sm font-medium text-[#171717] cursor-pointer"
                     >
-                      <span className="pr-4">{faq.question}</span>
+                      <span className="pr-3 leading-snug">{faq.question}</span>
                       <ChevronDown
                         className={`h-4 w-4 text-[#888888] shrink-0 transition-transform duration-200 ${
                           openFAQ === index ? "rotate-180 text-[#171717]" : ""
@@ -508,7 +532,7 @@ const Landing = () => {
                       }`}
                     >
                       <div className="overflow-hidden">
-                        <p className="px-5 pb-5 text-xs leading-relaxed text-[#4d4d4d]">
+                        <p className="px-3.5 pb-3.5 sm:px-5 sm:pb-5 text-xs leading-relaxed text-[#4d4d4d]">
                           {faq.answer}
                         </p>
                       </div>
@@ -520,20 +544,20 @@ const Landing = () => {
           </section>
 
           {/* Call to Action Section */}
-          <section className="bg-white py-16 text-center sm:py-24" aria-labelledby="cta-title">
-            <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
-              <span className="mono-eyebrow mb-3">GET STARTED TODAY</span>
-              <h2 id="cta-title" className="text-2xl sm:text-3xl font-semibold tracking-tight text-[#171717]">
+          <section className="bg-white py-12 sm:py-20 lg:py-24 text-center" aria-labelledby="cta-title">
+            <div className="mx-auto w-full max-w-3xl px-3.5 sm:px-6">
+              <span className="mono-eyebrow mb-2 sm:mb-3 text-[11px] sm:text-xs">GET STARTED TODAY</span>
+              <h2 id="cta-title" className="text-xl xs:text-2xl sm:text-3xl font-semibold tracking-tight text-[#171717]">
                 Ready for a distraction-free audio workspace?
               </h2>
-              <p className="mx-auto mt-3 max-w-xl text-sm text-[#4d4d4d]">
+              <p className="mx-auto mt-2 sm:mt-3 max-w-xl text-xs sm:text-sm text-[#4d4d4d] leading-relaxed">
                 Create your account now to build custom YouTube playlists, enjoy live audio visualizers, and maintain deep focus.
               </p>
-              <div className="mt-8">
+              <div className="mt-6 sm:mt-8">
                 {isAuthenticated ? (
                   <Link
                     to="/find-music"
-                    className="btn-vercel-primary text-sm px-8 h-12"
+                    className="btn-vercel-primary text-xs sm:text-sm px-6 sm:px-8 h-10 sm:h-12 w-full xs:w-auto justify-center"
                   >
                     <Zap size={16} />
                     <span>Go to Music Workspace</span>
@@ -541,7 +565,7 @@ const Landing = () => {
                 ) : (
                   <Link
                     to="/register"
-                    className="btn-vercel-primary text-sm px-8 h-12"
+                    className="btn-vercel-primary text-xs sm:text-sm px-6 sm:px-8 h-10 sm:h-12 w-full xs:w-auto justify-center"
                   >
                     <Zap size={16} />
                     <span>Create Free Account</span>
@@ -553,10 +577,10 @@ const Landing = () => {
         </main>
 
         {/* Footer */}
-        <footer className="border-t border-[#ebebeb] bg-[#fafafa] py-8 font-mono text-xs text-[#888888]">
-          <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6 lg:px-8">
+        <footer className="border-t border-[#ebebeb] bg-[#fafafa] py-6 sm:py-8 font-mono text-[11px] sm:text-xs text-[#888888]">
+          <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-3.5 sm:px-6 lg:px-8 sm:flex-row text-center sm:text-left">
             <p>© 2026 Sukh Sangeet Inc. All rights reserved.</p>
-            <div className="flex flex-wrap items-center justify-center gap-4 text-[#4d4d4d]">
+            <div className="flex flex-wrap items-center justify-center gap-x-3.5 gap-y-2 text-[#4d4d4d]">
               <Link to="/blog" className="hover:text-[#171717] transition-colors font-semibold text-[#171717]">Content Hub & Articles</Link>
               <Link to="/how-it-works" className="hover:text-[#171717] transition-colors font-medium">How It Works</Link>
               <Link to="/about-us" className="hover:text-[#171717] transition-colors">About Us</Link>

@@ -20,11 +20,11 @@ const staticPages = [
   { url: '/terms-and-conditions', priority: '0.5', changefreq: 'monthly' }
 ];
 
-// --- 1. CHILD SITEMAP: sitemap-pages.xml (Static Pages + Category Hubs) ---
-let pageUrls = [];
+let allUrls = [];
 
+// 1. Static Pages
 staticPages.forEach(page => {
-  pageUrls.push(`  <url>
+  allUrls.push(`  <url>
     <loc>${BASE_URL}${page.url}</loc>
     <lastmod>${TODAY}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
@@ -32,8 +32,9 @@ staticPages.forEach(page => {
   </url>`);
 });
 
+// 2. Category Hubs
 CATEGORIES.forEach(cat => {
-  pageUrls.push(`  <url>
+  allUrls.push(`  <url>
     <loc>${BASE_URL}/category/${cat.slug}</loc>
     <lastmod>${TODAY}</lastmod>
     <changefreq>weekly</changefreq>
@@ -41,17 +42,9 @@ CATEGORIES.forEach(cat => {
   </url>`);
 });
 
-const sitemapPagesContent = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pageUrls.join('\n')}
-</urlset>
-`;
-
-// --- 2. CHILD SITEMAP: sitemap-posts.xml (Blog Articles + High-Value Tags) ---
-let postUrls = [];
-
+// 3. Blog Articles
 BLOG_POSTS.forEach(post => {
-  postUrls.push(`  <url>
+  allUrls.push(`  <url>
     <loc>${BASE_URL}/blog/${post.slug}</loc>
     <lastmod>${post.updatedDate || post.publishedDate || TODAY}</lastmod>
     <changefreq>weekly</changefreq>
@@ -59,13 +52,12 @@ BLOG_POSTS.forEach(post => {
   </url>`);
 });
 
-let includedTagCount = 0;
+// 4. High-Value Tags
 TAGS.forEach(tag => {
   const posts = getPostsByTag(tag.slug);
   const isHighValue = posts.length >= 3 || tag.longDescriptionHtml;
   if (isHighValue) {
-    includedTagCount++;
-    postUrls.push(`  <url>
+    allUrls.push(`  <url>
     <loc>${BASE_URL}/tag/${tag.slug}</loc>
     <lastmod>${TODAY}</lastmod>
     <changefreq>weekly</changefreq>
@@ -74,33 +66,23 @@ TAGS.forEach(tag => {
   }
 });
 
-const sitemapPostsContent = `<?xml version="1.0" encoding="UTF-8"?>
+const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${postUrls.join('\n')}
+${allUrls.join('\n')}
 </urlset>
 `;
 
-// --- 3. PARENT SITEMAP INDEX: sitemap.xml ---
-const sitemapIndexContent = `<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap>
-    <loc>${BASE_URL}/sitemap-pages.xml</loc>
-    <lastmod>${TODAY}</lastmod>
-  </sitemap>
-  <sitemap>
-    <loc>${BASE_URL}/sitemap-posts.xml</loc>
-    <lastmod>${TODAY}</lastmod>
-  </sitemap>
-</sitemapindex>
-`;
-
-// Write all 3 sitemap files into public/
 const publicDir = path.join(__dirname, '../public');
 
-fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapIndexContent, 'utf-8');
-fs.writeFileSync(path.join(publicDir, 'sitemap-pages.xml'), sitemapPagesContent, 'utf-8');
-fs.writeFileSync(path.join(publicDir, 'sitemap-posts.xml'), sitemapPostsContent, 'utf-8');
+// Write the single sitemap.xml
+fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), sitemapContent, 'utf-8');
 
-console.log(`✅ Parent Sitemap Index generated: public/sitemap.xml`);
-console.log(`   └─ Child 1: public/sitemap-pages.xml (${pageUrls.length} URLs)`);
-console.log(`   └─ Child 2: public/sitemap-posts.xml (${postUrls.length} URLs - ${includedTagCount} tag pages)`);
+// Remove extra child sitemaps if present to maintain strictly ONE sitemap file
+['sitemap-pages.xml', 'sitemap-posts.xml'].forEach(file => {
+  const filePath = path.join(publicDir, file);
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath);
+  }
+});
+
+console.log(`✅ Single unified sitemap generated: public/sitemap.xml (${allUrls.length} total URLs)`);
