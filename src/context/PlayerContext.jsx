@@ -1043,12 +1043,11 @@ export const PlayerProvider = ({ children }) => {
   return (
     <PlayerContext.Provider value={contextValue}>
       {children}
-      <div 
-        id="yt-player-container"
-        className="fixed top-16 right-3 sm:top-auto sm:bottom-4 sm:right-4 z-40 w-44 h-28 sm:w-72 sm:h-44 rounded-xl overflow-hidden shadow-2xl border border-neutral-300 bg-black transition-all duration-300 pointer-events-auto"
-      >
-        <div id="yt-player-main" className="w-full h-full"></div>
-      </div>
+      {typeof document !== 'undefined' && !document.getElementById('yt-player-main') && (
+        <div id="yt-player-fallback" style={{ display: 'none' }}>
+          <div id="yt-player-main"></div>
+        </div>
+      )}
     </PlayerContext.Provider>
   );
 };

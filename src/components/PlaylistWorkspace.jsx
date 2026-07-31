@@ -219,23 +219,25 @@ const PlaylistWorkspace = () => {
             <span className="font-mono text-xs font-medium uppercase tracking-wider">Library</span>
           </button>
         )}
-        <header className="lg:hidden px-4 py-3 border-b border-[#ebebeb] bg-white">
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <span className="font-mono text-[10px] uppercase tracking-wider text-[#888888] block">Workspace</span>
-              <p className="truncate text-sm font-semibold text-[#171717]" aria-live="polite">
-                {selectedPlaylistLabel}
-              </p>
+        {(!currentTrack || !isNowPlayingFull) && (
+          <header className="lg:hidden px-4 py-3 border-b border-[#ebebeb] bg-white">
+            <div className="flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <span className="font-mono text-[10px] uppercase tracking-wider text-[#888888] block">Workspace</span>
+                <p className="truncate text-sm font-semibold text-[#171717]" aria-live="polite">
+                  {selectedPlaylistLabel}
+                </p>
+              </div>
+              <button
+                onClick={handleOpenLibrary}
+                className="p-2 rounded-md text-[#4d4d4d] hover:text-[#171717] hover:bg-[#f5f5f5]"
+                aria-label="Open library"
+              >
+                <Library size={18} />
+              </button>
             </div>
-            <button
-              onClick={handleOpenLibrary}
-              className="p-2 rounded-md text-[#4d4d4d] hover:text-[#171717] hover:bg-[#f5f5f5]"
-              aria-label="Open library"
-            >
-              <Library size={18} />
-            </button>
-          </div>
-        </header>
+          </header>
+        )}
         <div
           className={`
             flex-1 min-h-0 overflow-hidden

@@ -1,8 +1,19 @@
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { Play, Pause, SkipForward, SkipBack, Shuffle, Repeat, Repeat1, ListMusic, ChevronDown, Plus } from 'lucide-react';
 import { usePlayer } from '../context/PlayerContext';
-import { useState, useEffect, useRef } from 'react';
+import { getCleanTrackDetails } from '../utils/playerTrackAdapter';
 
-const NowPlayingView = ({ onOpenQueue, onClose, onAddToPlaylist, layout = 'split' }) => {
+/**
+ * Formats seconds into M:SS time string.
+ */
+const formatTime = (seconds) => {
+  if (isNaN(seconds) || seconds < 0) return '0:00';
+  const m = Math.floor(seconds / 60);
+  const sec = Math.floor(seconds % 60);
+  return `${m}:${sec < 10 ? '0' : ''}${sec}`;
+};
+
+const NowPlayingView = ({ onOpenQueue, onClose, onAddToPlaylist }) => {
   const {
     currentTrack,
     isPlaying,
@@ -21,72 +32,94 @@ const NowPlayingView = ({ onOpenQueue, onClose, onAddToPlaylist, layout = 'split
   } = usePlayer();
 
   const [currentTime, setCurrentTime] = useState(0);
-  const [imageErrors, setImageErrors] = useState({});
-  const currentTrackId = currentTrack?.youtubeId || '';
-  const imageError = Boolean(imageErrors[currentTrackId]);
-  const resetFrameRef = useRef(0);
 
+  // Poll current playback position while active
   useEffect(() => {
-    let interval;
+    let intervalId;
     if (isPlaying && duration > 0) {
-      interval = setInterval(() => {
+      intervalId = setInterval(() => {
         if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
           setCurrentTime(playerRef.current.getCurrentTime() || 0);
         }
       }, 500);
     }
-    return () => clearInterval(interval);
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
   }, [isPlaying, duration, playerRef]);
 
-  useEffect(() => { 
-    window.cancelAnimationFrame(resetFrameRef.current);
-    resetFrameRef.current = window.requestAnimationFrame(() => {
-      setCurrentTime(0);
-    });
+  // Synchronously reset position on track switch
+  useEffect(() => {
+    setCurrentTime(0);
+  }, [currentTrack?.youtubeId]);
 
-    return () => window.cancelAnimationFrame(resetFrameRef.current);
-  }, [currentTrack]);
+  // Memoize cleaned title and artist details to prevent regex re-evaluations during 500ms time polls
+  const { title: cleanTitle, artist: cleanArtist } = useMemo(
+    () => getCleanTrackDetails(currentTrack?.title, currentTrack?.artist),
+    [currentTrack?.title, currentTrack?.artist]
+  );
 
-  const handleImageError = () => {
-    setImageErrors((current) => ({ ...current, [currentTrackId]: true }));
-  };
+  // Memoize playback progress percentage
+  const progress = useMemo(() => {
+    return duration > 0 ? (currentTime / duration) * 100 : 0;
+  }, [currentTime, duration]);
 
-  const formatTime = (s) => {
-    if (isNaN(s) || s < 0) return '0:00';
-    const m = Math.floor(s / 60);
-    const sec = Math.floor(s % 60);
-    return `${m}:${sec < 10 ? '0' : ''}${sec}`;
-  };
+  // Stable callbacks for user control handlers
+  const handleSeek = useCallback(
+    (e) => {
+      const val = Number(e.target.value);
+      seekTo(val);
+      setCurrentTime(val);
+    },
+    [seekTo]
+  );
 
-  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const handlePlayPause = useCallback(() => {
+    if (isPlaying) {
+      pause();
+    } else {
+      play();
+    }
+  }, [isPlaying, pause, play]);
+
+  const handleAddToPlaylist = useCallback(() => {
+    onAddToPlaylist?.(currentTrack);
+  }, [onAddToPlaylist, currentTrack]);
 
   if (!currentTrack) return null;
 
   const isShuffleOn = shuffle;
-  const isRepeatOn  = repeatMode !== 'off';
+  const isRepeatOn = repeatMode !== 'off';
+  const formattedCurrentTime = formatTime(currentTime);
+  const formattedDuration = formatTime(duration);
 
   return (
     <div
-      className="flex flex-col h-full min-w-0 bg-[#fafafa]"
+      className="flex flex-col h-full min-w-0 bg-[#fafafa] select-none overflow-y-auto"
       role="region"
       aria-label="Now Playing"
     >
-      <div className={layout === 'stacked' ? 'h-14 px-5 flex items-center justify-between shrink-0 border-b border-[#ebebeb] bg-white' : 'h-16 px-8 flex items-center justify-between shrink-0 border-b border-[#ebebeb] bg-white'}>
+      {/* ── Top Header ── */}
+      <div className="h-16 px-6 py-4 flex items-center justify-between shrink-0 border-b border-[#ebebeb] bg-white sticky top-0 z-30">
         <button
           onClick={onClose}
-          className="p-2 rounded-md border border-[#ebebeb] bg-[#fafafa] text-[#888888] hover:text-[#171717] hover:bg-[#f5f5f5] transition-all cursor-pointer lg:hidden"
+          className="p-2 rounded-lg border border-[#ebebeb] bg-[#fafafa] text-[#666666] hover:text-[#171717] hover:bg-[#f5f5f5] transition-all cursor-pointer"
           aria-label="Close now playing"
           id="now-playing-close-btn"
         >
-          <ChevronDown size={18} />
+          <ChevronDown size={20} />
         </button>
 
-        <span className="mono-eyebrow">NOW PLAYING</span>
+        <div className="flex flex-col items-center text-center">
+          <span className="font-mono text-xs uppercase tracking-widest text-[#888888] font-semibold">
+            NOW PLAYING
+          </span>
+        </div>
 
         <div className="flex items-center gap-2">
           <button
-            onClick={() => onAddToPlaylist?.(currentTrack)}
-            className="p-2 rounded-md border border-[#ebebeb] bg-[#fafafa] text-[#888888] hover:text-[#171717] hover:bg-[#f5f5f5] transition-all cursor-pointer"
+            onClick={handleAddToPlaylist}
+            className="p-2 rounded-lg border border-[#ebebeb] bg-[#fafafa] text-[#666666] hover:text-[#171717] hover:bg-[#f5f5f5] transition-all cursor-pointer"
             aria-label="Add to playlist"
             title="Add to playlist"
             id="now-playing-add-playlist-btn"
@@ -96,7 +129,7 @@ const NowPlayingView = ({ onOpenQueue, onClose, onAddToPlaylist, layout = 'split
 
           <button
             onClick={onOpenQueue}
-            className="p-2 rounded-md border border-[#ebebeb] bg-[#fafafa] text-[#888888] hover:text-[#171717] hover:bg-[#f5f5f5] transition-all cursor-pointer"
+            className="p-2 rounded-lg border border-[#ebebeb] bg-[#fafafa] text-[#666666] hover:text-[#171717] hover:bg-[#f5f5f5] transition-all cursor-pointer"
             aria-label="Open queue"
             id="now-playing-queue-btn"
           >
@@ -105,162 +138,129 @@ const NowPlayingView = ({ onOpenQueue, onClose, onAddToPlaylist, layout = 'split
         </div>
       </div>
 
-      {/* ── Main content ── */}
-      <div
-        className={
-          layout === 'stacked'
-            ? 'flex-1 flex flex-col items-center justify-start overflow-hidden min-w-0 px-5 pt-4 pb-4 gap-4'
-            : 'flex-1 flex flex-col md:flex-row items-center justify-center overflow-hidden min-w-0 px-8 md:px-14 lg:px-20 py-6 gap-8 md:gap-12 lg:gap-16'
-        }
-      >
-        {/* Album Art Frame */}
-        <div className={layout === 'stacked' ? 'relative group w-full max-w-[220px] sm:max-w-[260px] aspect-square shrink-0' : 'relative group w-full max-w-[260px] sm:max-w-[300px] md:max-w-md aspect-square shrink-0'}>
-          <div className="relative z-10 w-full h-full rounded-xl overflow-hidden shadow-level-4 border border-[#ebebeb] flex items-center justify-center bg-[#fafafa]">
-            {imageError || !currentTrack.poster ? (
-              <div className="flex flex-col items-center justify-center text-[#888888]">
-                <span className="font-mono text-6xl font-semibold">♪</span>
-              </div>
-            ) : (
-              <img
-                src={currentTrack.poster}
-                alt={currentTrack.title}
-                onError={handleImageError}
-                className="w-full h-full object-cover"
-              />
-            )}
-          </div>
+      {/* ── Main Vertical Stack (centered, gap: 24px) ── */}
+      <div className="flex-1 flex flex-col items-center justify-center min-w-0 px-4 sm:px-6 py-6 w-full max-w-[800px] mx-auto my-auto gap-6">
+        
+        {/* Widescreen Video Viewport Card (Constrained max-width 800px & 16:9 ratio) */}
+        <div className="relative group w-full max-w-[800px] aspect-video rounded-2xl overflow-hidden shadow-xl border border-neutral-200 bg-black shrink-0">
+          <div id="yt-player-main" className="w-full h-full"></div>
 
-          {/* Buffering spinner */}
+          {/* Buffering Overlay */}
           {isBuffering && (
-            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/20 backdrop-blur-xs rounded-xl">
-              <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-xs rounded-2xl">
+              <div className="w-9 h-9 border-3 border-white border-t-transparent rounded-full animate-spin" />
             </div>
           )}
         </div>
 
-        {/* Info + Controls */}
-        <div className={layout === 'stacked' ? 'flex-1 flex flex-col justify-center items-center text-center w-full max-w-[340px] min-w-0 space-y-4' : 'flex-1 flex flex-col justify-center items-center md:items-start text-center md:text-left w-full max-w-md min-w-0 space-y-6'}>
-          {/* Track info */}
-          <div className="space-y-1.5 w-full">
-            <h2
-              className="font-semibold text-[#171717] tracking-tight w-full"
-              style={{
-                fontSize: layout === 'stacked' ? 'clamp(1.1rem, 2vw, 1.8rem)' : 'clamp(1.4rem, 3vw, 2.5rem)',
-                lineHeight: 1.15,
-                display: '-webkit-box',
-                WebkitBoxOrient: 'vertical',
-                WebkitLineClamp: 2,
-                overflow: 'hidden',
-              }}
-            >
-              {currentTrack.title}
-            </h2>
-            <p
-              className="font-mono text-xs text-[#888888] uppercase tracking-wider"
-            >
-              {currentTrack.artist || 'Unknown Artist'}
-            </p>
-          </div>
+        {/* Track Title & Artist (Hierarchy & Clean Artist) */}
+        <div className="text-center space-y-1 w-full px-2">
+          <h2
+            className="text-[20px] sm:text-[24px] font-bold text-[#171717] tracking-tight leading-tight line-clamp-2"
+            title={cleanTitle}
+          >
+            {cleanTitle}
+          </h2>
+          <p className="text-[14px] sm:text-[16px] font-medium text-[#737373] truncate">
+            {cleanArtist}
+          </p>
+        </div>
 
-          {/* Progress */}
-          <div className="w-full space-y-2">
-            <input
-              type="range"
-              min={0}
-              max={Math.max(Math.floor(duration), 0)}
-              value={Math.min(Math.floor(currentTime), Math.max(Math.floor(duration), 0))}
-              onChange={(e) => {
-                const val = Number(e.target.value);
-                seekTo(val);
-                setCurrentTime(val);
-              }}
-              className="seek-bar w-full"
-              style={{ '--progress': `${progress}%` }}
-              aria-label="Seek position"
-              aria-valuemin={0}
-              aria-valuemax={Math.floor(duration)}
-              aria-valuenow={Math.floor(currentTime)}
-              aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
-            />
-            <div className="flex justify-between font-mono text-[11px] text-[#888888] px-0.5">
-              <span>{formatTime(currentTime)}</span>
-              <span>{formatTime(duration)}</span>
-            </div>
-          </div>
-
-          {/* Playback controls */}
-          <div className={layout === 'stacked' ? 'flex items-center justify-center gap-3 w-full flex-nowrap' : 'flex items-center justify-between w-full'}>
-            {/* Shuffle */}
-            <button
-              onClick={toggleShuffle}
-              className={`
-                w-10 h-10 rounded-md border flex items-center justify-center transition-all cursor-pointer shrink-0
-                ${isShuffleOn
-                  ? 'bg-[#171717] text-white border-[#171717]'
-                  : 'bg-white text-[#888888] border-[#ebebeb] hover:text-[#171717] hover:bg-[#fafafa]'}
-              `}
-              aria-label={`Shuffle ${isShuffleOn ? 'on' : 'off'}`}
-              aria-pressed={isShuffleOn}
-              id="shuffle-btn"
-            >
-              <Shuffle size={16} />
-            </button>
-
-            {/* Prev / Play / Next cluster */}
-            <div className="flex items-center gap-3 shrink-0">
-              <button
-                onClick={prev}
-                className="w-10 h-10 rounded-md border border-[#ebebeb] bg-white text-[#171717] hover:bg-[#fafafa] transition-all flex items-center justify-center cursor-pointer shrink-0"
-                aria-label="Previous track"
-                id="prev-track-btn"
-              >
-                <SkipBack size={18} fill="currentColor" />
-              </button>
-
-              <button
-                onClick={isPlaying ? pause : play}
-                className="
-                  w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#171717] text-white
-                  flex items-center justify-center shadow-level-2 hover:bg-black
-                  active:scale-95 transition-all duration-150 cursor-pointer
-                "
-                aria-label={isPlaying ? 'Pause' : 'Play'}
-                id="now-playing-play-btn"
-              >
-                {isPlaying
-                  ? <Pause size={20} fill="currentColor" />
-                  : <Play size={20} fill="currentColor" className="translate-x-0.5" />}
-              </button>
-
-              <button
-                onClick={next}
-                className="w-10 h-10 rounded-md border border-[#ebebeb] bg-white text-[#171717] hover:bg-[#fafafa] transition-all flex items-center justify-center cursor-pointer shrink-0"
-                aria-label="Next track"
-                id="next-track-btn"
-              >
-                <SkipForward size={18} fill="currentColor" />
-              </button>
-            </div>
-
-            {/* Repeat */}
-            <button
-              onClick={toggleRepeat}
-              className={`
-                w-10 h-10 rounded-md border flex items-center justify-center transition-all cursor-pointer shrink-0
-                ${isRepeatOn
-                  ? 'bg-[#171717] text-white border-[#171717]'
-                  : 'bg-white text-[#888888] border-[#ebebeb] hover:text-[#171717] hover:bg-[#fafafa]'}
-              `}
-              aria-label={`Repeat ${repeatMode}`}
-              aria-pressed={isRepeatOn}
-              id="repeat-btn"
-            >
-              {repeatMode === 'one'
-                ? <Repeat1 size={16} />
-                : <Repeat size={16} />}
-            </button>
+        {/* Progress Bar (Centered directly below title & artist) */}
+        <div className="w-full max-w-[640px] space-y-1.5 px-1">
+          <input
+            type="range"
+            min={0}
+            max={Math.max(Math.floor(duration), 0)}
+            value={Math.min(Math.floor(currentTime), Math.max(Math.floor(duration), 0))}
+            onChange={handleSeek}
+            className="seek-bar w-full cursor-pointer h-2 accent-[#171717]"
+            style={{ '--progress': `${progress}%` }}
+            aria-label="Seek position"
+            aria-valuemin={0}
+            aria-valuemax={Math.floor(duration)}
+            aria-valuenow={Math.floor(currentTime)}
+            aria-valuetext={`${formattedCurrentTime} of ${formattedDuration}`}
+          />
+          <div className="flex justify-between font-mono text-[11px] font-medium text-[#888888]">
+            <span>{formattedCurrentTime}</span>
+            <span>{formattedDuration}</span>
           </div>
         </div>
+
+        {/* Media Controls Row (Immediately following progress bar) */}
+        <div className="flex items-center justify-between w-full max-w-sm px-2">
+          {/* Shuffle */}
+          <button
+            onClick={toggleShuffle}
+            className={`
+              w-11 h-11 rounded-xl border flex items-center justify-center transition-all cursor-pointer active:scale-95
+              ${isShuffleOn
+                ? 'bg-[#171717] text-white border-[#171717] shadow-sm'
+                : 'bg-white text-[#888888] border-[#ebebeb] hover:text-[#171717] hover:bg-[#fafafa]'}
+            `}
+            aria-label={`Shuffle ${isShuffleOn ? 'on' : 'off'}`}
+            aria-pressed={isShuffleOn}
+            id="shuffle-btn"
+          >
+            <Shuffle size={18} />
+          </button>
+
+          {/* Previous Track */}
+          <button
+            onClick={prev}
+            className="w-11 h-11 rounded-xl border border-[#ebebeb] bg-white text-[#171717] hover:bg-[#fafafa] active:scale-95 transition-all flex items-center justify-center cursor-pointer"
+            aria-label="Previous track"
+            id="prev-track-btn"
+          >
+            <SkipBack size={20} fill="currentColor" />
+          </button>
+
+          {/* Big Play / Pause Button */}
+          <button
+            onClick={handlePlayPause}
+            className="
+              w-16 h-16 rounded-full bg-[#171717] text-white
+              flex items-center justify-center shadow-lg hover:bg-black
+              active:scale-95 transition-all duration-150 cursor-pointer
+            "
+            aria-label={isPlaying ? 'Pause' : 'Play'}
+            id="now-playing-play-btn"
+          >
+            {isPlaying
+              ? <Pause size={24} fill="currentColor" />
+              : <Play size={24} fill="currentColor" className="translate-x-0.5" />}
+          </button>
+
+          {/* Next Track */}
+          <button
+            onClick={next}
+            className="w-11 h-11 rounded-xl border border-[#ebebeb] bg-white text-[#171717] hover:bg-[#fafafa] active:scale-95 transition-all flex items-center justify-center cursor-pointer"
+            aria-label="Next track"
+            id="next-track-btn"
+          >
+            <SkipForward size={20} fill="currentColor" />
+          </button>
+
+          {/* Repeat */}
+          <button
+            onClick={toggleRepeat}
+            className={`
+              w-11 h-11 rounded-xl border flex items-center justify-center transition-all cursor-pointer active:scale-95
+              ${isRepeatOn
+                ? 'bg-[#171717] text-white border-[#171717] shadow-sm'
+                : 'bg-white text-[#888888] border-[#ebebeb] hover:text-[#171717] hover:bg-[#fafafa]'}
+            `}
+            aria-label={`Repeat ${repeatMode}`}
+            aria-pressed={isRepeatOn}
+            id="repeat-btn"
+          >
+            {repeatMode === 'one'
+              ? <Repeat1 size={18} />
+              : <Repeat size={18} />}
+          </button>
+        </div>
+
       </div>
     </div>
   );

@@ -89,7 +89,12 @@ const Landing = () => {
               </span>
             </Link>
 
-            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <div className="flex items-center gap-4 sm:gap-6 shrink-0">
+              <Link to="/blog" className="text-xs font-semibold text-[#171717] hover:text-[#0066cc] transition-colors flex items-center gap-1">
+                <BookOpen size={14} />
+                <span>Content Hub</span>
+              </Link>
+
               {isAuthenticated ? (
                 <Link
                   to="/find-music"
@@ -552,6 +557,7 @@ const Landing = () => {
           <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6 lg:px-8">
             <p>© 2026 Sukh Sangeet Inc. All rights reserved.</p>
             <div className="flex flex-wrap items-center justify-center gap-4 text-[#4d4d4d]">
+              <Link to="/blog" className="hover:text-[#171717] transition-colors font-semibold text-[#171717]">Content Hub & Articles</Link>
               <Link to="/how-it-works" className="hover:text-[#171717] transition-colors font-medium">How It Works</Link>
               <Link to="/about-us" className="hover:text-[#171717] transition-colors">About Us</Link>
               <Link to="/privacy-policy" className="hover:text-[#171717] transition-colors">Privacy Policy</Link>

@@ -13,14 +13,17 @@ Disallow: /login/
 Disallow: /register/
 Disallow: /auth/
 Disallow: /*.json$
-Disallow: /*.xml$
+Allow: /sitemap*.xml
 
 # Disallow user-specific content to avoid duplicate content
 Disallow: /*?*user=
 Disallow: /*?*session=
 Disallow: /*?*token=
 
-# Allow public playlist and track pages for indexing
+# Allow public content hub, blog, category, tag, playlist and track pages for indexing
+Allow: /blog/
+Allow: /category/
+Allow: /tag/
 Allow: /playlist/*
 Allow: /track/*
 

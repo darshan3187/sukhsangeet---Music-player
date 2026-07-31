@@ -35,6 +35,9 @@ const About = () => {
             </Link>
 
             <div className="flex items-center gap-3">
+              <Link to="/blog" className="text-xs font-semibold text-[#171717] hover:text-[#0066cc] transition-colors">
+                Content Hub
+              </Link>
               <Link to="/" className="btn-vercel-secondary text-xs h-9 px-4">
                 <ArrowLeft size={14} />
                 <span>Back to Home</span>
@@ -102,7 +105,7 @@ const About = () => {
             <span className="mono-eyebrow">CREATOR & PLATFORM</span>
             <h2 className="text-xl font-semibold text-[#171717]">The Story Behind Sukh Sangeet</h2>
             <p className="text-sm text-[#4d4d4d] leading-relaxed">
-              "Sukh Sangeet" translates to "Peaceful Music" or "Music of Bliss". It was engineered by Darshan with a vision to build a clean personal audio interface for developers, students, writers, and professionals who demand a focused listening environment.
+              "Sukh Sangeet" translates to "Peaceful Music" or "Music of Bliss". It was engineered by Darshan Rajgor with a vision to build a clean personal audio interface for developers, students, writers, and professionals who demand a focused listening environment.
             </p>
             <div className="pt-2">
               <Link to="/register" className="btn-vercel-primary text-xs h-10 px-6">
@@ -117,6 +120,7 @@ const About = () => {
           <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6 lg:px-8">
             <p>© 2026 Sukh Sangeet Inc.</p>
             <div className="flex items-center gap-4 text-[#4d4d4d]">
+              <Link to="/blog" className="hover:text-[#171717] font-semibold text-[#171717]">Content Hub</Link>
               <Link to="/how-it-works" className="hover:text-[#171717]">How It Works</Link>
               <Link to="/about-us" className="hover:text-[#171717] font-semibold text-[#171717]">About Us</Link>
               <Link to="/privacy-policy" className="hover:text-[#171717]">Privacy Policy</Link>

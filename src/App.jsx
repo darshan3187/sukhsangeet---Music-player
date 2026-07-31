@@ -14,6 +14,11 @@ const HowItWorks = lazy(() => import('./pages/HowItWorks'));
 const PlaylistWorkspace = lazy(() => import('./components/PlaylistWorkspace'));
 const PWAInstallPrompt = lazy(() => import('./components/PWAInstallPrompt'));
 
+const BlogHome = lazy(() => import('./pages/blog/BlogHome'));
+const BlogPostPage = lazy(() => import('./pages/blog/BlogPostPage'));
+const CategoryPage = lazy(() => import('./pages/blog/CategoryPage'));
+const TagPage = lazy(() => import('./pages/blog/TagPage'));
+
 const PageLoader = () => (
   <div className="flex h-screen w-full items-center justify-center bg-[#fafafa]">
     <div className="h-7 w-7 animate-spin rounded-full border-2 border-[#171717] border-t-transparent"></div>
@@ -33,6 +38,10 @@ function App() {
       <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/" element={<Landing />} />
+          <Route path="/blog" element={<BlogHome />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
+          <Route path="/category/:category" element={<CategoryPage />} />
+          <Route path="/tag/:tag" element={<TagPage />} />
           <Route path="/login/*" element={<Login />} />
           <Route path="/register/*" element={<Register />} />
           <Route path="/how-it-works" element={<HowItWorks />} />

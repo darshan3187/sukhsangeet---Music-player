@@ -281,7 +281,16 @@
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.25); }
+
+  /* ── YouTube Player Iframe Fit ── */
+  #yt-player-main,
+  #yt-player-main iframe {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: inherit;
+  }
 }
+
 
 @keyframes waveform {
   0%   { transform: scaleY(0.35); opacity: 0.5; }
