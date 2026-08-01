@@ -10,7 +10,7 @@ export default defineConfig({
     }
   },
   build: {
-    target: 'es2020',
+    target: 'es2022',
     cssCodeSplit: true,
     chunkSizeWarningLimit: 400,
     esbuild: {
@@ -19,20 +19,26 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
-          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/react-router-dom') || id.includes('node_modules/react-helmet-async')) {
+          if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/') || id.includes('node_modules/react-router-dom/') || id.includes('node_modules/react-helmet-async/')) {
             return 'react-vendor'
           }
-          if (id.includes('node_modules/@dnd-kit')) {
+          if (id.includes('node_modules/@clerk/')) {
+            return 'clerk-vendor'
+          }
+          if (id.includes('node_modules/@dnd-kit/')) {
             return 'dnd-vendor'
           }
-          if (id.includes('node_modules/react-player')) {
+          if (id.includes('node_modules/react-player/')) {
             return 'player-vendor'
           }
-          if (id.includes('node_modules/gsap')) {
+          if (id.includes('node_modules/gsap/')) {
             return 'gsap-vendor'
           }
-          if (id.includes('node_modules/lucide-react')) {
+          if (id.includes('node_modules/lucide-react/')) {
             return 'icons-vendor'
+          }
+          if (id.includes('node_modules/axios/')) {
+            return 'axios-vendor'
           }
           return undefined
         }

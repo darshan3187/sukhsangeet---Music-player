@@ -10,7 +10,7 @@ const ensureHttpsImageUrl = (url) => {
 };
 
 // Pre-compiled regex patterns for performance
-const VIDEO_TAG_REGEX = /[\(\[](official|video|audio|lyric|lyrics|hd|mv|full video)[\)\]]/gi;
+const VIDEO_TAG_REGEX = /[([](official|video|audio|lyric|lyrics|hd|mv|full video)[)]]/gi;
 const SEPARATOR_REGEX = /\s+[-–—~]\s+/;
 
 /**

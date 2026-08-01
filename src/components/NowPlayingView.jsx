@@ -50,6 +50,7 @@ const NowPlayingView = ({ onOpenQueue, onClose, onAddToPlaylist }) => {
 
   // Synchronously reset position on track switch
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setCurrentTime(0);
   }, [currentTrack?.youtubeId]);
 

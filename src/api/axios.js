@@ -102,7 +102,7 @@ api.interceptors.request.use(async (config) => {
     if (window.Clerk && window.Clerk.session) {
       token = await window.Clerk.session.getToken();
     }
-  } catch (err) {
+  } catch {
     // Ignore error
   }
 
