@@ -6,7 +6,7 @@ import BlogFooter from '../../components/blog/BlogFooter';
 import ArticleCard from '../../components/blog/ArticleCard';
 import FAQAccordion from '../../components/blog/FAQAccordion';
 import { CATEGORIES, getPostsByCategory } from '../../data/blogData';
-import { generateBreadcrumbSchema, generateFAQSchema } from '../../utils/seoUtils';
+import { generateBreadcrumbSchema, generateFAQSchema, generateWebPageSchema } from '../../utils/seoUtils';
 import { Folder, ArrowLeft, Disc, Sparkles, BookOpen } from 'lucide-react';
 
 export default function CategoryPage() {
@@ -25,10 +25,10 @@ export default function CategoryPage() {
     { name: categoryMeta.name, url: `/category/${categorySlug}` }
   ];
 
+  const canonicalUrl = `https://www.sukhsangeet.tech/category/${categorySlug}`;
+  const pageSchema = generateWebPageSchema(`${categoryMeta.name} Guide & Publications | Sukh Sangeet Hub`, categoryMeta.description, canonicalUrl);
   const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
   const faqSchema = generateFAQSchema(categoryMeta.faqs);
-
-  const canonicalUrl = `https://www.sukhsangeet.tech/category/${categorySlug}`;
 
   const relatedCategories = CATEGORIES.filter(c => 
     c.slug !== categorySlug && categoryMeta.relatedCategorySlugs?.includes(c.slug)
@@ -45,7 +45,14 @@ export default function CategoryPage() {
         <meta property="og:description" content={categoryMeta.description} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content="https://www.sukhsangeet.tech/logo-sukhsangeet.webp" />
+        <meta name="twitter:card" content="summary_large_image" />
         
+        {pageSchema && (
+          <script type="application/ld+json">
+            {JSON.stringify(pageSchema)}
+          </script>
+        )}
         {breadcrumbSchema && (
           <script type="application/ld+json">
             {JSON.stringify(breadcrumbSchema)}

@@ -5,7 +5,7 @@ import BlogHeader from '../../components/blog/BlogHeader';
 import BlogFooter from '../../components/blog/BlogFooter';
 import ArticleCard from '../../components/blog/ArticleCard';
 import { BLOG_POSTS, CATEGORIES, TAGS, getFeaturedPost, getPopularPosts, searchPosts } from '../../data/blogData';
-import { generateBreadcrumbSchema } from '../../utils/seoUtils';
+import { generateBreadcrumbSchema, generateOrganizationSchema, generateWebPageSchema } from '../../utils/seoUtils';
 import { Sparkles, TrendingUp, Filter, Tag as TagIcon } from 'lucide-react';
 
 export default function BlogHome() {
@@ -25,6 +25,15 @@ export default function BlogHome() {
     { name: 'Blog', url: '/blog' }
   ];
 
+  const canonicalUrl = 'https://www.sukhsangeet.tech/blog';
+  const orgSchema = generateOrganizationSchema();
+  const pageSchema = generateWebPageSchema(
+    'Music Articles, Artist Guides & Audio Education | Sukh Sangeet Content Hub',
+    'Explore in-depth playback singer breakdowns, workout & study playlists, audio bitrate guides, and cultural music history on Sukh Sangeet Content Hub.',
+    canonicalUrl
+  );
+  const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+
   return (
     <>
       <Helmet>
@@ -33,19 +42,32 @@ export default function BlogHome() {
           name="description"
           content="Explore in-depth playback singer breakdowns, workout & study playlists, audio bitrate guides, and cultural music history on Sukh Sangeet Content Hub."
         />
-        <link rel="canonical" href="https://www.sukhsangeet.tech/blog" />
+        <link rel="canonical" href={canonicalUrl} />
         <meta property="og:title" content="Music Articles & Audio Guides | Sukh Sangeet Hub" />
         <meta
           property="og:description"
           content="Comprehensive music guides, artist analysis, focus audio recommendations, and sound engineering education."
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.sukhsangeet.tech/blog" />
+        <meta property="og:url" content={canonicalUrl} />
         <meta property="og:image" content="https://www.sukhsangeet.tech/logo-sukhsangeet.webp" />
         <meta name="twitter:card" content="summary_large_image" />
-        <script type="application/ld+json">
-          {JSON.stringify(generateBreadcrumbSchema(breadcrumbs))}
-        </script>
+        
+        {orgSchema && (
+          <script type="application/ld+json">
+            {JSON.stringify(orgSchema)}
+          </script>
+        )}
+        {pageSchema && (
+          <script type="application/ld+json">
+            {JSON.stringify(pageSchema)}
+          </script>
+        )}
+        {breadcrumbSchema && (
+          <script type="application/ld+json">
+            {JSON.stringify(breadcrumbSchema)}
+          </script>
+        )}
       </Helmet>
 
       <div className="min-h-screen bg-[#fafafa] text-[#171717] flex flex-col font-sans selection:bg-[#171717] selection:text-white">

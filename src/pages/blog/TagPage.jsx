@@ -6,7 +6,7 @@ import BlogFooter from '../../components/blog/BlogFooter';
 import ArticleCard from '../../components/blog/ArticleCard';
 import FAQAccordion from '../../components/blog/FAQAccordion';
 import { TAGS, getPostsByTag } from '../../data/blogData';
-import { generateBreadcrumbSchema, generateFAQSchema } from '../../utils/seoUtils';
+import { generateBreadcrumbSchema, generateFAQSchema, generateWebPageSchema } from '../../utils/seoUtils';
 import { Tag as TagIcon, ArrowLeft, BookOpen, AlertCircle } from 'lucide-react';
 
 export default function TagPage() {
@@ -29,10 +29,10 @@ export default function TagPage() {
     { name: `#${tagMeta.name}`, url: `/tag/${tagSlug}` }
   ];
 
+  const canonicalUrl = `https://www.sukhsangeet.tech/tag/${tagSlug}`;
+  const pageSchema = generateWebPageSchema(`#${tagMeta.name} Articles & Music Guides | Sukh Sangeet`, tagMeta.description, canonicalUrl);
   const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
   const faqSchema = tagMeta.faqs ? generateFAQSchema(tagMeta.faqs) : null;
-
-  const canonicalUrl = `https://www.sukhsangeet.tech/tag/${tagSlug}`;
 
   return (
     <>
@@ -46,7 +46,14 @@ export default function TagPage() {
         <meta property="og:description" content={tagMeta.description} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content="https://www.sukhsangeet.tech/logo-sukhsangeet.webp" />
+        <meta name="twitter:card" content="summary_large_image" />
 
+        {pageSchema && (
+          <script type="application/ld+json">
+            {JSON.stringify(pageSchema)}
+          </script>
+        )}
         {breadcrumbSchema && (
           <script type="application/ld+json">
             {JSON.stringify(breadcrumbSchema)}

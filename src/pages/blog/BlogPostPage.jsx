@@ -10,7 +10,7 @@ import InternalLinkWidget from '../../components/blog/InternalLinkWidget';
 import ArticleCard from '../../components/blog/ArticleCard';
 import { getPostBySlug, getRelatedPosts } from '../../data/blogData';
 import { formatDate } from '../../utils/textUtils';
-import { generateBlogPostingSchema, generateBreadcrumbSchema, generateFAQSchema } from '../../utils/seoUtils';
+import { generateBlogPostingSchema, generateBreadcrumbSchema, generateFAQSchema, generateOrganizationSchema } from '../../utils/seoUtils';
 import { Calendar, Clock, ArrowLeft, Tag as TagIcon, CheckCircle } from 'lucide-react';
 
 export default function BlogPostPage() {
@@ -30,6 +30,7 @@ export default function BlogPostPage() {
     { name: post.title, url: `/blog/${post.slug}` }
   ];
 
+  const orgSchema = generateOrganizationSchema();
   const blogPostingSchema = generateBlogPostingSchema(post);
   const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
   const faqSchema = generateFAQSchema(post.faqs);
@@ -61,6 +62,11 @@ export default function BlogPostPage() {
         <meta name="twitter:image" content={post.featuredImage.startsWith('http') ? post.featuredImage : `https://www.sukhsangeet.tech${post.featuredImage}`} />
 
         {/* JSON-LD Schemas */}
+        {orgSchema && (
+          <script type="application/ld+json">
+            {JSON.stringify(orgSchema)}
+          </script>
+        )}
         {blogPostingSchema && (
           <script type="application/ld+json">
             {JSON.stringify(blogPostingSchema)}
