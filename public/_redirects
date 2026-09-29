@@ -1,0 +1,11 @@
+# 301 Permanent Redirects for canonical URL consistency and SEO
+/about               /about-us                301
+/about/              /about-us                301
+/contact             /contact-us              301
+/contact/            /contact-us              301
+/privacy             /privacy-policy          301
+/privacy/            /privacy-policy          301
+/terms               /terms-and-conditions    301
+/terms/              /terms-and-conditions    301
+/how                 /how-it-works            301
+/how/                /how-it-works            301

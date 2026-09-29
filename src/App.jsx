@@ -45,15 +45,15 @@ function App() {
           <Route path="/login/*" element={<Login />} />
           <Route path="/register/*" element={<Register />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
-          <Route path="/how" element={<HowItWorks />} />
+          <Route path="/how" element={<Navigate to="/how-it-works" replace />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
           <Route path="/about-us" element={<About />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/about" element={<Navigate to="/about-us" replace />} />
           <Route path="/terms-and-conditions" element={<Terms />} />
-          <Route path="/terms" element={<Terms />} />
+          <Route path="/terms" element={<Navigate to="/terms-and-conditions" replace />} />
           <Route path="/contact-us" element={<Contact />} />
-          <Route path="/contact" element={<Contact />} />
+          <Route path="/contact" element={<Navigate to="/contact-us" replace />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/find-music" element={<PlayerAppShell />} />
             <Route path="/find-music/playlist/:id" element={<PlayerAppShell />} />
