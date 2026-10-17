@@ -20,8 +20,8 @@ export default function TagPage() {
   const posts = getPostsByTag(tagSlug);
 
   // Dynamic Noindex Rule: If fewer than 3 posts and no custom long description, set noindex to prevent thin content rejection
-  const isThinTag = posts.length < 3 && !tagMeta.longDescriptionHtml;
-  const robotsDirective = isThinTag ? 'noindex, follow' : 'index, follow';
+  // const isThinTag = posts.length < 3 && !tagMeta.longDescriptionHtml;
+  // const robotsDirective = isThinTag ? 'noindex, follow' : 'index, follow';
 
   const breadcrumbs = [
     { name: 'Home', url: '/' },
